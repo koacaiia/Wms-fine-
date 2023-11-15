@@ -14,6 +14,30 @@
             display:grid;
             grid-template-columns:3fr 1fr;
         }
+        #File{
+            height:100%;
+            width:100%;
+            display:grid;
+            grid-template-rows:4fr 10fr 2fr 2fr;
+        }
+        #Settings{
+            height:100%;
+            width:100%;
+            display:grid;
+            grid-template-columns:7fr 1fr;
+        }
+        #FileSettings{
+            height:100%;
+            width:100%;
+            display:grid;
+            grid-template-rows:1fr 1fr;
+        }
+        .FileDiv{
+            height:100%;
+            width:100%;
+            display:grid;
+            grid-template-columns:1fr 5fr 1fr;
+        }
     </style>
    
 </head>
@@ -22,6 +46,12 @@
         <div id="File">
             <div id="Settings">
                 <div id="FileSettings">
+                    <div id="FileIn" class="FileDiv">
+
+                    </div>
+                    <div id="FileOut" class="FileDiv">
+
+                    </div>
 
                 </div>
                 <div id="DateSettings">
@@ -43,9 +73,7 @@
 
         </div>
     </div>
-    <script>
-        alert("Git Test");
-    </script>
+    
     
 </body>
 </html>
