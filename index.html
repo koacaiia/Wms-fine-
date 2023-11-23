@@ -32,30 +32,61 @@
             display:grid;
             grid-template-rows:1fr 1fr;
         }
+        #DateSettings{
+            height:95%;
+            width:90%;
+            display:grid;
+            grid-template-rows:2fr 1fr;
+            border:0.3px groove black;
+            margin-top:6%;
+        }
+        #Table{
+            height:97%;
+            margin:1%;
+            border:0.3px groove black;
+        }
+        #Info,#Update{
+            height:75%;
+            margin:1%;
+            border:0.3px groove black;
+        }
+
         .FileDiv{
-            height:100%;
-            width:100%;
+            height:90%;
+            width:95%;
             display:grid;
             grid-template-columns:1fr 5fr 1fr;
+            border:0.3px groove black;
+            margin-left:1%;
+            margin-top:1%;
         }
+        .fileSearch{
+            display:none;
+        }
+       
     </style>
-   
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
 </head>
 <body>
+    
     <div id="Main">
         <div id="File">
             <div id="Settings">
                 <div id="FileSettings">
                     <div id="FileIn" class="FileDiv">
-
+                        <label for="fileIn">입고파일 찾기</label>
+                        <input type="file" class ="fileSearch" id="fileIn" onchange="fileIn(event)">
+                        <input type="text" title="입고파일" id="fileInName" value="입고파일"/>
                     </div>
                     <div id="FileOut" class="FileDiv">
-
+                        <label for="fileOut">출고파일 찾기</label>
+                        <input type="file" class="fileSearch" id="fileOut" onchange="fileIn(event)">
+                        <input type="text" title="출고파일" id="fileOutName" value="출고파일">
                     </div>
 
                 </div>
                 <div id="DateSettings">
-
+                    <input type="date" value="yyyy-MM-dd" id="datePicker">
                 </div>
 
             </div>
@@ -64,7 +95,7 @@
             </div>
             <div id="Info">
 
-            </div>
+            </div>c
             <div id="Update">
 
             </div>
@@ -73,7 +104,33 @@
 
         </div>
     </div>
-    
+    <script>
+        
+        function fileIn(event){
+            console.log(event.target.id)
+            const target = event.target.id;
+            const file =event.target.files[0];
+            const fileName=document.getElementById(target).files[0].name;
+            document.getElementById(target+"Name").value=fileName;
+            let infoValue= new Array();
+            let reader = new FileReader();
+            console.log(reader)
+            let workbook = null;
+            reader.onload = function(event){
+                const data = event.target.result;
+                workbook = XLSX.read(data,{type:"binary",cellDates: true, dateNF: 'yyyy-mm-dd' });
+                console.log(workbook)
+                const op={
+                defval:"",range:"B4:AB150",blankrows:false,raw:false
+            };
+            rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets["Container"],op);
+            console.log(rowsValue);
+            };
+            reader.readAsBinaryString(file);
+            
+            
+        }
+    </script>
     
 </body>
 </html>
