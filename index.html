@@ -36,14 +36,15 @@
             height:95%;
             width:90%;
             display:grid;
-            grid-template-rows:2fr 1fr;
+            grid-template-rows:1fr 2fr;
             border:0.3px groove black;
             margin-top:6%;
         }
-        #Table{
-            height:97%;
+        #TableDiv{
+            height:50vh;
             margin:1%;
             border:0.3px groove black;
+            overflow-y:scroll;
         }
         #Info,#Update{
             height:75%;
@@ -63,9 +64,39 @@
         .fileSearch{
             display:none;
         }
+        .table{
+            border-collapse:collapse;
+            border-spacing: 0;
+            table-layout:fixed;
+            word-break:normal;
+            word-wrap:break-word;
+            border:1px solid #000;
+            text-align:center;
+            width:97%;
+            margin-top:3vh;
+        }
+        th{
+            position:sticky;
+            top:0px;
+            background-color:gray;
+        }
+        .tab_menu{position:relative;}
+        .tab_menu .list{overflow:hidden;}
+        .tab_menu .list li{float:left;}
+        .tab_menu .list .btn{font-size:13px; margin-right:14px;}
+        .tab_menu .list .cont{display:none; position:absolute; background:#555; color:#fff; text-align:center; width:100%; height:50vh; line-height:100px;}
+        .tab_menu .list li.is_on .btn{font-weight:bold; color:green;}
+        .tab_menu .list li.is_on .cont{display:block;}
        
     </style>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-firestore.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-messaging.js"></script>     
 </head>
 <body>
     
@@ -86,16 +117,39 @@
 
                 </div>
                 <div id="DateSettings">
+                    <label for="datePicker">Date Setting</label>
                     <input type="date" value="yyyy-MM-dd" id="datePicker">
                 </div>
 
             </div>
-            <div id="Table">
-
+            <div class="tab_menu">
+                <ul class="list">
+                    <li class="is_on">
+                        <a href = "#tab1" class="btn">EXCEL</a>
+                        <div id="tab1" class="cont">
+                            <div id="TableDiv">
+                                <table id="tableE" class="table">
+                                    
+                                    
+                                </table>
+                
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#tab2" class ="btn">SERVER</a>
+                        <dive id="tab2" class="cont">
+                            <table id="tableS" class="table">
+                                    
+                                    
+                        </table></dive>
+                    </li>
+                </ul>
             </div>
+            
             <div id="Info">
 
-            </div>c
+            </div>
             <div id="Update">
 
             </div>
@@ -105,7 +159,46 @@
         </div>
     </div>
     <script>
-        
+         const firebaseConfig = {
+            apiKey: "AIzaSyDLzmZyt5nZwCk98iZ6wi01y7Jxio1ppZQ",
+            authDomain: "fine-bondedwarehouse.firebaseapp.com",
+            databaseURL: "https://fine-bondedwarehouse-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "fine-bondedwarehouse",
+            storageBucket: "fine-bondedwarehouse.appspot.com",
+            messagingSenderId: "415417723331",
+            appId: "1:415417723331:web:15212f190062886281b576",
+            measurementId: "G-SWBR4359JQ"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database_f = firebase.database();
+        const messaging = firebase.messaging();
+        const storage_f = firebase.storage();
+        let deptName = "WareHouseDept2";
+        database_f.ref("DeptName/"+deptName+"/InCargo/").get().then((snapshot)=>{
+            let snapV = snapshot.val();
+            let keyList =[];
+            for(let kc in snapV){
+                let kL =snapV[kc];
+                for(let kc1 in kL){
+                    let keyValue = Object.keys(kL[kc1]);
+                    let value1 = Object.values(kL[kc1]);
+                    if(keyValue !='json 등록시 덥어쓰기 바랍니다'){
+                        if(Object.values(value1) != 'json 등록시 덥어쓰기 바랍니다' ||Object.keys(value1) != 'json 등록시 덥어쓰기 바랍니다'){
+                            let value2 =Object(kL[kc1]);
+                            for(kc2 in value2){
+                                let value3 =value2[kc2];
+                                console.log(value3)
+                            }
+                            keyList.push(kL[kc1]);
+                        }}};
+            };
+            // for(let l in keyList){
+            //     if(Object.keys(keyList[1] !='json 최초등록시 ` { `기호 다음  `,`기호 있으면 `,` 기호삭제후 최초 등록 바랍니다. ')){
+            //         console.log(Object.values(keyList[l]))
+            //     }
+               
+            // }
+        });
         function fileIn(event){
             console.log(event.target.id)
             const target = event.target.id;
@@ -121,15 +214,78 @@
                 workbook = XLSX.read(data,{type:"binary",cellDates: true, dateNF: 'yyyy-mm-dd' });
                 console.log(workbook)
                 const op={
-                defval:"",range:"B4:AB150",blankrows:false,raw:false
+                defval:"",range:"A3:X3000",blankrows:false,raw:false
             };
             rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets["Container"],op);
-            console.log(rowsValue);
+            iTable(rowsValue);
+            // for(let rC in rowsValue){
+            //     let headerValue = Object.keys(rowsValue[rC]);
+            //     let infoValue = Object.values(rowsValue[rC]);
+                
+            // }
             };
             reader.readAsBinaryString(file);
-            
-            
+        function iTable(value){
+            const tableHeader = ["반입일","컨테이너번호","입고유형","화주명","비엘번호","품명","찻수/Seal","입고수량","팔렛트수량","비고"];
+            const tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"];
+            let headerE = document.createElement("thead");
+            let headerS = document.createElement("thead");
+            let tableE = document.getElementById("tableE");
+            let tableS = document.getElementById("tableS")
+            let tHrE = document.createElement("tr");
+            let tHrS = document.createElement("tr");
+            let trV = Object.values(value);
+            let tBodyE = document.createElement("tbody");
+            let tBodyS = document.createElement("tbody");
+            for(let hC in tableHeader){
+                let thE = document.createElement("th");
+                let thS = document.createElement("th");
+                thE.innerHTML=tableHeader[hC];
+                thS.innerHTML=tableHeader[hC];
+                console.log(hC)
+                // th.addEventListener("click",function(e){
+                //     console.log(hC)
+                // });
+                tHrE.appendChild(thE);
+                tHrS.appendChild(thS);
+            }
+            for(let rC in value){
+                let trE = document.createElement("tr");
+                let trS = document.createElement("tr");
+                for(let tdC in tdList){
+                    let tdE = document.createElement("td");
+                    let tdS = document.createElement("td");
+                    tdE.innerHTML=value[rC][tdList[tdC]];
+                    tdS.innerHTML=value[rC][tdList[tdC]];
+                    trE.appendChild(tdE);
+                    trS.appendChild(tdS);
+                }           
+                tBodyE.appendChild(trE);
+                tBodyS.appendChild(trS);
+            }
+            headerE.appendChild(tHrE);
+            headerS.appendChild(tHrS);
+            tableE.appendChild(headerE);
+            tableE.appendChild(tBodyE);
+            tableS.appendChild(headerS);
+            tableS.appendChild(tBodyS);
+        };            
         }
+        const tabList = document.querySelectorAll(".tab_menu .list li");
+        for(var i=0 ;i<tabList.length;i++){
+            tabList[i].querySelector(".btn").addEventListener("click", function(e){
+                e.preventDefault();
+                for(var j=0;j<tabList.length;j++){
+                    console.log(tabList[j])
+                    tabList[j].classList.remove("is_on");
+                }
+                this.parentNode.classList.add("is_on");
+            });
+        }
+        function thClick(n){
+            console.log(n)
+        };
+               
     </script>
     
 </body>
