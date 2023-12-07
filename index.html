@@ -36,13 +36,12 @@
             height:95%;
             width:90%;
             display:grid;
-            grid-template-rows:1fr 2fr;
+            grid-template-rows:1fr 2fr 2fr;
             border:0.3px groove black;
             margin-top:6%;
-        }
-        #TableDiv{
+            }
+        .TableDiv{
             height:50vh;
-            margin:1%;
             border:0.3px groove black;
             overflow-y:scroll;
         }
@@ -79,12 +78,36 @@
             position:sticky;
             top:0px;
             background-color:gray;
+            border:0.5px solid black;
+            height:4vh;
         }
+        th tr{
+            height:100%;
+            border:0.5px solid black;
+        }
+        tr,td{
+            height:2vh;
+            border:0.5px solid black;
+        }
+        td{
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .select{
+            background-color:beige;
+            color:black;
+            font-weight:bold;
+        }
+        .date{
+            text-align:center;
+        }
+       
         .tab_menu{position:relative;}
         .tab_menu .list{overflow:hidden;}
         .tab_menu .list li{float:left;}
         .tab_menu .list .btn{font-size:13px; margin-right:14px;}
-        .tab_menu .list .cont{display:none; position:absolute; background:#555; color:#fff; text-align:center; width:100%; height:50vh; line-height:100px;}
+        .tab_menu .list .cont{display:none; position:absolute; background:#555; color:#fff; text-align:center; width:98%; height:50vh; line-height:100px;left:10px}
         .tab_menu .list li.is_on .btn{font-weight:bold; color:green;}
         .tab_menu .list li.is_on .cont{display:block;}
        
@@ -111,14 +134,15 @@
                     </div>
                     <div id="FileOut" class="FileDiv">
                         <label for="fileOut">출고파일 찾기</label>
-                        <input type="file" class="fileSearch" id="fileOut" onchange="fileIn(event)">
+                        <input type="file" class="fileSearch" id="fileOut" onchange="fileIn()">
                         <input type="text" title="출고파일" id="fileOutName" value="출고파일">
                     </div>
 
                 </div>
                 <div id="DateSettings">
-                    <label for="datePicker">Date Setting</label>
-                    <input type="date" value="yyyy-MM-dd" id="datePicker">
+                    <label class="date" for="datePicker">Date Setting</label>
+                    <input clsaa="date" type="date" value="yyyy-MM-dd" id="datePicker" onchange="dateC()">
+                    <button class="date" id="submit_btn" onclick="submitBtn()">UpLoad</button>
                 </div>
 
             </div>
@@ -127,7 +151,7 @@
                     <li class="is_on">
                         <a href = "#tab1" class="btn">EXCEL</a>
                         <div id="tab1" class="cont">
-                            <div id="TableDiv">
+                            <div id="TableDivE" class="TableDiv">
                                 <table id="tableE" class="table">
                                     
                                     
@@ -138,17 +162,20 @@
                     </li>
                     <li>
                         <a href="#tab2" class ="btn">SERVER</a>
-                        <dive id="tab2" class="cont">
-                            <table id="tableS" class="table">
+                        <div id="tab2" class="cont">
+                            <div id="TableDivS" class="TableDiv">
+                                <table id="tableS" class="table">
                                     
                                     
-                        </table></dive>
+                                </table>
+                            </div>
+                            </div>
                     </li>
                 </ul>
             </div>
             
             <div id="Info">
-
+                
             </div>
             <div id="Update">
 
@@ -174,22 +201,161 @@
         const messaging = firebase.messaging();
         const storage_f = firebase.storage();
         let deptName = "WareHouseDept2";
+
+        const key_f = ['date','container','spec','consignee','bl', 'description','count', 'incargo','Pqty','remark','keyValue','location','shape', 'working'];
+        let selRow={};
         function transDate(dateT){
+            let result_date;
+            try{
             let result_month = dateT.getMonth()+1;
             let result_day =dateT.getDate();
             if(result_month<10){
                 result_month ="0"+result_month;
             };
             if(result_day <10){
-                result_day = "0"+result_day;
+                result_day ="0"+result_day;
             };
-            var result_date = dateT.getFullYear()+"-"+result_month+"-"+result_day;
+            result_date = dateT.getFullYear()+"-"+result_month+"-"+result_day;
             return result_date;
+            }catch(e){
+            return result_date ="미정";
+            }
+            
         }
         document.getElementById("datePicker").value =transDate(new Date());
-        database_f.ref("DeptName/"+deptName+"/InCargo/").get().then((snapshot)=>{
+        const tableHeader = ["반입일","컨테이너번호","입고유형","화주명","비엘번호","품명","찻수/Seal","입고수량","팔렛트수량","비고"];
+        function fileIn(){
+            const target = document.getElementById("fileIn");
+            try{
+                const file =target.files[0];
+            const fileName=target.files[0].name;
+            // document.getElementById(target+"Name").value=fileName;
+            let infoValue= new Array();
+            let reader = new FileReader();
+            let rowsValue;
+            let workbook = null;
+            reader.onload = function(event){
+                const data = event.target.result;
+                console.log(data)
+                workbook = XLSX.read(data,{type:"binary",cellDates: true,dateNF:"yyyy-mm-dd"});
+                const op={
+                defval:"",range:"A3:X3000",blankrows:false,raw:true
+            };
+            rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets["Container"],op);
+            eTable(rowsValue);
+           
+            };
+            reader.readAsBinaryString(file);
+            }catch(e){
+                alert(e);
+                console.log(e);
+            }
+            
+        }
+        function eTable(value){
+            document.getElementById("tableE").replaceChildren();
+            const dateValue = document.getElementById("datePicker").value;
+            const tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"]
+            
+            let headerE = document.createElement("thead");
+            let tHrE = document.createElement("tr");
+            let trV = Object.values(value);
+            let tBodyE = document.createElement("tbody");
+            for(let hC in tableHeader){
+                let thE = document.createElement("th");
+                thE.innerHTML=tableHeader[hC];
+                thE.addEventListener("click",function(e){
+                    console.log(hC)
+                });
+                tHrE.appendChild(thE);
+            }
+            for(let rC in value){
+                let trE = document.createElement("tr");
+                const offset = (9*60*60*1000);
+                if(value[rC]["Date"] != ""){
+                    value[rC]["Date"] = new Date(value[rC]["Date"].getTime()+offset);
+                }
+                // 
+                // console.log(new Date(value[rC]["Date"].getTime()+offset),new Date(value[rC]["Date"].getTime()))
+                value[rC]["Date"]=transDate(value[rC]["Date"]);
+                if(value[rC]["40FT"] ==1){
+                    value[rC]["40FT"] ="40Ft";
+                }else if(value[rC]["20FT"] ==1){
+                    value[rC]["40FT"] ="20Ft";
+                }else{
+                    value[rC]["40FT"] ="L : "+value[rC]["LCL"]
+                };
+                if(value[rC]["Date"] == dateValue){
+                    
+                    for(let tdC in tdList){
+                    let tdE = document.createElement("td");
+                    tdE.innerHTML=value[rC][tdList[tdC]];
+                    trE.appendChild(tdE);
+                    
+                }
+                trE.addEventListener("click",function(e){
+                    const trRow = e.target.parentNode;
+                    trRow.classList.toggle("select");
+                    if(trRow.classList.value == "select"){
+                        let selectOb = {};
+                        for(let tdC in key_f){
+                            try{
+                                selectOb[key_f[tdC]]=trRow.cells[tdC].innerHTML; 
+                            }catch(e){
+                                selectOb[key_f[tdC]]="";
+                            }
+                        }
+                        if(selectOb["spec"] =="40Ft"){
+                            selectOb["container40"]=1;
+                            selectOb["container20"]=0;
+                            selectOb["lclcargo"]=0;
+                        }else if(selectOb["spec"] =="20Ft"){
+                            selectOb["container40"]=0;
+                            selectOb["container20"]=1;
+                            selectOb["lclcargo"]=0;
+                        }else{
+                            selectOb["container40"]=0;
+                            selectOb["container20"]=0;
+                            selectOb["lclcargo"]=selectOb["spec"].substring(3);
+                        }
+                        const monValue = selectOb["date"].substring(5,7)+"월";
+                        const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
+                        const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+selectOb["date"]+"/"+keyPath;
+                        selectOb["keyValue"]=refValue;
+                        selRow[trRow.rowIndex]=selectOb;
+                    }else{
+                        delete selRow[trRow.rowIndex];
+                    }
+                        
+                    });           
+                tBodyE.appendChild(trE);
+                }
+            }
+            headerE.appendChild(tHrE);
+            tableE.appendChild(headerE);
+            tableE.appendChild(tBodyE);
+            sTable(dateValue);
+        };
+
+        function sTable(dateValue){
+            document.getElementById("tableS").replaceChildren();
+            database_f.ref("DeptName/"+deptName+"/InCargo/").get().then((snapshot)=>{
             let snapV = snapshot.val();
             let keyList =[];
+            const tdList =["date","container","container40","consignee","bl","description","count","incargo","incargo","remark","keyValue"];
+            let headerS = document.createElement("thead");
+            let tableS = document.getElementById("tableS");
+            let tHrS = document.createElement("tr");
+            let tBodyS = document.createElement("tbody");
+
+            for(let hC in tableHeader){
+                let thS = document.createElement("th");
+                thS.innerHTML=tableHeader[hC];
+                thS.addEventListener("click",function(e){
+                    console.log(hC)
+                });
+                tHrS.appendChild(thS);
+            }
             for(let kc in snapV){
                 let kL =snapV[kc];
                 for(let kc1 in kL){
@@ -197,94 +363,31 @@
                     let value1 = Object.values(kL[kc1]);
                     if(keyValue !='json 등록시 덥어쓰기 바랍니다'){
                         if(Object.values(value1) != 'json 등록시 덥어쓰기 바랍니다' ||Object.keys(value1) != 'json 등록시 덥어쓰기 바랍니다'){
-                            let value2 =Object(kL[kc1]);
+                            let value2 =Object.values(kL[kc1]);
                             for(kc2 in value2){
-                                if(value2[kc2] !="json 최초등록시 ` { `기호 다음  `,`기호 있으면 `,` 기호삭제후 최초 등록 바랍니다. "){
-                                    keyList.push(value2[kc2]);
+                                if(value2[kc2] !="json 최초등록시 ` { `기호 다음  `,`기호 있으면 `,` 기호삭제후 최초 등록 바랍니다. " && value2[kc2]["date"] == dateValue){
+                                    let trS = document.createElement("tr");
+                                    for(let tdC in tdList){
+                                        let td = document.createElement("td");
+                                        td.innerHTML= value2[kc2][tdList[tdC]];
+                                        if(tdC == tdList.length-1){
+                                            td.style.display="none";
+                                        }
+                                        trS.appendChild(td);
+                                    }
+                                    tBodyS.appendChild(trS);  
                                 }
+                              
                             }
                         }}};
             };
-            console.log(keyList)
-            // for(let l in keyList){
-            //     if(Object.keys(keyList[1] !='json 최초등록시 ` { `기호 다음  `,`기호 있으면 `,` 기호삭제후 최초 등록 바랍니다. ')){
-            //         console.log(Object.values(keyList[l]))
-            //     }
-               
-            // }
-        });
-        function fileIn(event){
-            console.log(event.target.id)
-            const target = event.target.id;
-            const file =event.target.files[0];
-            const fileName=document.getElementById(target).files[0].name;
-            document.getElementById(target+"Name").value=fileName;
-            let infoValue= new Array();
-            let reader = new FileReader();
-            console.log(reader)
-            let workbook = null;
-            reader.onload = function(event){
-                const data = event.target.result;
-                workbook = XLSX.read(data,{type:"binary",cellDates: true, dateNF: 'yyyy-mm-dd' });
-                console.log(workbook)
-                const op={
-                defval:"",range:"A3:X3000",blankrows:false,raw:false
-            };
-            rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets["Container"],op);
-            eTable(rowsValue);
-            // for(let rC in rowsValue){
-            //     let headerValue = Object.keys(rowsValue[rC]);
-            //     let infoValue = Object.values(rowsValue[rC]);
-                
-            // }
-            };
-            reader.readAsBinaryString(file);
-        function eTable(value){
-            const dateValue = document.getElementById("datePicker").value;
-            const tableHeader = ["반입일","컨테이너번호","입고유형","화주명","비엘번호","품명","찻수/Seal","입고수량","팔렛트수량","비고"];
-            const tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"];
-            let headerE = document.createElement("thead");
-            let headerS = document.createElement("thead");
-            let tableE = document.getElementById("tableE");
-            let tableS = document.getElementById("tableS")
-            let tHrE = document.createElement("tr");
-            let tHrS = document.createElement("tr");
-            let trV = Object.values(value);
-            let tBodyE = document.createElement("tbody");
-            let tBodyS = document.createElement("tbody");
-            for(let hC in tableHeader){
-                let thE = document.createElement("th");
-                let thS = document.createElement("th");
-                thE.innerHTML=tableHeader[hC];
-                thS.innerHTML=tableHeader[hC];
-                console.log(hC)
-                thE.addEventListener("click",function(e){
-                    console.log(hC)
-                });
-                tHrE.appendChild(thE);
-                tHrS.appendChild(thS);
-            }
-            for(let rC in value){
-                let trE = document.createElement("tr");
-                let trS = document.createElement("tr");
-                for(let tdC in tdList){
-                    let tdE = document.createElement("td");
-                    let tdS = document.createElement("td");
-                    tdE.innerHTML=value[rC][tdList[tdC]];
-                    tdS.innerHTML=value[rC][tdList[tdC]];
-                    trE.appendChild(tdE);
-                    trS.appendChild(tdS);
-                }           
-                tBodyE.appendChild(trE);
-                tBodyS.appendChild(trS);
-            }
-            headerE.appendChild(tHrE);
             headerS.appendChild(tHrS);
-            tableE.appendChild(headerE);
-            tableE.appendChild(tBodyE);
             tableS.appendChild(headerS);
             tableS.appendChild(tBodyS);
-        };            
+        }
+        );
+            
+            
         }
         const tabList = document.querySelectorAll(".tab_menu .list li");
         for(var i=0 ;i<tabList.length;i++){
@@ -300,7 +403,20 @@
         function thClick(n){
             console.log(n)
         };
-        
+        function dateC(){
+            fileIn();
+        };
+        function submitBtn(){
+            for (let i in selRow){
+                const refPath = selRow[i]["keyValue"];
+                database_f.ref(refPath).update(selRow[i]).then(()=>{
+                    console.log(selRow[i]+ "uploading successful!")
+                }).catch((e)=>{
+                    console.error(e);
+                });
+            }
+            
+        };
                
     </script>
     
