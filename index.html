@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
             height:100vh;
             width:100vw;
             display:grid;
-            grid-template-columns:3fr 1fr;
+            grid-template-columns:3fr 1.6fr;
         }
         #File{
             height:100%;
@@ -102,6 +103,34 @@
         .date{
             text-align:center;
         }
+        .message{
+            display:grid;
+            grid-template-rows:0.5fr 10fr;
+            height:100%;
+        }
+        #Message{
+            display:grid;
+            grid-template-rows:0.5fr 10fr;
+
+        }
+        .msgDiv{
+            border:0.5px solid black;
+            height:100%;
+        }
+        #messageContent{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            grid-gap:3px;
+        }
+        .msgTitle{
+            width:100%;        }
+        .msgTable{
+            width:100%;
+        }
+        .imgTd{
+        width:5vw;
+        height:8vh;
+        }
        
         .tab_menu{position:relative;}
         .tab_menu .list{overflow:hidden;}
@@ -113,13 +142,12 @@
        
     </style>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
-   <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-firestore.js"></script> 
-    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-storage.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-messaging.js"></script>     
+   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-functions-compat.js"></script>
 </head>
 <body>
     
@@ -182,10 +210,41 @@
             </div>
         </div>
         <div id="Message">
+            <div id="messageTitle">
+                입,출고 현황
+            </div>
+            <div id="messageContent">
+                
+                <div class="message">
+                <h5>입고로그</h5>
+                    <div id="messageIn" class="msgDiv">
+                        <table  class="msgTable">
+                            <tbody id="msgTableIn">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+                <div class="message">
+                    <h5>출고로그</h5>
+                    <div id="messageOut" class="msgDiv">
+                        <table  class="msgTable">
+                            <tbody id="msgTableOut">
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            
 
         </div>
     </div>
-    <script>
+    <script >
+         
          const firebaseConfig = {
             apiKey: "AIzaSyDLzmZyt5nZwCk98iZ6wi01y7Jxio1ppZQ",
             authDomain: "fine-bondedwarehouse.firebaseapp.com",
@@ -196,12 +255,13 @@
             appId: "1:415417723331:web:15212f190062886281b576",
             measurementId: "G-SWBR4359JQ"
         };
+        // const app=initializeApp();
+        // console.log(app)
         firebase.initializeApp(firebaseConfig);
         const database_f = firebase.database();
         const messaging = firebase.messaging();
         const storage_f = firebase.storage();
-        let deptName = "WareHouseDept2";
-
+        const deptName = "WareHouseDept2";
         const key_f = ['date','container','spec','consignee','bl', 'description','count', 'incargo','Pqty','remark','keyValue','location','shape', 'working'];
         let selRow={};
         function transDate(dateT){
@@ -407,15 +467,181 @@
             fileIn();
         };
         function submitBtn(){
-            for (let i in selRow){
-                const refPath = selRow[i]["keyValue"];
-                database_f.ref(refPath).update(selRow[i]).then(()=>{
-                    console.log(selRow[i]+ "uploading successful!")
-                }).catch((e)=>{
-                    console.error(e);
-                });
-            }
             
+            // for (let i in selRow){
+            //     const refPath = selRow[i]["keyValue"];
+            //     database_f.ref(refPath).update(selRow[i]).then(()=>{
+            //         console.log(selRow[i]+ "uploading successful!")
+            //     }).catch((e)=>{
+            //         console.error(e);
+            //     });
+            // }
+            const messageTitle = '알림 제목';
+            const messageBody = '알림 내용입니다.';
+            const topic="WareHouseDept2"
+            const message={
+                data:{"contents":"test","nickName":"test","message":"test"},
+                topic:"WareHouseDept2"
+            }
+            const token = 'fhr3iBpyPDxgNVdTXuO6oQ:APA91bGNVwB59JQDdFcX4R4kq9nsQ5xGfAm5fl2isCr3epQHqZRQkafCag8D1PhS8DjOmlt5GYGHdze2GNnW4hM5FKk66qI61XSPt8oPSi-G0ZftWyH87tGfwcyIxng_Ww5tHj6cj9vl'; // 메시지를 받을 대상의 FCM 토큰
+            Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                console.log('알림 권한이 허용되었습니다.');
+                // Firebase 메시징 초기화 및 추가 설정
+                messaging.getToken().then((c) => {
+                if (c) {
+                   
+                    console.log(c)
+                    // messaging.send(c,message).then((r)=>{
+                    // console.log("Successfully sent Message",r)
+                    // }).catch((e)=>{
+                    //     console.log("Error sending message",e);
+                    // });
+                    } else {
+                        console.log('토큰이 없습니다. 권한을 다시 확인하세요.');
+                    }
+                }
+                    ).catch((err) => {
+                console.log('토큰을 가져오는 중 오류가 발생했습니다.', err);
+                });
+            } else {
+                console.log('알림 권한을 허용하지 않았습니다.');
+            }
+            }).catch((err) => {
+            console.log('알림 권한 요청 중 오류가 발생했습니다.', err);
+            });
+            // messaging.requestPermission().then(function(){
+            //     console.log("Permission Allowed");
+            //     return messaging.getToken();
+            // }).then(function(token){
+            //     console.log("Token",token);
+            //     // messaging.subscribeToTopic(token,"WareHouseDept2").
+            //     // then((re)=>{
+            //     //     console.log("Successfully subscribed to Topic",re);
+            //     // }).catch((e)=>{
+            //     //     console.log("Error subscribing to Topic",e);
+            //     // })
+                
+            // }).catch(function(e){
+            //     console.log(e);
+            // });
+            // console.log(messaging)
+           
+            messaging.onMessage((payload)=>{
+                console.log("message received",payload)
+                alert(payload)
+            })
+
+            // FCM에 메시지를 보내는 함수
+            function sendFCMMessage(topic, title, body,token) {
+            // FCM 서버에 요청을 보내기 위한 fetch 사용 (서버 측에서 처리해야 함)
+            // const fetch = require("node-fetch");
+            fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'key=AAAAYLjTacM:APA91bEfxvEgfzLykmd3YAu-WAI6VW64Ol8TdmGC0GIKao0EB9c3OMAsJNpPCDEUVsMgUkQjbWCpP_Dw2CNpF2u-4u3xuUF30COZslRIqqbryAAhQu0tGLdtFsTXU5EqsMGaMnGK8jpQ' 
+            },
+            body: JSON.stringify({
+                // to: "topics/"+topic,
+                // contents:"Test",
+                // nickName:"Test",
+                // message:"Test",
+
+                notification: {
+                title: title,
+                body: body,
+                },
+                to:token
+            })
+            })
+            .then(response => {
+            console.log('FCM 메시지 전송 성공:', response);
+            })
+            .catch(error => {
+            console.error('FCM 메시지 전송 실패:', error);
+            });
+            }
+
+           
+            
+            
+            sendFCMMessage(topic, messageTitle, messageBody,token);
+
+            
+            
+        };
+        msgLoad();
+        function msgLoad(){
+            const dateValue = document.getElementById("datePicker").value;
+            
+            const ref = "DeptName/WareHouseDept2/WorkingMessage/"+dateValue;
+            database_f.ref(ref).get().then((snapshot)=>{
+                // console.log(snapshot.val())
+                const value= snapshot.val();
+                const tI= document.getElementById("msgTableIn");
+                tI.replaceChildren();
+                const tO= document.getElementById("msgTableOut");
+                tO.replaceChildren();
+
+                for(let v in value){
+                    const ob = Object.keys(value[v]);
+                    const keyB = ob.includes("keyValue");
+                    const tr = document.createElement("tr");
+                    const tDiv = document.createElement("div");
+                    const h6 = document.createElement("h7");
+                    h6.style.className="msgTitle";
+                    h6.innerHTML=v;
+                    const content = document.createElement("h8");
+                    content.innerHTML=value[v]["msg"];
+                    tDiv.style.border="0.5px solid black";
+                    tDiv.style.borderRadius="1px";
+                    tDiv.style.width="100%";
+                    tDiv.appendChild(h6);
+                    tDiv.appendChild(content);
+                    tr.appendChild(tDiv);
+                    let inOut="";
+                    console.log(value[v]["inOutCargo"])
+                    if(value[v]["inOutCargo"] =="OutCargo"){
+                        tO.appendChild(tr);
+                        inOut="/OutCargo/";
+                    }else{
+                        tI.appendChild(tr);
+                        inOut="/InCargo/"
+                    }
+                    if(keyB){
+                        const tableP = document.createElement("table");
+                        const tPbody = document.createElement("tbody");
+                        const tPtr = document.createElement("tr");
+                        const refStorage = "images/WareHouseDept2/"+dateValue+inOut+value[v]["keyValue"];
+                            storage_f.ref(refStorage).listAll().then((res)=>{
+                                    res.items.forEach((itemRef)=>{
+                                        const tPtd = document.createElement("td");
+                                        const img = document.createElement("img");
+                                        img.setAttribute("class","imgTd");
+                                        img.addEventListener("click", function(){picDown(event)});
+                                        
+                                    const filePath = storage_f.ref(refStorage+"/"+itemRef.name);
+                                    filePath.getDownloadURL().then((url)=>{
+                                        img.src=url;
+                                        tPtd.appendChild(img);
+                                    });
+                                    tPtr.appendChild(tPtd);
+                                });
+                            });
+                        tableP.appendChild(tPtr)
+                        tDiv.appendChild(tableP);
+                    }
+                }
+            });
+            function picDown(event){
+            const link = document.createElement("a");                link.href=event.target.src;
+                link.target="_blank";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+        };
         };
                
     </script>
