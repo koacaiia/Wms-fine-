@@ -162,7 +162,7 @@
                     </div>
                     <div id="FileOut" class="FileDiv">
                         <label for="fileOut">출고파일 찾기</label>
-                        <input type="file" class="fileSearch" id="fileOut" onchange="fileIn()">
+                        <input type="file" class="fileSearch" id="fileOut" onchange="fileIn(event)">
                         <input type="text" title="출고파일" id="fileOutName" value="출고파일">
                     </div>
 
@@ -177,7 +177,7 @@
             <div class="tab_menu">
                 <ul class="list">
                     <li class="is_on">
-                        <a href = "#tab1" class="btn">EXCEL</a>
+                        <a href = "#tab1" class="btn">입고 EXCEL</a>
                         <div id="tab1" class="cont">
                             <div id="TableDivE" class="TableDiv">
                                 <table id="tableE" class="table">
@@ -189,10 +189,33 @@
                         </div>
                     </li>
                     <li>
-                        <a href="#tab2" class ="btn">SERVER</a>
+                        <a href="#tab2" class ="btn">입고 SERVER</a>
                         <div id="tab2" class="cont">
                             <div id="TableDivS" class="TableDiv">
                                 <table id="tableS" class="table">
+                                    
+                                    
+                                </table>
+                            </div>
+                            </div>
+                    </li>
+                    <li >
+                        <a href = "#tab3" class="btn">출고 EXCEL</a>
+                        <div id="tab3" class="cont">
+                            <div id="TableDivEo" class="TableDiv">
+                                <table id="tableEo" class="table">
+                                    
+                                    
+                                </table>
+                
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#tab4" class ="btn">출고 SERVER</a>
+                        <div id="tab4" class="cont">
+                            <div id="TableDivSo" class="TableDiv">
+                                <table id="tableSo" class="table">
                                     
                                     
                                 </table>
@@ -293,44 +316,53 @@
             
         }
         document.getElementById("datePicker").value =transDate(new Date());
-        const tableHeader = ["반입일","컨테이너번호","입고유형","화주명","비엘번호","품명","찻수/Seal","입고수량","팔렛트수량","비고"];
-        function fileIn(){
-            const target = document.getElementById("fileIn");
+        let tableHeader;
+        function fileIn(event){
+            const target = event.target;
             try{
-                const file =target.files[0];
-            const fileName=target.files[0].name;
-            // document.getElementById(target+"Name").value=fileName;
+            let file =target.files[0];
+            let op={};
+            let sheetName;
+            let io;    
+            if(target.id =="fileIn"){
+                op={defval:"",range:"A3:X3000",blankrows:false,raw:true};
+                sheetName ="Container"
+                tableHeader = ["반입일","컨테이너번호","입고유형","화주명","비엘번호","품명","찻수/Seal","입고수량","팔렛트수량","비고"];
+                io="i"
+            }else{
+                op={defval:"",range:"B3:K10000",blankrows:false,raw:true};
+                sheetName ="출고취합";
+                io="o";
+                tableHeader= ["출고일","화주명","도착지","출고 총수량","출고 팔렛트 총수량","출고 수량","출고 팔렛트 수량","관리번호","품명"]
+            };
             let infoValue= new Array();
             let reader = new FileReader();
-            let rowsValue;
             let workbook = null;
             reader.onload = function(event){
                 const data = event.target.result;
-                console.log(data)
                 workbook = XLSX.read(data,{type:"binary",cellDates: true,dateNF:"yyyy-mm-dd"});
-                const op={
-                defval:"",range:"A3:X3000",blankrows:false,raw:true
-            };
-            rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets["Container"],op);
-            eTable(rowsValue);
-           
+                console.log
+            
+            let rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],op);
+            eTable(rowsValue,io);
             };
             reader.readAsBinaryString(file);
-            }catch(e){
+            }catch(e){s
                 alert(e);
                 console.log(e);
             }
             
         }
-        function eTable(value){
-            document.getElementById("tableE").replaceChildren();
-            const dateValue = document.getElementById("datePicker").value;
-            const tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"]
-            
+        function eTable(value,io){
+            let tdList=[];
+            let tableE;
             let headerE = document.createElement("thead");
             let tHrE = document.createElement("tr");
             let trV = Object.values(value);
             let tBodyE = document.createElement("tbody");
+            const dateValue = document.getElementById("datePicker").value;
+            // const dateValue = "2024-01-11";
+            const offset = (9*60*60*1000);
             for(let hC in tableHeader){
                 let thE = document.createElement("th");
                 thE.innerHTML=tableHeader[hC];
@@ -339,9 +371,13 @@
                 });
                 tHrE.appendChild(thE);
             }
+            if(io =="i"){
+                tableE=document.getElementById("tableE");
+                tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"];
+                tableE.replaceChildren();
+                
             for(let rC in value){
                 let trE = document.createElement("tr");
-                const offset = (9*60*60*1000);
                 if(value[rC]["Date"] != ""){
                     value[rC]["Date"] = new Date(value[rC]["Date"].getTime()+offset);
                 }
@@ -376,17 +412,17 @@
                             }
                         }
                         if(selectOb["spec"] =="40Ft"){
-                            selectOb["container40"]=1;
-                            selectOb["container20"]=0;
-                            selectOb["lclcargo"]=0;
+                            selectOb["container40"]="1";
+                            selectOb["container20"]="0";
+                            selectOb["lclcargo"]="0";
                         }else if(selectOb["spec"] =="20Ft"){
-                            selectOb["container40"]=0;
-                            selectOb["container20"]=1;
-                            selectOb["lclcargo"]=0;
+                            selectOb["container40"]="0"; 
+                            selectOb["container20"]="1";
+                            selectOb["lclcargo"]="0";
                         }else{
-                            selectOb["container40"]=0;
-                            selectOb["container20"]=0;
-                            selectOb["lclcargo"]=selectOb["spec"].substring(3);
+                            selectOb["container40"]="0";
+                            selectOb["container20"]="0";
+                            selectOb["lclcargo"]="1";
                         }
                         const monValue = selectOb["date"].substring(5,7)+"월";
                         const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
@@ -401,13 +437,92 @@
                 tBodyE.appendChild(trE);
                 }
             }
+            }else{
+                tableE=document.getElementById("tableEo");
+                const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
+                const serverKeyList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
+                tableE.replaceChildren();
+                for(let rC in value){
+                    let trE = document.createElement("tr");
+                    if(value[rC]["반출일"] != ""){
+                    value[rC]["반출일"] = new Date(value[rC]["반출일"].getTime()+offset);
+                
+                value[rC]["반출일"]=transDate(value[rC]["반출일"]);
+                if(value[rC]["반출일"] == dateValue){ 
+                    console.log(dateValue);
+                    for(let tdC in tdList){
+                    let tdE = document.createElement("td");
+                    tdE.innerHTML=value[rC][tdList[tdC]];
+                    trE.appendChild(tdE);
+                }
+                trE.addEventListener("click",function(e){
+                    const trRow = e.target.parentNode;
+                    trRow.classList.toggle("select");
+                    
+                    if(trRow.classList.value == "select"){
+                        let selectOb = {};
+                        
+                        for(let tdC in serverKeyList){
+                            try{
+                                selectOb[serverKeyList[tdC]]=trRow.cells[tdC].innerHTML; 
+                            }catch(e){
+                                selectOb[serverKeyList[tdC]]="";
+                            }
+                        }
+                        const monValue = selectOb["date"].substring(5,7)+"월";
+                        selectOb["keypath"]=selectOb["date"]+"_"+selectOb["consigneeName"]+"_"+selectOb["description"]+"_"+selectOb["outwarehouse"]+"_"+selectOb["managementNo"]+"_1건";
+                        selectOb["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+selectOb["date"]+"/"+selectOb["keypath"];
+                        selectOb["workprocess"]="미"
+                        selRow[trRow.rowIndex]=selectOb;
+                    }else{
+                        delete selRow[trRow.rowIndex];
+                    }
+                    const valueLength = Object.keys(selRow);
+                    
+                    // ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"]
+                    if(valueLength.length>1){
+                        let selectOb = {};
+                        selectOb["eaQty"]="";
+                        selectOb["pltQty"] ="";
+                        selectOb["managementNo"] ="";
+                        selectOb["description"] ="";
+                        selectOb["date"]=selRow[valueLength[0]]["date"];
+                        selectOb["consigneeName"]=selRow[valueLength[0]]["consigneeName"];
+                        selectOb["outwarehouse"]=selRow[valueLength[0]]["outwarehouse"];
+                        selectOb["keypath"]=selectOb["date"]+"_"+selectOb["consigneeName"]+"_"+selRow[valueLength[0]]["description"]+"_"+selectOb["outwarehouse"]+"_"+selRow[valueLength[0]]["managementNo"]+"_"+valueLength.length+"건";
+                        selectOb["totalEa"]=selRow[valueLength[0]]["totalEa"];
+                        selectOb["totalQty"]=selRow[valueLength[0]]["totalQty"]+"PLT";
+                        const monValue = selectOb["date"].substring(5,7)+"월";
+                        selectOb["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+selectOb["date"]+"/"+selectOb["keypath"];
+                        selectOb["workprocess"]="미";
+                        for(var i=0;i<valueLength.length;i++){
+                            selectOb["eaQty"] = selectOb["eaQty"]+selRow[valueLength[i]]["eaQty"]+",";
+                            selectOb["pltQty"] = selectOb["pltQty"]+selRow[valueLength[i]]["pltQty"]+",";
+                            selectOb["managementNo"] = selectOb["managementNo"]+selRow[valueLength[i]]["managementNo"]+",";
+                            selectOb["description"] = selectOb["description"]+selRow[valueLength[i]]["description"]+",";
+                        }
+                        console.log("outCargo init")
+                        selRow={};
+                        selRow["i"]=selectOb; 
+                    }
+                    console.log(selRow)
+                    });           
+                
+                tBodyE.appendChild(trE);
+                }
+                
+            }
+        }
+
+        }
             headerE.appendChild(tHrE);
             tableE.appendChild(headerE);
             tableE.appendChild(tBodyE);
-            sTable(dateValue);
+            sTable(dateValue,io);
         };
 
-        function sTable(dateValue){
+        function sTable(dateValue,io){
+            if(io=="i"){
             document.getElementById("tableS").replaceChildren();
             database_f.ref("DeptName/"+deptName+"/InCargo/").get().then((snapshot)=>{
             let snapV = snapshot.val();
@@ -447,24 +562,59 @@
                                     }
                                     tBodyS.appendChild(trS);  
                                 }
-                              
                             }
                         }}};
             };
             headerS.appendChild(tHrS);
             tableS.appendChild(headerS);
             tableS.appendChild(tBodyS);
-        }
-        );
-            
-            
+            }
+            );
+            }else{
+            const dateValue = document.getElementById("datePicker").value;
+            const monValue = dateValue.substring(5,7)+"월";
+            let tableS = document.getElementById("tableSo");
+            tableS.replaceChildren();
+            database_f.ref("DeptName/"+deptName+"/OutCargo/"+monValue+"/"+dateValue).get().then((snapshot)=>{
+            let snapV = snapshot.val();
+            console.log(snapV)
+            let keyList =[];
+            const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
+            let headerS = document.createElement("thead");
+            let tHrS = document.createElement("tr");
+            let tBodyS = document.createElement("tbody");
+
+            for(let hC in tableHeader){
+                let thS = document.createElement("th");
+                thS.innerHTML=tableHeader[hC];
+                thS.addEventListener("click",function(e){
+                    console.log(hC)
+                });
+                tHrS.appendChild(thS);
+            }
+
+            for(let kc in snapV){
+                let trS = document.createElement("tr");
+                for(let tdC in tdList){
+                    let td = document.createElement("td");
+                    td.innerHTML= snapV[kc][tdList[tdC]];
+                    trS.appendChild(td);
+                }
+                tBodyS.appendChild(trS);  
+                       
+                }
+            headerS.appendChild(tHrS);
+            tableS.appendChild(headerS);
+            tableS.appendChild(tBodyS);
+            }
+            );
+            };
         }
         const tabList = document.querySelectorAll(".tab_menu .list li");
         for(var i=0 ;i<tabList.length;i++){
             tabList[i].querySelector(".btn").addEventListener("click", function(e){
                 e.preventDefault();
                 for(var j=0;j<tabList.length;j++){
-                    console.log(tabList[j])
                     tabList[j].classList.remove("is_on");
                 }
                 this.parentNode.classList.add("is_on");
@@ -478,14 +628,15 @@
         };
         function submitBtn(){
             
-            // for (let i in selRow){
-            //     const refPath = selRow[i]["keyValue"];
-            //     database_f.ref(refPath).update(selRow[i]).then(()=>{
-            //         console.log(selRow[i]+ "uploading successful!")
-            //     }).catch((e)=>{
-            //         console.error(e);
-            //     });
-            // }
+            for (let i in selRow){
+                console.log(selRow[i]);
+                const refPath = selRow[i]["keyValue"];
+                database_f.ref(refPath).update(selRow[i]).then(()=>{
+                    console.log(selRow[i]+ "uploading successful!")
+                }).catch((e)=>{
+                    console.error(e);
+                });
+            }
             const messageTitle = '알림 제목';
             const messageBody = '알림 내용입니다.';
             const topic="WareHouseDept2"
@@ -646,7 +797,8 @@
                 }
             });
             function picDown(event){
-            const link = document.createElement("a");                link.href=event.target.src;
+            const link = document.createElement("a");
+                link.href=event.target.src;
                 link.target="_blank";
                 document.body.appendChild(link);
                 link.click();
