@@ -5,157 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FineWms</title>
-    <style>
-        body{
-            margin:0px;
-        }
-        #Main{
-            height:100vh;
-            width:100vw;
-            display:grid;
-            grid-template-columns:3fr 1.6fr;
-        }
-        #File{
-            height:100%;
-            width:100%;
-            display:grid;
-            grid-template-rows:4fr 10fr 2fr 2fr;
-        }
-        #Settings{
-            height:100%;
-            width:100%;
-            display:grid;
-            grid-template-columns:7fr 1fr;
-        }
-        #FileSettings{
-            height:100%;
-            width:100%;
-            display:grid;
-            grid-template-rows:1fr 1fr;
-        }
-        #DateSettings{
-            height:95%;
-            width:90%;
-            display:grid;
-            grid-template-rows:1fr 2fr 2fr;
-            border:0.3px groove black;
-            margin-top:6%;
-            }
-        .TableDiv{
-            height:50vh;
-            border:0.3px groove black;
-            overflow-y:scroll;
-        }
-        #Info,#Update{
-            height:75%;
-            margin:1%;
-            border:0.3px groove black;
-        }
-
-        .FileDiv{
-            height:90%;
-            width:95%;
-            display:grid;
-            grid-template-columns:1fr 5fr 1fr;
-            border:0.3px groove black;
-            margin-left:1%;
-            margin-top:1%;
-        }
-        .fileSearch{
-            display:none;
-        }
-        .table{
-            display:table;
-            height:50vh;
-            width:100%;
-            border-collapse:collapse;
-            /* table-layout:fixed; */
-            /* word-break:normal;
-            word-wrap:normal; */
-            border:1px solid #000;
-            text-align:center;
-        }
-        tr{
-            width:100%;
-            height:3px;
-            border:0.5px solid black;
-        }
-       
-        th{
-            height:5px;
-            /* width:10%; */
-            border: 1px solid white;
-            /* text-align:center; */
-            word-break:normal;
-            font-size:1vh;
-            background:rgb(23, 23, 23);
-            position:sticky;
-            top:0;
-            white-space:nowrap;
-            overflow:hidden;
-            text-overflow:ellipsis;
-        }
-        td{
-            white-space:nowrap;
-            font-size:1vh;
-            overflow:hidden;
-            /* word-break:auto; */
-            height:5px;
-            width:10%;
-            text-overflow:ellipsis;
-        }
-        thead{
-            height:10%;
-        }
-        tbody{
-            height:90%;
-        }
-        .select{
-            background-color:beige;
-            color:black;
-            font-weight:bold;
-        }
-        .date{
-            text-align:center;
-        }
-        .message{
-            display:grid;
-            grid-template-rows:0.5fr 10fr;
-            height:100%;
-        }
-        #Message{
-            display:grid;
-            grid-template-rows:0.5fr 10fr;
-
-        }
-        .msgDiv{
-            border:0.5px solid black;
-            height:100%;
-        }
-        #messageContent{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            grid-gap:3px;
-        }
-        .msgTitle{
-            width:100%;        }
-        .msgTable{
-            width:100%;
-        }
-        .imgTd{
-        width:5vw;
-        height:8vh;
-        }
-       
-        .tab_menu{position:relative;}
-        .tab_menu .list{overflow:hidden;}
-        .tab_menu .list li{float:left;}
-        .tab_menu .list .btn{width:100px;font-size:13px; margin-right:14px;}
-        .tab_menu .list .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%; height:50vh; line-height:100px;left:10px}
-        .tab_menu .list li.is_on .btn{font-weight:bold; color:red;background: gray;width:150px}
-        .tab_menu .list li.is_on .cont{display:block;background:gray;}
-       
-    </style>
+    <link rel="stylesheet" href="main.css" type="text/css">
    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-database-compat.js"></script>
@@ -209,10 +59,9 @@
                                             <th>팔렛트수량</th>
                                             <th>비고</th>
                                         </tr>
-                                        
                                     </thead>
+                                    <tbody id="tbiE"></tbody>
                                 </table>
-                
                             </div>
                         </div>
                     </li>
@@ -235,7 +84,7 @@
                                             <th>비고</th>
                                         </tr>
                                     </thead>
-                                    
+                                    <tbody id="tbiS"></tbody>
                                 </table>
                             </div>
                             </div>
@@ -258,8 +107,8 @@
                                             <th>품명</th>
                                         </tr>
                                     </thead>
+                                    <tbody id="tboE"></tbody>
                                 </table>
-                
                             </div>
                         </div>
                     </li>
@@ -281,6 +130,7 @@
                                             <th>품명</th>
                                         </tr>
                                     </thead>
+                                    <tbody id="tboS"></tbody>
                                 </table>
                             </div>
                             </div>

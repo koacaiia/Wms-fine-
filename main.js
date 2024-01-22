@@ -86,7 +86,7 @@ function eTable(value){
     let tdList=[];
     let tableE;
     let trV = Object.values(value);
-    let tBodyE = document.createElement("tbody");
+    let tBodyE; 
     const dateValue = document.getElementById("datePicker").value;
     // const dateValue = "2024-01-11";
     const offset = (9*60*60*1000);
@@ -94,6 +94,7 @@ function eTable(value){
     
     if(io =="i"){
         const tableE=document.getElementById("tableE");
+        tBodyE = document.getElementById("tbiE");
         tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"];
     for(let rC in value){
         let trE = document.createElement("tr");
@@ -160,6 +161,7 @@ function eTable(value){
     }
     }else{
         const tableE=document.getElementById("tableEo");
+        tBodyE = document.getElementById("tbiS");
         const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
         const serverKeyList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
         for(let rC in value){
@@ -251,7 +253,7 @@ function sTable(dateValue,io){
     let headerS = document.createElement("thead");
     let tableS = document.getElementById("tableS");
     let tHrS = document.createElement("tr");
-    let tBodyS = document.createElement("tbody");
+    let tBodyS = document.getElementById("tboE");
 
     for(let hC in tableHeader){
         let thS = document.createElement("th");
@@ -302,7 +304,7 @@ function sTable(dateValue,io){
     const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
     let headerS = document.createElement("thead");
     let tHrS = document.createElement("tr");
-    let tBodyS = document.createElement("tbody");
+    let tBodyS = document.getElementById("tboS");
 
     for(let hC in tableHeader){
         let thS = document.createElement("th");
