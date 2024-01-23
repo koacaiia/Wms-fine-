@@ -51,6 +51,7 @@ document.getElementById("datePicker").value =transDate(new Date());
 let tableHeader;
 function fileIn(event){
     const target = event.target;
+    console.log("FileIn function event Target Value",target);
     try{
     let file =target.files[0];
     let op={};
@@ -76,7 +77,7 @@ function fileIn(event){
     eTable(rowsValue,io);
     };
     reader.readAsBinaryString(file);
-    }catch(e){s
+    }catch(e){
         alert(e);
         console.log(e);
     }
@@ -346,7 +347,21 @@ function thClick(n){
     console.log(n)
 };
 function dateC(){
-    fileIn();
+    let target;
+    if(io =="i"){
+        console.log("Date Value Changed1")
+        target = document.getElementById("fileIn");
+        target.addEventListener("change",function(e){
+            console.log("Date Value Changed")
+            fileIn(e);
+        });
+        }else if(io =="o"){
+        target = document.getElementById("fileOut");
+    }else{
+        alert("입,출고 파일 지정 확인 후 진행 바랍니다.");
+    }
+    // console.log(target)
+    
 };
 function submitBtn(){
     if( io=="o"){
