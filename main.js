@@ -148,7 +148,8 @@ function eTable(value){
                 const monValue = selectOb["date"].substring(5,7)+"월";
                 const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
                 const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+selectOb["date"]+"/"+keyPath;
-                selectOb["keyValue"]=refValue;
+                selectOb["keyValue"]=keyPath;
+                selectOb["refValue"]=refValue;
                 selRow[trRow.rowIndex]=selectOb;
             }else{
                 delete selRow[trRow.rowIndex];
@@ -204,7 +205,7 @@ function eTable(value){
             
             // ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"]
             if(valueLength.length>1){
-                console.log("valueLength:::"+valueLength.length,"totalEa Value:::"+selRow[valueLength[0]]["totalEa"]);
+                // console.log("valueLength:::"+valueLength.length,"totalEa Value:::"+selRow[valueLength[0]]["totalEa"]);
                 let selectOb = {};
                 selectOb["eaQty"]="";
                 selectOb["pltQty"] ="";
@@ -370,14 +371,13 @@ function submitBtn(){
     
     for (let i in selRow){
         console.log(selRow[i]);
-        const refPath = selRow[i]["keyValue"];
+        const refPath = selRow[i]["refValue"];
         database_f.ref(refPath).update(selRow[i]).then(()=>{
             const seL = Object.keys(selRow);
             console.log(seL.length,seL)
             const seLlast = seL[seL.length-1];
             console.log(seLlast)
             if( i== seLlast){
-                let io;
                 if(io == "i"){
                     alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
                 }else{
