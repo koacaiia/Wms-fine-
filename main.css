@@ -6,7 +6,7 @@ body{
     height:100vh;
     width:100vw;
     display:grid;
-    grid-template-columns:3fr 1.6fr;
+    grid-template-columns:60vw 40vw;
 }
 #File{
     height:100%;
@@ -115,6 +115,7 @@ tbody{
     display:grid;
     grid-template-rows:0.5fr 10fr;
     height:100%;
+    width:20vw;
 }
 #Message{
     display:grid;
@@ -124,6 +125,7 @@ tbody{
 .msgDiv{
     border:0.5px solid black;
     height:100%;
+    width:20vw;
 }
 #messageContent{
     display:grid;
@@ -133,11 +135,26 @@ tbody{
 .msgTitle{
     width:100%;        }
 .msgTable{
-    width:100%;
+    width:20vw;
 }
 .imgTd{
 width:5vw;
 height:8vh;
+}
+.tableMsg{
+    width:20vw;
+}
+.tableTr{
+    width:20vw;
+    overflow:scroll;
+}
+.tableTrB{
+    width:20vw;
+    overflow:scroll;
+}
+.tableMsgDiv{
+    width:20vw;
+    overflow: scroll;
 }
 
 .tab_menu{position:relative;}

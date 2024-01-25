@@ -49,11 +49,18 @@ function transDate(dateT){
 }
 document.getElementById("datePicker").value =transDate(new Date());
 let tableHeader;
-function fileIn(event){
-    const target = event.target;
+function fileIn(event,eTarget){
+    let target;
+    if(event !=""){
+        target = event.target;
+    }else{
+        target = eTarget;
+    }
+    console.log("target Value",event)
     console.log("FileIn function event Target Value",target);
     try{
     let file =target.files[0];
+    console.log(file)
     let op={};
     let sheetName;
     if(target.id =="fileIn"){
@@ -109,8 +116,10 @@ function eTable(value){
             value[rC]["40FT"] ="40Ft";
         }else if(value[rC]["20FT"] ==1){
             value[rC]["40FT"] ="20Ft";
-        }else{
+        }else if(value[rC]["LCL"] !=""){
             value[rC]["40FT"] ="L : "+value[rC]["LCL"]
+        }else{
+            value[rC]["40FT"]="0";
         };
         if(value[rC]["Date"] == dateValue){
             
@@ -140,10 +149,14 @@ function eTable(value){
                     selectOb["container40"]="0"; 
                     selectOb["container20"]="1";
                     selectOb["lclcargo"]="0";
-                }else{
+                }else if(selectOb["spec"].includes("L : ")){
                     selectOb["container40"]="0";
                     selectOb["container20"]="0";
                     selectOb["lclcargo"]="1";
+                }else{
+                    selectOb["container40"]="0";
+                    selectOb["container20"]="0";
+                    selectOb["lclcargo"]="0";
                 }
                 const monValue = selectOb["date"].substring(5,7)+"월";
                 const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
@@ -350,16 +363,13 @@ function thClick(n){
 function dateC(){
     let target;
     if(io =="i"){
-        console.log("Date Value Changed1")
-        target = document.getElementById("fileIn");
-        target.addEventListener("change",function(e){
-            console.log("Date Value Changed")
-            fileIn(e);
-        });
+        target = document.getElementById("fileIn")
+            fileIn("",target);
+       
         }else if(io =="o"){
         target = document.getElementById("fileOut");
     }else{
-        alert("입,출고 파일 지정 확인 후 진행 바랍니다.");
+        alert(document.getElementById("datePicker").value+" 로 날짜 변경 했습니다.");
     }
     // console.log(target)
     
@@ -501,7 +511,9 @@ function msgLoad(){
             const ob = Object.keys(value[v]);
             const keyB = ob.includes("keyValue");
             const tr = document.createElement("tr");
+            tr.classList.toggle("tableTrB");
             const tDiv = document.createElement("div");
+            tDiv.classList.toggle("tableMsgDiv");
             const h6 = document.createElement("h7");
             h6.style.className="msgTitle";
             h6.innerHTML=v;
@@ -509,7 +521,7 @@ function msgLoad(){
             content.innerHTML=value[v]["msg"];
             tDiv.style.border="0.5px solid black";
             tDiv.style.borderRadius="1px";
-            tDiv.style.width="100%";
+            tDiv.style.width="20vw";
             tDiv.appendChild(h6);
             tDiv.appendChild(content);
             tr.appendChild(tDiv);
@@ -524,8 +536,11 @@ function msgLoad(){
             }
             if(keyB){
                 const tableP = document.createElement("table");
+                tableP.classList.add("tableMsg");
                 const tPbody = document.createElement("tbody");
                 const tPtr = document.createElement("tr");
+                tPtr.classList.toggle("tableTr");
+                console.log(tPtr)
                 const refStorage = "images/WareHouseDept2/"+dateValue+inOut+value[v]["keyValue"];
                     storage_f.ref(refStorage).listAll().then((res)=>{
                             res.items.forEach((itemRef)=>{
