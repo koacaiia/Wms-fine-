@@ -375,13 +375,17 @@ function dateC(){
     
 };
 function submitBtn(){
+    let refPath;
     if( io=="o"){
         selRow = initRow;
     }
     
     for (let i in selRow){
-        console.log(selRow[i]);
-        const refPath = selRow[i]["refValue"];
+        if( io=="o"){
+            refPath=selRow[i]["keyValue"];
+        }else{
+            refPath=selRow[i]["refValue"];
+        }
         database_f.ref(refPath).update(selRow[i]).then(()=>{
             const seL = Object.keys(selRow);
             console.log(seL.length,seL)
