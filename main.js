@@ -49,15 +49,13 @@ function transDate(dateT){
 }
 document.getElementById("datePicker").value =transDate(new Date());
 let tableHeader;
-function fileIn(event,eTarget){
-    let target;
-    if(event !=""){
-        target = event.target;
-    }else{
-        target = eTarget;
-    }
-    console.log("target Value",event)
-    console.log("FileIn function event Target Value",target);
+function fileIn(event){
+    const target = event.target;
+    excelConvert(target);
+
+};
+function excelConvert(target){
+    
     try{
     let file =target.files[0];
     console.log(file)
@@ -103,6 +101,7 @@ function eTable(value){
     if(io =="i"){
         const tableE=document.getElementById("tableE");
         tBodyE = document.getElementById("tbiE");
+        tBodyE.replaceChildren();
         tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"];
     for(let rC in value){
         let trE = document.createElement("tr");
@@ -177,6 +176,7 @@ function eTable(value){
     }else{
         const tableE=document.getElementById("tableEo");
         tBodyE = document.getElementById("tbiS");
+        tBodyE.replaceChildren();
         const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
         const serverKeyList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
         for(let rC in value){
@@ -364,10 +364,11 @@ function dateC(){
     let target;
     if(io =="i"){
         target = document.getElementById("fileIn")
-            fileIn("",target);
+            excelConvert(target);
        
         }else if(io =="o"){
         target = document.getElementById("fileOut");
+        excelConvert(target);
     }else{
         alert(document.getElementById("datePicker").value+" 로 날짜 변경 했습니다.");
     }
