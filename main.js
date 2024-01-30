@@ -175,10 +175,11 @@ function eTable(value){
     }
     }else{
         const tableE=document.getElementById("tableEo");
-        tBodyE = document.getElementById("tbiS");
+        tBodyE = document.getElementById("tboE");
         tBodyE.replaceChildren();
+        let count =0;
         const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
-        const serverKeyList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
+        
         for(let rC in value){
             let trE = document.createElement("tr");
             if(value[rC]["반출일"] != ""){
@@ -187,64 +188,56 @@ function eTable(value){
         value[rC]["반출일"]=transDate(value[rC]["반출일"]);
         if(value[rC]["반출일"] == dateValue){ 
             console.log(dateValue);
+            const td1 = document.createElement("td");
+            const release1=document.createElement("div");
+            const ch1 = document.createElement("input");
+            ch1.setAttribute("type","checkbox");
+            ch1.addEventListener("click",function(e){
+                console.log(e.target.parentNode.parentNode.parentNode);
+                const tr = e.target.parentNode.parentNode.parentNode;
+                tr.classList.toggle("select1");
+            });
+            release1.appendChild(ch1);
+            td1.appendChild(release1);
+            trE.appendChild(td1);
+            const td = document.createElement("td");
+            const release = document.createElement("div");
+            const ch = document.createElement("input");
+            ch.setAttribute("type","checkbox");
+            ch.addEventListener("click",function(e){
+                console.log(e.target.parentNode.parentNode.parentNode);
+                const tr = e.target.parentNode.parentNode.parentNode;
+                tr.classList.toggle("select");
+            });
+            release.appendChild(ch);
+            td.appendChild(release);
+            trE.appendChild(td);
+
             for(let tdC in tdList){
             let tdE = document.createElement("td");
             tdE.innerHTML=value[rC][tdList[tdC]];
             trE.appendChild(tdE);
         }
-        trE.addEventListener("click",function(e){
-            const trRow = e.target.parentNode;
-            trRow.classList.toggle("select");
-            
-            if(trRow.classList.value == "select"){
-                let selectOb = {};
-                
-                for(let tdC in serverKeyList){
-                    try{
-                        selectOb[serverKeyList[tdC]]=trRow.cells[tdC].innerHTML; 
-                    }catch(e){
-                        selectOb[serverKeyList[tdC]]="";
-                    }
-                }
-                const monValue = selectOb["date"].substring(5,7)+"월";
-                selectOb["keypath"]=selectOb["date"]+"_"+selectOb["consigneeName"]+"_"+selectOb["description"]+"_"+selectOb["outwarehouse"]+"_"+selectOb["managementNo"]+"_1건";
-                selectOb["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+selectOb["date"]+"/"+selectOb["keypath"];
-                selectOb["workprocess"]="미"
-                selRow[trRow.rowIndex]=selectOb;
-            }else{
-                delete selRow[trRow.rowIndex];
-            }
-            const valueLength = Object.keys(selRow);
-            
-            // ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"]
-            if(valueLength.length>1){
-                // console.log("valueLength:::"+valueLength.length,"totalEa Value:::"+selRow[valueLength[0]]["totalEa"]);
-                let selectOb = {};
-                selectOb["eaQty"]="";
-                selectOb["pltQty"] ="";
-                selectOb["managementNo"] ="";
-                selectOb["description"] ="";
-                selectOb["date"]=selRow[valueLength[0]]["date"];
-                selectOb["consigneeName"]=selRow[valueLength[0]]["consigneeName"];
-                selectOb["outwarehouse"]=selRow[valueLength[0]]["outwarehouse"];
-                selectOb["keypath"]=selectOb["date"]+"_"+selectOb["consigneeName"]+"_"+selRow[valueLength[0]]["description"]+"_"+selectOb["outwarehouse"]+"_"+selRow[valueLength[0]]["managementNo"]+"_"+valueLength.length+"건";
-                selectOb["totalEa"]=selRow[valueLength[0]]["totalEa"];
-                selectOb["totalQty"]=selRow[valueLength[0]]["totalQty"]+"PLT";
-                const monValue = selectOb["date"].substring(5,7)+"월";
-                selectOb["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+selectOb["date"]+"/"+selectOb["keypath"];
-                selectOb["workprocess"]="미";
-                for(var i=0;i<valueLength.length;i++){
-                    selectOb["eaQty"] = selectOb["eaQty"]+selRow[valueLength[i]]["eaQty"]+",";
-                    selectOb["pltQty"] = selectOb["pltQty"]+selRow[valueLength[i]]["pltQty"]+",";
-                    selectOb["managementNo"] = selectOb["managementNo"]+selRow[valueLength[i]]["managementNo"]+",";
-                    selectOb["description"] = selectOb["description"]+selRow[valueLength[i]]["description"]+",";
-                }
-                console.log("outCargo init")
-                
-                initRow["i"]=selectOb; 
-            }
-            console.log(selRow)
-            });           
+        // trE.addEventListener("click",function(e){
+        //     count +=1;
+        //     const trRow = e.target.parentNode;
+        //     trRow.classList.toggle("select");
+        //     if(trRow.classList.value == "select"){
+        //         let selectOb = {};
+        //         for(let tdC in serverKeyList){
+        //             try{
+        //                 selectOb[serverKeyList[tdC]]=trRow.cells[tdC].innerHTML; 
+        //             }catch(e){
+        //                 selectOb[serverKeyList[tdC]]="";
+        //             }
+        //         }
+        //         
+        //         initRow[trRow.rowIndex]=selectOb;
+        //     }else{
+        //         delete initRow[trRow.rowIndex];
+        //     }
+        //     console.log(initRow)
+        //     });           
         
         tBodyE.appendChild(trE);
         }
@@ -378,8 +371,51 @@ function dateC(){
 function submitBtn(){
     let refPath;
     if( io=="o"){
-        selRow = initRow;
-    }
+        const tr = document.querySelectorAll(".select");
+        const tr1 = document.querySelectorAll(".select1")
+        console.log(tr);
+        const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
+        const serverKeyList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
+        for(let i=0 ; i<tr1.length;i++){
+            let ar={};
+            for(let j=0 ;j<serverKeyList.length;j++){
+                ar[serverKeyList[j]]=tr1[i].cells[(j+2)].innerHTML;
+            }
+            const monValue = ar["date"].substring(5,7)+"월";
+            ar["keypath"]=ar["date"]+"_"+ar["consigneeName"]+"_"+ar["description"]+"_"+ar["outwarehouse"]+"_"+ar["managementNo"]+"_1건";
+            ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
+            ar["workprocess"]="미"
+            ar["totalQty"]=ar["totalQty"]+"PLT";
+            selRow[i]=ar;
+        }
+        console.log(selRow);
+        // break;
+        // if(selRow.length>1){
+        //     const valueLength = Object.keys(initRow);
+        //     let selectOb = {};
+        //     selectOb["eaQty"]="";
+        //     selectOb["pltQty"] ="";
+        //     selectOb["managementNo"] ="";
+        //     selectOb["description"] ="";
+        //     selectOb["date"]=initRow[valueLength[0]]["date"];
+        //     selectOb["consigneeName"]=initRow[valueLength[0]]["consigneeName"];
+        //     selectOb["outwarehouse"]=initRow[valueLength[0]]["outwarehouse"];
+        //     selectOb["keypath"]=selectOb["date"]+"_"+selectOb["consigneeName"]+"_"+initRow[valueLength[0]]["description"]+"_"+selectOb["outwarehouse"]+"_"+initRow[valueLength[0]]["managementNo"]+"_"+valueLength.length+"건";
+        //     selectOb["totalEa"]=initRow[valueLength[0]]["totalEa"];
+        //     selectOb["totalQty"]=initRow[valueLength[0]]["totalQty"];
+        //     const monValue = selectOb["date"].substring(5,7)+"월";
+        //     selectOb["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+selectOb["date"]+"/"+selectOb["keypath"];
+        //     selectOb["workprocess"]="미";
+        //     for(var i=0;i<valueLength.length;i++){
+        //         selectOb["eaQty"] = selectOb["eaQty"]+initRow[valueLength[i]]["eaQty"]+",";
+        //         selectOb["pltQty"] = selectOb["pltQty"]+initRow[valueLength[i]]["pltQty"]+",";
+        //         selectOb["managementNo"] = selectOb["managementNo"]+initRow[valueLength[i]]["managementNo"]+",";
+        //         selectOb["description"] = selectOb["description"]+initRow[valueLength[i]]["description"]+",";
+        //     }
+        //     selRow["i"]=selectOb;
+
+        }
+   
     
     for (let i in selRow){
         if( io=="o"){
@@ -389,9 +425,7 @@ function submitBtn(){
         }
         database_f.ref(refPath).update(selRow[i]).then(()=>{
             const seL = Object.keys(selRow);
-            console.log(seL.length,seL)
             const seLlast = seL[seL.length-1];
-            console.log(seLlast)
             if( i== seLlast){
                 if(io == "i"){
                     alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
@@ -409,6 +443,7 @@ function submitBtn(){
             alert(e);
             console.error(e);
         });
+    }
     }
     const messageTitle = '알림 제목';
     const messageBody = '알림 내용입니다.';
@@ -498,7 +533,7 @@ function submitBtn(){
     });
     }
     sendFCMMessage(topic, messageTitle, messageBody,token);
-};
+
 msgLoad();
 function msgLoad(){
     const dateValue = document.getElementById("datePicker").value;
@@ -575,6 +610,7 @@ function msgLoad(){
         link.click();
         document.body.removeChild(link);
 
-};
+    };
+    
 };
        

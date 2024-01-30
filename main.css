@@ -108,6 +108,11 @@ tbody{
     color:black;
     font-weight:bold;
 }
+.select1{
+    background-color:rgb(167, 17, 82);
+    color:black;
+    font-weight:bold;
+}
 .date{
     text-align:center;
 }
