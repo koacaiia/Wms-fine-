@@ -51,6 +51,8 @@ document.getElementById("datePicker").value =transDate(new Date());
 let tableHeader;
 function fileIn(event){
     const target = event.target;
+    console.log(target.value)
+    // excelConvert("C:\Users\koaca\OneDrive\문서\화인통상2물류 incargo(2024).xlsm");
     excelConvert(target);
 
 };
@@ -61,22 +63,28 @@ function excelConvert(target){
     console.log(file)
     let op={};
     let sheetName;
-    if(target.id =="fileIn"){
-        op={defval:"",range:"A3:X3000",blankrows:false,raw:true};
-        sheetName ="Container"
-        io="i"
-    }else{
-        op={defval:"",range:"B3:K10000",blankrows:false,raw:true};
-        sheetName ="출고취합";
-        io="o";
-    };
+    let fReader = new FileReader();
+    fReader.readAsDataURL(file);
+    fReader.onloadend=function(event){
+        if(target.id =="fileIn"){
+            console.log(event)
+            document.getElementById("fileInName").value=target.value;
+            op={defval:"",range:"A3:X3000",blankrows:false,raw:true};
+            sheetName ="Container"
+            io="i"
+        }else{
+            op={defval:"",range:"B3:K10000",blankrows:false,raw:true};
+            sheetName ="출고취합";
+            io="o";
+        };
+    }
+    
     let infoValue= new Array();
     let reader = new FileReader();
     let workbook = null;
     reader.onload = function(event){
         const data = event.target.result;
         workbook = XLSX.read(data,{type:"binary",cellDates: true,dateNF:"yyyy-mm-dd"});
-        console.log
     
     let rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],op);
     eTable(rowsValue,io);
@@ -103,7 +111,7 @@ function eTable(value){
         tBodyE = document.getElementById("tbiE");
         tBodyE.replaceChildren();
         tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"];
-    for(let rC in value){
+        for(let rC in value){
         let trE = document.createElement("tr");
         if(value[rC]["Date"] != ""){
             value[rC]["Date"] = new Date(value[rC]["Date"].getTime()+offset);
@@ -121,7 +129,16 @@ function eTable(value){
             value[rC]["40FT"]="0";
         };
         if(value[rC]["Date"] == dateValue){
-            
+            const td= document.createElement("td");
+            const ch = document.createElement("input");
+            ch.setAttribute("type","checkbox");
+            ch.addEventListener("click",function(e){
+                const tr = e.target.parentNode.parentNode;
+                tr.classList.toggle("select");
+            });
+            td.appendChild(ch);
+            trE.appendChild(td);
+            tBodyE.appendChild(trE);
             for(let tdC in tdList){
             let tdE = document.createElement("td");
             tdE.innerHTML=value[rC][tdList[tdC]];
@@ -218,27 +235,6 @@ function eTable(value){
             tdE.innerHTML=value[rC][tdList[tdC]];
             trE.appendChild(tdE);
         }
-        // trE.addEventListener("click",function(e){
-        //     count +=1;
-        //     const trRow = e.target.parentNode;
-        //     trRow.classList.toggle("select");
-        //     if(trRow.classList.value == "select"){
-        //         let selectOb = {};
-        //         for(let tdC in serverKeyList){
-        //             try{
-        //                 selectOb[serverKeyList[tdC]]=trRow.cells[tdC].innerHTML; 
-        //             }catch(e){
-        //                 selectOb[serverKeyList[tdC]]="";
-        //             }
-        //         }
-        //         
-        //         initRow[trRow.rowIndex]=selectOb;
-        //     }else{
-        //         delete initRow[trRow.rowIndex];
-        //     }
-        //     console.log(initRow)
-        //     });           
-        
         tBodyE.appendChild(trE);
         }
         
@@ -373,7 +369,6 @@ function submitBtn(){
     if( io=="o"){
         const tr = document.querySelectorAll(".select");
         const tr1 = document.querySelectorAll(".select1")
-        console.log(tr);
         const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
         const serverKeyList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
         for(let i=0 ; i<tr1.length;i++){
@@ -386,38 +381,50 @@ function submitBtn(){
             ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
             ar["workprocess"]="미"
             ar["totalQty"]=ar["totalQty"]+"PLT";
-            selRow[i]=ar;
-        }
-        console.log(selRow);
-        // break;
-        // if(selRow.length>1){
-        //     const valueLength = Object.keys(initRow);
-        //     let selectOb = {};
-        //     selectOb["eaQty"]="";
-        //     selectOb["pltQty"] ="";
-        //     selectOb["managementNo"] ="";
-        //     selectOb["description"] ="";
-        //     selectOb["date"]=initRow[valueLength[0]]["date"];
-        //     selectOb["consigneeName"]=initRow[valueLength[0]]["consigneeName"];
-        //     selectOb["outwarehouse"]=initRow[valueLength[0]]["outwarehouse"];
-        //     selectOb["keypath"]=selectOb["date"]+"_"+selectOb["consigneeName"]+"_"+initRow[valueLength[0]]["description"]+"_"+selectOb["outwarehouse"]+"_"+initRow[valueLength[0]]["managementNo"]+"_"+valueLength.length+"건";
-        //     selectOb["totalEa"]=initRow[valueLength[0]]["totalEa"];
-        //     selectOb["totalQty"]=initRow[valueLength[0]]["totalQty"];
-        //     const monValue = selectOb["date"].substring(5,7)+"월";
-        //     selectOb["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+selectOb["date"]+"/"+selectOb["keypath"];
-        //     selectOb["workprocess"]="미";
-        //     for(var i=0;i<valueLength.length;i++){
-        //         selectOb["eaQty"] = selectOb["eaQty"]+initRow[valueLength[i]]["eaQty"]+",";
-        //         selectOb["pltQty"] = selectOb["pltQty"]+initRow[valueLength[i]]["pltQty"]+",";
-        //         selectOb["managementNo"] = selectOb["managementNo"]+initRow[valueLength[i]]["managementNo"]+",";
-        //         selectOb["description"] = selectOb["description"]+initRow[valueLength[i]]["description"]+",";
-        //     }
-        //     selRow["i"]=selectOb;
-
-        }
-   
-    
+            selRow[i]=ar;}
+        }else{
+            const trL = document.querySelectorAll(".select");
+            
+            for(let trC =1;trC<trL.length;trC++){
+                console.log(trL[trC])
+                let selectOb = {};
+                for(let tdC=0;tdC<key_f.length;tdC++){
+                    const c = tdC+1;
+                    try{
+                        console.log(trL[trC],c);
+                        selectOb[key_f[tdC]]=trL[trC].cells[c].innerHTML; 
+                        console.log(trL[trC].cells[c].innerHTML)
+                    }catch(e){
+                        selectOb[key_f[tdC]]="";
+                    }
+                }
+                if(selectOb["spec"] =="40Ft"){
+                    selectOb["container40"]="1";
+                    selectOb["container20"]="0";
+                    selectOb["lclcargo"]="0";
+                }else if(selectOb["spec"] =="20Ft"){
+                    selectOb["container40"]="0"; 
+                    selectOb["container20"]="1";
+                    selectOb["lclcargo"]="0";
+                }else if(selectOb["spec"].includes("L : ")){
+                    selectOb["container40"]="0";
+                    selectOb["container20"]="0";
+                    selectOb["lclcargo"]="1";
+                }else{
+                    selectOb["container40"]="0";
+                    selectOb["container20"]="0";
+                    selectOb["lclcargo"]="0";
+                }
+                const monValue = selectOb["date"].substring(5,7)+"월";
+                const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
+                const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+selectOb["date"]+"/"+keyPath;
+                selectOb["keyValue"]=keyPath;
+                selectOb["refValue"]=refValue;
+                selRow[trC]=selectOb;
+                }
+            }
     for (let i in selRow){
+        console.log(selRow[i])
         if( io=="o"){
             refPath=selRow[i]["keyValue"];
         }else{
@@ -430,11 +437,8 @@ function submitBtn(){
                 if(io == "i"){
                     alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
                 }else{
-                    const v = selRow[i];
-                    const consign = v["consigneeName"];
-                    const out = v["outwarehouse"];
-                    const total = v["totalQty"];
-                    alert(consign+"_"+out+"_"+"총 "+total+" 출고 등록 진행 되었습니다.")
+                    
+                    alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
                 }
                 console.log(selRow[i]+ "uploading successful!","I,O Value:::"+io)
             }
@@ -601,7 +605,8 @@ function msgLoad(){
                 tDiv.appendChild(tableP);
             }
         }
-    });
+    });}
+
     function picDown(event){
     const link = document.createElement("a");
         link.href=event.target.src;
@@ -611,6 +616,16 @@ function msgLoad(){
         document.body.removeChild(link);
 
     };
+    function allS(event){
+        const trT = event;
+        console.log(trT);
+        const checkboxes 
+            = document.querySelectorAll('input[type="checkbox"]');
+        
+        checkboxes.forEach((checkbox) => {
+            checkbox.checked = event.checked
+            checkbox.parentNode.parentNode.classList.toggle("select");
+        })
+    };
     
-};
        
