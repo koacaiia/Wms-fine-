@@ -380,8 +380,9 @@ function submitBtn(){
             for(let j=0 ;j<serverKeyList.length;j++){
                 ar[serverKeyList[j]]=tr1[i].cells[(j+3)].innerHTML;
             }
+            const tdKey = tr1[i].cells[0].innerHTML;
+            ar["keypath"]=tdKey;
             const monValue = ar["date"].substring(5,7)+"월";
-            ar["keypath"]=ar["date"]+"_"+ar["consigneeName"]+"_"+ar["description"]+"_"+ar["outwarehouse"]+"_"+ar["managementNo"]+"_1건";
             ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
             ar["workprocess"]="미";
             ar["totalQty"]=ar["totalQty"]+"PLT";
@@ -397,9 +398,12 @@ function submitBtn(){
             ar["keyPath"]=tdKey;
             ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
             ar["workprocess"]="미";
+            console.log(ar["totalQty"])
             if(ar["totalQty"]!=""){
+                console.log(ar["totalQty"])
                 ar["totalQty"]=ar["totalQty"]+"PLT"
             }else{
+                ar["totalQty"]=selRow[tdKey]["totalQty"];
                 ar["description"]=selRow[tdKey]["description"]+","+ar["description"];
                 ar["managementNo"]=selRow[tdKey]["managementNo"]+","+ar["managementNo"];
                 ar["eaQty"]=selRow[tdKey]["eaQty"]+","+ar["eaQty"];
