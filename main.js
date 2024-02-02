@@ -67,13 +67,14 @@ function excelConvert(target){
     fReader.readAsDataURL(file);
     fReader.onloadend=function(event){
         if(target.id =="fileIn"){
-            console.log(event)
             document.getElementById("fileInName").value=target.value;
             op={defval:"",range:"A3:X3000",blankrows:false,raw:true};
             sheetName ="Container"
             io="i"
         }else{
-            op={defval:"",range:"B3:K10000",blankrows:false,raw:true};
+            console.log("target Out")
+            document.getElementById("fileOutName").value=target.value;
+            op={defval:"",range:"A3:K10000",blankrows:false,raw:true};
             sheetName ="출고취합";
             io="o";
         };
@@ -198,13 +199,16 @@ function eTable(value){
         const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
         
         for(let rC in value){
-            let trE = document.createElement("tr");
+           
             if(value[rC]["반출일"] != ""){
             value[rC]["반출일"] = new Date(value[rC]["반출일"].getTime()+offset);
-        
-        value[rC]["반출일"]=transDate(value[rC]["반출일"]);
-        if(value[rC]["반출일"] == dateValue){ 
-            console.log(dateValue);
+            value[rC]["반출일"]=transDate(value[rC]["반출일"]);
+        if(value[rC]["반출일"] == dateValue){
+            let trE = document.createElement("tr");
+            let tdH = document.createElement("td");
+            tdH.style.display ="none";
+            tdH.innerHTML=value[rC]["__EMPTY"];
+            trE.appendChild(tdH); 
             const td1 = document.createElement("td");
             const release1=document.createElement("div");
             const ch1 = document.createElement("input");
@@ -374,17 +378,40 @@ function submitBtn(){
         for(let i=0 ; i<tr1.length;i++){
             let ar={};
             for(let j=0 ;j<serverKeyList.length;j++){
-                ar[serverKeyList[j]]=tr1[i].cells[(j+2)].innerHTML;
+                ar[serverKeyList[j]]=tr1[i].cells[(j+3)].innerHTML;
             }
             const monValue = ar["date"].substring(5,7)+"월";
             ar["keypath"]=ar["date"]+"_"+ar["consigneeName"]+"_"+ar["description"]+"_"+ar["outwarehouse"]+"_"+ar["managementNo"]+"_1건";
             ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
-            ar["workprocess"]="미"
+            ar["workprocess"]="미";
             ar["totalQty"]=ar["totalQty"]+"PLT";
             selRow[i]=ar;}
+        for(let i=0; i<tr.length;i++){
+            let ar={};
+            const tdKey = tr[i].cells[0].innerHTML;
+            ar["keypath"]=tdKey;
+            for(let j=0 ;j<serverKeyList.length;j++){
+                ar[serverKeyList[j]]=tr[i].cells[(j+3)].innerHTML;
+            }
+            const monValue = ar["date"].substring(5,7)+"월";
+            ar["keyPath"]=tdKey;
+            ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
+            ar["workprocess"]="미";
+            if(ar["totalQty"]!=""){
+                ar["totalQty"]=ar["totalQty"]+"PLT"
+            }else{
+                ar["description"]=selRow[tdKey]["description"]+","+ar["description"];
+                ar["managementNo"]=selRow[tdKey]["managementNo"]+","+ar["managementNo"];
+                ar["eaQty"]=selRow[tdKey]["eaQty"]+","+ar["eaQty"];
+                ar["pltQty"]=selRow[tdKey]["pltQty"]+","+ar["pltQty"];
+            }
+           
+            selRow[tdKey]=ar;
+            
+        }
+        console.log(selRow);    
         }else{
             const trL = document.querySelectorAll(".select");
-            
             for(let trC =1;trC<trL.length;trC++){
                 console.log(trL[trC])
                 let selectOb = {};
@@ -430,23 +457,23 @@ function submitBtn(){
         }else{
             refPath=selRow[i]["refValue"];
         }
-        database_f.ref(refPath).update(selRow[i]).then(()=>{
-            const seL = Object.keys(selRow);
-            const seLlast = seL[seL.length-1];
-            if( i== seLlast){
-                if(io == "i"){
-                    alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
-                }else{
+        // database_f.ref(refPath).update(selRow[i]).then(()=>{
+        //     const seL = Object.keys(selRow);
+        //     const seLlast = seL[seL.length-1];
+        //     if( i== seLlast){
+        //         if(io == "i"){
+        //             alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
+        //         }else{
                     
-                    alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
-                }
-                console.log(selRow[i]+ "uploading successful!","I,O Value:::"+io)
-            }
+        //             alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
+        //         }
+        //         console.log(selRow[i]+ "uploading successful!","I,O Value:::"+io)
+        //     }
             
-        }).catch((e)=>{
-            alert(e);
-            console.error(e);
-        });
+        // }).catch((e)=>{
+        //     alert(e);
+        //     console.error(e);
+        // });
     }
     }
     const messageTitle = '알림 제목';
