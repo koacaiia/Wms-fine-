@@ -457,23 +457,23 @@ function submitBtn(){
         }else{
             refPath=selRow[i]["refValue"];
         }
-        // database_f.ref(refPath).update(selRow[i]).then(()=>{
-        //     const seL = Object.keys(selRow);
-        //     const seLlast = seL[seL.length-1];
-        //     if( i== seLlast){
-        //         if(io == "i"){
-        //             alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
-        //         }else{
+        database_f.ref(refPath).update(selRow[i]).then(()=>{
+            const seL = Object.keys(selRow);
+            const seLlast = seL[seL.length-1];
+            if( i== seLlast){
+                if(io == "i"){
+                    alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
+                }else{
                     
-        //             alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
-        //         }
-        //         console.log(selRow[i]+ "uploading successful!","I,O Value:::"+io)
-        //     }
+                    alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
+                }
+                console.log(selRow[i]+ "uploading successful!","I,O Value:::"+io)
+            }
             
-        // }).catch((e)=>{
-        //     alert(e);
-        //     console.error(e);
-        // });
+        }).catch((e)=>{
+            alert(e);
+            console.error(e);
+        });
     }
     }
     const messageTitle = '알림 제목';
