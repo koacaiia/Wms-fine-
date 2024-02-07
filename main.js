@@ -104,8 +104,8 @@ function eTable(value){
     let tableE;
     let trV = Object.values(value);
     let tBodyE; 
-    // const dateValue = document.getElementById("datePicker").value;
-    const dateValue = "2024-01-30";
+    const dateValue = document.getElementById("datePicker").value;
+    // const dateValue = "2024-01-30";
     const offset = (9*60*60*1000);
     
     
@@ -216,7 +216,6 @@ function eTable(value){
             const ch1 = document.createElement("input");
             ch1.setAttribute("type","checkbox");
             ch1.addEventListener("click",function(e){
-                console.log(e.target.parentNode.parentNode.parentNode);
                 const tr = e.target.parentNode.parentNode.parentNode;
                 tr.classList.toggle("select1");
             });
@@ -675,6 +674,7 @@ function msgLoad(){
         console.log(ch)
         for(let i=0; i<ch.length;i++){
             ch[i].classList.remove("select");
+            ch[i].classList.remove("select1");
             if(ch[i].checked){
                 ch[i].parentNode.parentNode.classList.toggle("select");
                 ch[i].checked = false;
