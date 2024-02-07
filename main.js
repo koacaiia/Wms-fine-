@@ -82,6 +82,7 @@ function excelConvert(target){
     
     let infoValue= new Array();
     let reader = new FileReader();
+    console.log(reader);
     let workbook = null;
     reader.onload = function(event){
         const data = event.target.result;
@@ -98,12 +99,13 @@ function excelConvert(target){
     
 }
 function eTable(value){
+    console.log(value);
     let tdList=[];
     let tableE;
     let trV = Object.values(value);
     let tBodyE; 
-    const dateValue = document.getElementById("datePicker").value;
-    // const dateValue = "2024-01-11";
+    // const dateValue = document.getElementById("datePicker").value;
+    const dateValue = "2024-01-30";
     const offset = (9*60*60*1000);
     
     
@@ -146,46 +148,46 @@ function eTable(value){
             trE.appendChild(tdE);
             
         }
-        trE.addEventListener("click",function(e){
-            const trRow = e.target.parentNode;
-            trRow.classList.toggle("select");
-            if(trRow.classList.value == "select"){
-                let selectOb = {};
-                for(let tdC in key_f){
-                    try{
-                        selectOb[key_f[tdC]]=trRow.cells[tdC].innerHTML; 
-                    }catch(e){
-                        selectOb[key_f[tdC]]="";
-                    }
-                }
-                if(selectOb["spec"] =="40Ft"){
-                    selectOb["container40"]="1";
-                    selectOb["container20"]="0";
-                    selectOb["lclcargo"]="0";
-                }else if(selectOb["spec"] =="20Ft"){
-                    selectOb["container40"]="0"; 
-                    selectOb["container20"]="1";
-                    selectOb["lclcargo"]="0";
-                }else if(selectOb["spec"].includes("L : ")){
-                    selectOb["container40"]="0";
-                    selectOb["container20"]="0";
-                    selectOb["lclcargo"]="1";
-                }else{
-                    selectOb["container40"]="0";
-                    selectOb["container20"]="0";
-                    selectOb["lclcargo"]="0";
-                }
-                const monValue = selectOb["date"].substring(5,7)+"월";
-                const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
-                const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+selectOb["date"]+"/"+keyPath;
-                selectOb["keyValue"]=keyPath;
-                selectOb["refValue"]=refValue;
-                selRow[trRow.rowIndex]=selectOb;
-            }else{
-                delete selRow[trRow.rowIndex];
-            }
+        // trE.addEventListener("click",function(e){
+        //     const trRow = e.target.parentNode;
+        //     trRow.classList.toggle("select");
+        //     if(trRow.classList.value == "select"){
+        //         let selectOb = {};
+        //         for(let tdC in key_f){
+        //             try{
+        //                 selectOb[key_f[tdC]]=trRow.cells[tdC].innerHTML; 
+        //             }catch(e){
+        //                 selectOb[key_f[tdC]]="";
+        //             }
+        //         }
+        //         if(selectOb["spec"] =="40Ft"){
+        //             selectOb["container40"]="1";
+        //             selectOb["container20"]="0";
+        //             selectOb["lclcargo"]="0";
+        //         }else if(selectOb["spec"] =="20Ft"){
+        //             selectOb["container40"]="0"; 
+        //             selectOb["container20"]="1";
+        //             selectOb["lclcargo"]="0";
+        //         }else if(selectOb["spec"].includes("L : ")){
+        //             selectOb["container40"]="0";
+        //             selectOb["container20"]="0";
+        //             selectOb["lclcargo"]="1";
+        //         }else{
+        //             selectOb["container40"]="0";
+        //             selectOb["container20"]="0";
+        //             selectOb["lclcargo"]="0";
+        //         }
+        //         const monValue = selectOb["date"].substring(5,7)+"월";
+        //         const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
+        //         const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+selectOb["date"]+"/"+keyPath;
+        //         selectOb["keyValue"]=keyPath;
+        //         selectOb["refValue"]=refValue;
+        //         selRow[trRow.rowIndex]=selectOb;
+        //     }else{
+        //         delete selRow[trRow.rowIndex];
+        //     }
                 
-            });           
+        //     });           
         tBodyE.appendChild(trE);
         }
        
@@ -395,7 +397,6 @@ function submitBtn(){
                 ar[serverKeyList[j]]=tr[i].cells[(j+3)].innerHTML;
             }
             const monValue = ar["date"].substring(5,7)+"월";
-            ar["keyPath"]=tdKey;
             ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
             ar["workprocess"]="미";
             console.log(ar["totalQty"])
@@ -469,7 +470,12 @@ function submitBtn(){
                     alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
                 }else{
                     
-                    alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
+                    // alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
+                    const op = "width=500,height=500,top=100,left=200,location=no";
+                    const name = "출고내역 확인";
+                    window.open(url,name,option);
+
+                    
                 }
                 console.log(selRow[i]+ "uploading successful!","I,O Value:::"+io)
             }
@@ -593,7 +599,14 @@ function msgLoad(){
             h6.style.className="msgTitle";
             h6.innerHTML=v;
             const content = document.createElement("h8");
-            content.innerHTML=value[v]["msg"];
+            content.classList.add("msgContent");
+            let msgContent;
+            if(value[v]["inOutCargo"]!="InCargo"){
+                msgContent = value[v]["keyValue"].substring(value[v]["keyValue"].indexOf("_"));
+            } else{
+                msgContent= value[v]["msg"];}
+          
+            content.innerHTML=msgContent;
             tDiv.style.border="0.5px solid black";
             tDiv.style.borderRadius="1px";
             tDiv.style.width="20vw";
@@ -615,7 +628,6 @@ function msgLoad(){
                 const tPbody = document.createElement("tbody");
                 const tPtr = document.createElement("tr");
                 tPtr.classList.toggle("tableTr");
-                console.log(tPtr)
                 const refStorage = "images/WareHouseDept2/"+dateValue+inOut+value[v]["keyValue"];
                     storage_f.ref(refStorage).listAll().then((res)=>{
                             res.items.forEach((itemRef)=>{
@@ -658,5 +670,16 @@ function msgLoad(){
             checkbox.parentNode.parentNode.classList.toggle("select");
         })
     };
+    function resetBtn(){
+        const ch = document.querySelectorAll("input[type='checkbox']");
+        console.log(ch)
+        for(let i=0; i<ch.length;i++){
+            ch[i].classList.remove("select");
+            if(ch[i].checked){
+                ch[i].parentNode.parentNode.classList.toggle("select");
+                ch[i].checked = false;
+            }
+        }
+    }
     
        

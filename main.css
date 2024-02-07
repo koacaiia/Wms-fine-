@@ -9,13 +9,13 @@ body{
     grid-template-columns:60vw 40vw;
 }
 #File{
-    height:100%;
+    height:100vh;
     width:100%;
     display:grid;
-    grid-template-rows:4fr 10fr 2fr 2fr;
+    grid-template-rows:20vh 70vh 10vh;
 }
 #Settings{
-    height:100%;
+    height:20vh;
     width:100%;
     display:grid;
     grid-template-columns:7fr 1fr;
@@ -34,11 +34,12 @@ body{
     border:0.3px groove black;
     margin-top:6%;
     }
-.TableDiv{
+.TableDiv {
     height:50vh;
     border:0.3px groove black;
     overflow-y:scroll;
 }
+
 #Info,#Update{
     height:75%;
     margin:1%;
@@ -59,27 +60,26 @@ body{
 }
 .table{
     display:table;
-    height:50vh;
+    height:100%;
     width:100%;
     border-collapse:collapse;
-    /* table-layout:fixed; */
-    /* word-break:normal;
-    word-wrap:normal; */
     border:1px solid #000;
     text-align:center;
 }
 tr{
     width:100%;
-    height:3px;
+    height:3vh;
     border:0.5px solid black;
+    table-layout:fixed;
 }
 
 th{
-    height:5px;
+    /* height:5px; */
     /* width:10%; */
     border: 1px solid white;
     /* text-align:center; */
     word-break:normal;
+    table-layout:fixed;
     font-size:1vh;
     background:rgb(23, 23, 23);
     position:sticky;
@@ -92,13 +92,13 @@ td{
     white-space:nowrap;
     font-size:1vh;
     overflow:hidden;
-    /* word-break:auto; */
     height:5px;
     width:10%;
     text-overflow:ellipsis;
+    table-layout:fixed;
 }
 thead{
-    height:10%;
+    height:5vh;
 }
 tbody{
     height:90%;
@@ -141,7 +141,8 @@ tbody{
     height:90vh;
 }
 .msgTitle{
-    width:100%;        }
+    width:100%;
+}
 .msgTable{
     width:20vw;
 }
@@ -162,9 +163,13 @@ height:8vh;
 }
 .tableMsgDiv{
     width:20vw;
-    overflow: scroll;
+    overflow: hidden;
 }
-
+/* 내용 간력하게*/
+.magContent{
+    width:20vw;
+    overflow:scroll;
+}
 .tab_menu{position:relative;}
 .tab_menu .list{overflow:hidden;}
 .tab_menu .list li{float:left;}
