@@ -51,7 +51,6 @@ document.getElementById("datePicker").value =transDate(new Date());
 let tableHeader;
 function fileIn(event){
     const target = event.target;
-    console.log(target.value)
     // excelConvert("C:\Users\koaca\OneDrive\문서\화인통상2물류 incargo(2024).xlsm");
     excelConvert(target);
 
@@ -89,7 +88,7 @@ function excelConvert(target){
         workbook = XLSX.read(data,{type:"binary",cellDates: true,dateNF:"yyyy-mm-dd"});
     
     let rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],op);
-    eTable(rowsValue,io);
+    eTable(rowsValue);
     };
     reader.readAsBinaryString(file);
     }catch(e){
@@ -99,7 +98,6 @@ function excelConvert(target){
     
 }
 function eTable(value){
-    console.log(value);
     let tdList=[];
     let tableE;
     let trV = Object.values(value);
@@ -148,46 +146,7 @@ function eTable(value){
             trE.appendChild(tdE);
             
         }
-        // trE.addEventListener("click",function(e){
-        //     const trRow = e.target.parentNode;
-        //     trRow.classList.toggle("select");
-        //     if(trRow.classList.value == "select"){
-        //         let selectOb = {};
-        //         for(let tdC in key_f){
-        //             try{
-        //                 selectOb[key_f[tdC]]=trRow.cells[tdC].innerHTML; 
-        //             }catch(e){
-        //                 selectOb[key_f[tdC]]="";
-        //             }
-        //         }
-        //         if(selectOb["spec"] =="40Ft"){
-        //             selectOb["container40"]="1";
-        //             selectOb["container20"]="0";
-        //             selectOb["lclcargo"]="0";
-        //         }else if(selectOb["spec"] =="20Ft"){
-        //             selectOb["container40"]="0"; 
-        //             selectOb["container20"]="1";
-        //             selectOb["lclcargo"]="0";
-        //         }else if(selectOb["spec"].includes("L : ")){
-        //             selectOb["container40"]="0";
-        //             selectOb["container20"]="0";
-        //             selectOb["lclcargo"]="1";
-        //         }else{
-        //             selectOb["container40"]="0";
-        //             selectOb["container20"]="0";
-        //             selectOb["lclcargo"]="0";
-        //         }
-        //         const monValue = selectOb["date"].substring(5,7)+"월";
-        //         const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
-        //         const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+selectOb["date"]+"/"+keyPath;
-        //         selectOb["keyValue"]=keyPath;
-        //         selectOb["refValue"]=refValue;
-        //         selRow[trRow.rowIndex]=selectOb;
-        //     }else{
-        //         delete selRow[trRow.rowIndex];
-        //     }
-                
-        //     });           
+       
         tBodyE.appendChild(trE);
         }
        
@@ -227,9 +186,10 @@ function eTable(value){
             const ch = document.createElement("input");
             ch.setAttribute("type","checkbox");
             ch.addEventListener("click",function(e){
-                console.log(e.target.parentNode.parentNode.parentNode);
-                const tr = e.target.parentNode.parentNode.parentNode;
-                tr.classList.toggle("select");
+                mSelected(e)
+                // console.log(e.target.parentNode.parentNode.parentNode);
+                // const tr = e.target.parentNode.parentNode.parentNode;
+                // tr.classList.toggle("select");
             });
             release.appendChild(ch);
             td.appendChild(release);
@@ -461,6 +421,7 @@ function submitBtn(){
         }else{
             refPath=selRow[i]["refValue"];
         }
+        console.log(refPath);
         database_f.ref(refPath).update(selRow[i]).then(()=>{
             const seL = Object.keys(selRow);
             const seLlast = seL[seL.length-1];
@@ -472,7 +433,7 @@ function submitBtn(){
                     // alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
                     const op = "width=500,height=500,top=100,left=200,location=no";
                     const name = "출고내역 확인";
-                    window.open(url,name,option);
+                    // window.open(url,name,option);
 
                     
                 }
@@ -484,6 +445,7 @@ function submitBtn(){
             console.error(e);
         });
     }
+    // resetBtn();
     }
     const messageTitle = '알림 제목';
     const messageBody = '알림 내용입니다.';
@@ -659,8 +621,7 @@ function msgLoad(){
 
     };
     function allS(event){
-        const trT = event;
-        console.log(trT);
+        
         const checkboxes 
             = document.querySelectorAll('input[type="checkbox"]');
         
@@ -671,15 +632,46 @@ function msgLoad(){
     };
     function resetBtn(){
         const ch = document.querySelectorAll("input[type='checkbox']");
-        console.log(ch)
         for(let i=0; i<ch.length;i++){
             ch[i].classList.remove("select");
             ch[i].classList.remove("select1");
+            console.log(io,ch[i].parentNode.parentNode.parentNode);
             if(ch[i].checked){
-                ch[i].parentNode.parentNode.classList.toggle("select");
-                ch[i].checked = false;
+                if(io =="i"){
+                    ch[i].parentNode.parentNode.classList.toggle("select");
+                    ch[i].checked = false;
+                    
+                }else{
+                    console.log(ch[i]);
+                    if(ch[i].parentNode.parentNode.parentNode.classList.value =="select"){
+                        ch[i].parentNode.parentNode.parentNode.classList.toggle("select");}
+                        else{
+                            ch[i].parentNode.parentNode.parentNode.classList.toggle("select1");
+                        }
+                        ch[i].checked = false;
+                        }
+                  
+                }
+                
             }
         }
-    }
-    
+    function mSelected(e){
+        const trList = document.querySelectorAll("tr");
+        console.log(e.target.parentNode.parentNode.parentNode.rowIndex);
+        const tr = e.target.parentNode.parentNode.parentNode;
+        let trIndex = tr.rowIndex;
+        tr.classList.toggle("select");
+        console.log(trList);
+        const trValue= trList[trIndex+2].cells[0].innerHTML;
+        
+        while(trValue == trList[trIndex+3].cells[0].innerHTML){
+            const tr=trList[trIndex+3];
+            const ch=tr.querySelectorAll("input[type='checkbox']")[1];
+            tr.classList.toggle("select");
+            ch.checked = true;
+            console.log(trValue,trList[trIndex+3].querySelectorAll("input[type='checkbox']")[1].checked);
+             trIndex++;
+            }
+        }    
+        
        
