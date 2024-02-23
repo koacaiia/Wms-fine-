@@ -56,8 +56,6 @@ function fileIn(event){
 
 };
 function excelConvert(target){
-    console.log(target,);
-    
     try{
     let file =target.files[0];
     console.log(file)
@@ -82,17 +80,18 @@ function excelConvert(target){
     
     let infoValue= new Array();
     let reader = new FileReader();
-    console.log(reader);
     let workbook = null;
     reader.onload = function(event){
         const data = event.target.result;
         workbook = XLSX.read(data,{type:"binary",cellDates: true,dateNF:"yyyy-mm-dd"});
     
     let rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],op);
+    console.log("excelConvert",io);
     if(rowsValue.length ==0){
         excelConvert(target);
+    }else{
+        eTable(rowsValue);
     }
-    eTable(rowsValue);
     };
     reader.readAsBinaryString(file);
     }catch(e){
@@ -109,9 +108,10 @@ function eTable(value){
     const dateValue = document.getElementById("datePicker").value;
     // const dateValue = "2024-01-30";
     const offset = (9*60*60*1000);
-    
+    console.log("eTable",io);
     
     if(io =="i"){
+        moveTab(0);
         const tableE=document.getElementById("tableE");
         tBodyE = document.getElementById("tbiE");
         tBodyE.replaceChildren();
@@ -154,6 +154,7 @@ function eTable(value){
         tableE.appendChild(tBodyE);
     }
     }else{
+        moveTab(2)
         const tableE=document.getElementById("tableEo");
         tBodyE = document.getElementById("tboE");
         tBodyE.replaceChildren();
@@ -193,8 +194,8 @@ function eTable(value){
         
     }
 }
-   
     tableE.appendChild(tBodyE);
+    
 }
     
     sTable(dateValue,io);
@@ -320,8 +321,10 @@ function dateC(){
 function submitBtn(){
     let refPath;
     let conMessage="";
+    let doc;
     if( io=="o"){
-        const tr = document.querySelectorAll(".select");
+        doc=document.getElementById("tboE")
+        const tr = doc.querySelectorAll(".select");
         const serverKeyList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
         for(let i=0; i<tr.length;i++){
             let ar={};
@@ -352,16 +355,14 @@ function submitBtn(){
             }
         conMessage= "총("+Object.keys(selRow).length+")건의 출고내역을 서버에 등록 하시겠습니까?"+"\n"+conMessage;
         }else{
-            const trL = document.querySelectorAll(".select");
+            doc=document.getElementById("tbiE")
+            const trL = doc.querySelectorAll(".select");
             for(let trC =1;trC<trL.length;trC++){
-                console.log(trL[trC])
                 let selectOb = {};
                 for(let tdC=0;tdC<key_f.length;tdC++){
                     const c = tdC+1;
                     try{
-                        console.log(trL[trC],c);
                         selectOb[key_f[tdC]]=trL[trC].cells[c].innerHTML; 
-                        console.log(trL[trC].cells[c].innerHTML)
                     }catch(e){
                         selectOb[key_f[tdC]]="";
                     }
@@ -394,36 +395,34 @@ function submitBtn(){
             }
             
             let sendConfirm = confirm(conMessage);
-    // for (let i in selRow){
-    //     if( io=="o"){
-    //         refPath=selRow[i]["keyValue"];
-    //     }else{
-    //         refPath=selRow[i]["refValue"];
-    //     }
-    //     console.log(refPath);
-    //     database_f.ref(refPath).update(selRow[i]).then(()=>{
-    //         const seL = Object.keys(selRow);
-    //         const seLlast = seL[seL.length-1];
-    //         if( i== seLlast){
-    //             if(io == "i"){
-    //                 alert(" 입고 총 "+seL.length+"건 서버등록 되었습니다.");
-    //             }else{
-                    
-    //                 // alert("총 "+selRow.length+"건이 출고 등록 진행 되었습니다.")
-    //                 const op = "width=500,height=500,top=100,left=200,location=no";
-    //                 const name = "출고내역 확인";
-    //                 // window.open(url,name,option);
-
-                    
-    //             }
-    //             console.log(selRow[i]+ "uploading successful!","I,O Value:::"+io)
-    //         }
-            
-    //     }).catch((e)=>{
-    //         alert(e);
-    //         console.error(e);
-    //     });
-    // }
+            if(sendConfirm){
+                for (let i in selRow){
+                        if( io=="o"){
+                            refPath=selRow[i]["keyValue"];
+                        }else{
+                            refPath=selRow[i]["refValue"];
+                        }
+                        console.log(refPath);
+                        // database_f.ref(refPath).update(selRow[i]).then(()=>{
+                        //     const seL = Object.keys(selRow);
+                        //     const seLlast = seL[seL.length];
+                        //     if( i== seLlast){
+                        //         if(io == "i"){
+                        //             alert(" 입고 총 "+seL.length+"입고건 서버등록 되었습니다.");
+                        //             moveTab(1);
+                        //         }else{
+                        //             alert("출고 총 "+seL.length+"출고건 서버등록 되었습니다.");
+                        //             moveTab(3);
+                        //         }
+                        //     }
+                            
+                        // }).catch((e)=>{
+                        //     alert(e);
+                        //     console.error(e);
+                        // });
+                    }
+            }
+    // 
     resetBtn();
     
     }
@@ -610,6 +609,7 @@ function msgLoad(){
         
         const checkboxes 
             = doc.querySelectorAll('input[type="checkbox"]');
+            console.log(checkboxes);
         
         checkboxes.forEach((checkbox) => {
             checkbox.checked = event.checked
@@ -641,6 +641,14 @@ function msgLoad(){
             ch.checked = true;
              trIndex++;
             }
-        }    
+        }
+    function moveTab(n){
+        const tabList = document.querySelectorAll(".tab_menu .list li");
+        console.log(io,tabList)
+        for(var i=0 ;i<tabList.length;i++){
+            tabList[i].classList.remove("is_on");
+        }
+        tabList[n].classList.add("is_on");
+    }
         
        
