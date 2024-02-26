@@ -403,23 +403,23 @@ function submitBtn(){
                             refPath=selRow[i]["refValue"];
                         }
                         console.log(refPath);
-                        // database_f.ref(refPath).update(selRow[i]).then(()=>{
-                        //     const seL = Object.keys(selRow);
-                        //     const seLlast = seL[seL.length];
-                        //     if( i== seLlast){
-                        //         if(io == "i"){
-                        //             alert(" 입고 총 "+seL.length+"입고건 서버등록 되었습니다.");
-                        //             moveTab(1);
-                        //         }else{
-                        //             alert("출고 총 "+seL.length+"출고건 서버등록 되었습니다.");
-                        //             moveTab(3);
-                        //         }
-                        //     }
+                        database_f.ref(refPath).update(selRow[i]).then(()=>{
+                            const seL = Object.keys(selRow);
+                            const seLlast = seL[seL.length];
+                            if( i== seLlast){
+                                if(io == "i"){
+                                    alert(" 입고 총 "+seL.length+"입고건 서버등록 되었습니다.");
+                                    moveTab(1);
+                                }else{
+                                    alert("출고 총 "+seL.length+"출고건 서버등록 되었습니다.");
+                                    moveTab(3);
+                                }
+                            }
                             
-                        // }).catch((e)=>{
-                        //     alert(e);
-                        //     console.error(e);
-                        // });
+                        }).catch((e)=>{
+                            alert(e);
+                            console.error(e);
+                        });
                     }
             }
     // 
