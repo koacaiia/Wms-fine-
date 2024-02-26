@@ -396,16 +396,15 @@ function submitBtn(){
             
             let sendConfirm = confirm(conMessage);
             if(sendConfirm){
+                const seL = Object.keys(selRow);
+                const seLlast = seL[seL.length-1];
                 for (let i in selRow){
                         if( io=="o"){
                             refPath=selRow[i]["keyValue"];
                         }else{
                             refPath=selRow[i]["refValue"];
                         }
-                        console.log(refPath);
                         database_f.ref(refPath).update(selRow[i]).then(()=>{
-                            const seL = Object.keys(selRow);
-                            const seLlast = seL[seL.length];
                             if( i== seLlast){
                                 if(io == "i"){
                                     alert(" 입고 총 "+seL.length+"입고건 서버등록 되었습니다.");
