@@ -195,13 +195,12 @@ function eTable(value){
     }
 }
     tableE.appendChild(tBodyE);
-    
 }
-    
-    sTable(dateValue,io);
+    sTable(io);
 };
 
-function sTable(dateValue,io){
+function sTable(io){
+    const dateValue= document.getElementById("datePicker").value;
     if(io=="i"){
     // document.getElementById("tableS").replaceChildren();
     database_f.ref("DeptName/"+deptName+"/InCargo/").get().then((snapshot)=>{
@@ -298,25 +297,43 @@ for(var i=0 ;i<tabList.length;i++){
             tabList[j].classList.remove("is_on");
         }
         this.parentNode.classList.add("is_on");
+        if(this.parentNode.querySelectorAll(".cont")[0].id =="tab2"){
+            io="i";
+            sTable(io);}
+        else if(this.parentNode.querySelectorAll(".cont")[0].id =="tab4"){  
+                io="o";
+                sTable(io);
+           }
     });
 }
+function moveTab(n){
+    const tabList = document.querySelectorAll(".tab_menu .list li");
+    for(var i=0 ;i<tabList.length;i++){
+    tabList[i].classList.remove("is_on");
+    }
+    tabList[n].classList.add("is_on");
+    if(tabList[n].querySelectorAll(".cont")[0].id =="tab2"){
+        io="i";
+        sTable(io);}
+    else if(tabList[n].querySelectorAll(".cont")[0].id =="tab4"){  
+            io="o";
+            sTable(io);
+    }
+}
 function thClick(n){
-    console.log(n)
+    console.log(n);
 };
 function dateC(){
     let target;
     if(io =="i"){
-        target = document.getElementById("fileIn")
-            excelConvert(target);
-       
+        target = document.getElementById("fileIn");
+        excelConvert(target);
         }else if(io =="o"){
         target = document.getElementById("fileOut");
         excelConvert(target);
     }else{
         alert(document.getElementById("datePicker").value+" 로 날짜 변경 했습니다.");
     }
-    // console.log(target)
-    
 };
 function submitBtn(){
     let refPath;
@@ -357,7 +374,7 @@ function submitBtn(){
         }else{
             doc=document.getElementById("tbiE")
             const trL = doc.querySelectorAll(".select");
-            for(let trC =1;trC<trL.length;trC++){
+            for(let trC =0;trC<trL.length;trC++){
                 let selectOb = {};
                 for(let tdC=0;tdC<key_f.length;tdC++){
                     const c = tdC+1;
@@ -397,6 +414,7 @@ function submitBtn(){
             let sendConfirm = confirm(conMessage);
             if(sendConfirm){
                 const seL = Object.keys(selRow);
+                console.log(seL);
                 const seLlast = seL[seL.length-1];
                 for (let i in selRow){
                         if( io=="o"){
@@ -404,6 +422,7 @@ function submitBtn(){
                         }else{
                             refPath=selRow[i]["refValue"];
                         }
+                        console.log(refPath);
                         database_f.ref(refPath).update(selRow[i]).then(()=>{
                             if( i== seLlast){
                                 if(io == "i"){
@@ -641,13 +660,6 @@ function msgLoad(){
              trIndex++;
             }
         }
-    function moveTab(n){
-        const tabList = document.querySelectorAll(".tab_menu .list li");
-        console.log(io,tabList)
-        for(var i=0 ;i<tabList.length;i++){
-            tabList[i].classList.remove("is_on");
-        }
-        tabList[n].classList.add("is_on");
-    }
+    
         
        
