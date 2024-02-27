@@ -297,13 +297,8 @@ for(var i=0 ;i<tabList.length;i++){
             tabList[j].classList.remove("is_on");
         }
         this.parentNode.classList.add("is_on");
-        if(this.parentNode.querySelectorAll(".cont")[0].id =="tab2"){
-            io="i";
-            sTable(io);}
-        else if(this.parentNode.querySelectorAll(".cont")[0].id =="tab4"){  
-                io="o";
-                sTable(io);
-           }
+        checkIo(this.parentNode.querySelectorAll(".cont")[0].id);
+        sTable(io);
     });
 }
 function moveTab(n){
@@ -312,14 +307,20 @@ function moveTab(n){
     tabList[i].classList.remove("is_on");
     }
     tabList[n].classList.add("is_on");
-    if(tabList[n].querySelectorAll(".cont")[0].id =="tab2"){
-        io="i";
-        sTable(io);}
-    else if(tabList[n].querySelectorAll(".cont")[0].id =="tab4"){  
-            io="o";
-            sTable(io);
-    }
+    checkIo(tabList[n].querySelectorAll(".cont")[0].id);
+    sTable(io);
 }
+function checkIo(id){
+    if(id =="tab1"){
+        io="i";}
+        else if(id =="tab2"){
+            io="i";}
+            else if(id =="tab3"){
+                io="o";}
+                else if(id =="tab4"){
+                    io="o";}
+                }
+
 function thClick(n){
     console.log(n);
 };
@@ -624,25 +625,32 @@ function msgLoad(){
         }else{
             doc = document.getElementById("tboE");
         }
-        
         const checkboxes 
             = doc.querySelectorAll('input[type="checkbox"]');
-            console.log(checkboxes);
-        
         checkboxes.forEach((checkbox) => {
             checkbox.checked = event.checked
             checkbox.parentNode.parentNode.classList.toggle("select");
         })
     };
     function resetBtn(){
-        const ch = document.querySelectorAll("input[type='checkbox']");
+        let doc;
+        if(io=="i"){
+            doc = document.getElementById("tbiE");
+            docCheck = document.getElementById("tableE");
+        }else{
+            doc = document.getElementById("tboE");
+            docCheck = document.getElementById("tableEo");
+        }
+        const ch = doc.querySelectorAll("input[type='checkbox']");
         for(let i=0; i<ch.length;i++){
             ch[i].classList.remove("select");
             if(ch[i].checked){
+                    console.log(ch[i])
                     ch[i].parentNode.parentNode.classList.toggle("select");
                     ch[i].checked = false;
                 }
             }
+            docCheck.querySelectorAll("input[type='checkbox']")[0].checked = false; 
             selRow={};
         }
 
