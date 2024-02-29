@@ -3,16 +3,16 @@ body{
     margin:0px;
 }
 #Main{
-    height:100vh;
-    width:100vw;
+    height:98vh;
+    width:98vw;
     display:grid;
     grid-template-columns:60vw 40vw;
 }
 #File{
-    height:100vh;
+    height:97vh;
     width:100%;
     display:grid;
-    grid-template-rows:20vh 70vh 10vh;
+    grid-template-rows:20vh 68vh 7vh;
 }
 #Settings{
     height:20vh;
@@ -35,15 +35,9 @@ body{
     margin-top:6%;
     }
 .TableDiv {
-    height:50vh;
+    height:98%;
     border:0.3px groove black;
     overflow-y:scroll;
-}
-
-#Info,#Update{
-    height:75%;
-    margin:1%;
-    border:0.3px groove black;
 }
 
 .FileDiv{
@@ -124,7 +118,7 @@ tbody{
 #Message{
     display:grid;
     grid-template-rows:0.5fr 10fr;
-    height:100vh;
+    height:95vh;
 
 }
 .msgDiv{
@@ -172,6 +166,6 @@ height:8vh;
 .tab_menu .list{overflow:hidden;}
 .tab_menu .list li{float:left;}
 .tab_menu .list .btn{width:100px;font-size:13px; margin-right:14px;}
-.tab_menu .list .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%; height:50vh; line-height:100px;left:10px}
+.tab_menu .list .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%; height:93%; line-height:100px;left:10px}
 .tab_menu .list li.is_on .btn{font-weight:bold; color:red;background: gray;width:150px}
 .tab_menu .list li.is_on .cont{display:block;background:gray;}
