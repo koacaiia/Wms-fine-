@@ -405,6 +405,9 @@ function submitBtn(){
                 const monValue = selectOb["date"].substring(5,7)+"월";
                 const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
                 const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+selectOb["date"]+"/"+keyPath;
+                if(selectOb["incargo"]==""){
+                    selectOb["incargo"]="0";
+                };
                 selectOb["keyValue"]=keyPath;
                 selectOb["refValue"]=refValue;
                 selRow[trC]=selectOb;

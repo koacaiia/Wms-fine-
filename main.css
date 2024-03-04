@@ -68,22 +68,19 @@ tr{
 }
 
 th{
-    /* height:5px; */
-    /* width:10%; */
     border: 1px solid white;
-    /* text-align:center; */
     word-break:normal;
-    font-size:1vh;
     background:rgb(23, 23, 23);
     position:sticky;
     top:0;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    font-weight:bold;
+    text-size-adjust: 100%;
 }
 td{
     white-space:nowrap;
-    font-size:1vh;
     overflow:hidden;
     height:5px;
     width:10%;
