@@ -244,18 +244,10 @@ function sTable(io){
     // console.log(snapV)
     let keyList =[];
     const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
-    let headerS = document.createElement("thead");
     let tHrS = document.createElement("tr");
     let tBodyS = document.getElementById("tboS");
 
-    for(let hC in tableHeader){
-        let thS = document.createElement("th");
-        thS.innerHTML=tableHeader[hC];
-        thS.addEventListener("click",function(e){
-            console.log(hC)
-        });
-        tHrS.appendChild(thS);
-    }
+   
 
     for(let kc in snapV){
         let trS = document.createElement("tr");
@@ -268,7 +260,6 @@ function sTable(io){
                
         }
     headerS.appendChild(tHrS);
-    tableS.appendChild(headerS);
     tableS.appendChild(tBodyS);
     }
     );
