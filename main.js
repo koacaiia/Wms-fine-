@@ -202,50 +202,35 @@ function eTable(value){
 function sTable(io){
     const dateValue= document.getElementById("datePicker").value;
     if(io=="i"){
-    // document.getElementById("tableS").replaceChildren();
-    database_f.ref("DeptName/"+deptName+"/InCargo/").get().then((snapshot)=>{
+    document.getElementById("tbiS").replaceChildren();
+    const monValue = dateValue.substring(5,7)+"월";
+    database_f.ref("DeptName/"+deptName+"/InCargo/"+monValue+"/"+dateValue).get().then((snapshot)=>{
     let snapV = snapshot.val();
     let keyList =[];
-    const tdList =["date","container","container40","consignee","bl","description","count","incargo","incargo","remark","keyValue"];
-    let headerS = document.createElement("thead");
+    const tdList =["date","container","container40","consignee","bl","description","count","incargo","Pqty","remark","keyValue"];
     let tableS = document.getElementById("tableS");
-    let tHrS = document.createElement("tr");
-    let tBodyS = document.getElementById("tboE");
+    let tBodyS = document.getElementById("tbiS");
 
-    for(let hC in tableHeader){
-        let thS = document.createElement("th");
-        thS.innerHTML=tableHeader[hC];
-        thS.addEventListener("click",function(e){
-            console.log(hC)
-        });
-        tHrS.appendChild(thS);
-    }
     for(let kc in snapV){
         let kL =snapV[kc];
-        for(let kc1 in kL){
-            let keyValue = Object.keys(kL[kc1]);
-            let value1 = Object.values(kL[kc1]);
+            let keyValue = Object.keys(kL);
+            let value1 = Object.values(kL);
+            let trS = document.createElement("tr");
             if(keyValue !='json 등록시 덥어쓰기 바랍니다'){
                 if(Object.values(value1) != 'json 등록시 덥어쓰기 바랍니다' ||Object.keys(value1) != 'json 등록시 덥어쓰기 바랍니다'){
-                    let value2 =Object.values(kL[kc1]);
-                    for(kc2 in value2){
-                        if(value2[kc2] !="json 최초등록시 ` { `기호 다음  `,`기호 있으면 `,` 기호삭제후 최초 등록 바랍니다. " && value2[kc2]["date"] == dateValue){
-                            let trS = document.createElement("tr");
+                        if(kL[kc] !="json 최초등록시 ` { `기호 다음  `,`기호 있으면 `,` 기호삭제후 최초 등록 바랍니다. " && kL["date"] == dateValue){
                             for(let tdC in tdList){
                                 let td = document.createElement("td");
-                                td.innerHTML= value2[kc2][tdList[tdC]];
+                                td.innerHTML= kL[tdList[tdC]];
                                 if(tdC == tdList.length-1){
                                     td.style.display="none";
                                 }
                                 trS.appendChild(td);
                             }
-                            tBodyS.appendChild(trS);  
                         }
-                    }
-                }}};
+                }};
+                tBodyS.appendChild(trS);  
     };
-    headerS.appendChild(tHrS);
-    tableS.appendChild(headerS);
     tableS.appendChild(tBodyS);
     }
     );
