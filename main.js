@@ -49,8 +49,18 @@ function transDate(dateT){
 }
 document.getElementById("datePicker").value =transDate(new Date());
 let tableHeader;
+function getFileI(){
+    document.getElementById("fileIn").click();
+    io="i";
+}
+function getFileO(){
+    document.getElementById("fileOut").click();
+    io="o";
+}
 function fileIn(event){
+    
     const target = event.target;
+    console.log(target.id);
     // excelConvert("C:\Users\koaca\OneDrive\문서\화인통상2물류 incargo(2024).xlsm");
     excelConvert(target);
 
@@ -61,32 +71,22 @@ function excelConvert(target){
     console.log(file)
     let op={};
     let sheetName;
-    let fReader = new FileReader();
-    fReader.readAsDataURL(file);
-    fReader.onloadend=function(event){
+    let reader = new FileReader();
+    let workbook = null;
+    reader.onload = function(event){
         if(target.id =="fileIn"){
-            document.getElementById("fileInName").value=target.value;
             op={defval:"",range:"A3:X3000",blankrows:false,raw:true};
             sheetName ="Container"
             io="i"
         }else{
-            console.log("target Out")
-            document.getElementById("fileOutName").value=target.value;
             op={defval:"",range:"A3:K10000",blankrows:false,raw:true};
             sheetName ="출고취합";
             io="o";
         };
-    }
-    
-    let infoValue= new Array();
-    let reader = new FileReader();
-    let workbook = null;
-    reader.onload = function(event){
         const data = event.target.result;
         workbook = XLSX.read(data,{type:"binary",cellDates: true,dateNF:"yyyy-mm-dd"});
     
     let rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],op);
-    console.log("excelConvert",io);
     if(rowsValue.length ==0){
         excelConvert(target);
     }else{
@@ -102,16 +102,12 @@ function excelConvert(target){
 }
 function eTable(value){
     let tdList=[];
-    let tableE;
-    let trV = Object.values(value);
     let tBodyE; 
-    const dateValue = document.getElementById("datePicker").value;
-    // const dateValue = "2024-01-30";
+    // const dateValue = document.getElementById("datePicker").value;
+    const dateValue = "2024-01-30";
     const offset = (9*60*60*1000);
-    console.log("eTable",io);
-    
+    console.log(io)
     if(io =="i"){
-        moveTab(0);
         const tableE=document.getElementById("tableE");
         tBodyE = document.getElementById("tbiE");
         tBodyE.replaceChildren();
@@ -121,8 +117,6 @@ function eTable(value){
         if(value[rC]["Date"] != ""){
             value[rC]["Date"] = new Date(value[rC]["Date"].getTime()+offset);
         }
-        // 
-        // console.log(new Date(value[rC]["Date"].getTime()+offset),new Date(value[rC]["Date"].getTime()))
         value[rC]["Date"]=transDate(value[rC]["Date"]);
         if(value[rC]["40FT"] ==1){
             value[rC]["40FT"] ="40Ft";
@@ -154,15 +148,11 @@ function eTable(value){
         tableE.appendChild(tBodyE);
     }
     }else{
-        moveTab(2)
         const tableE=document.getElementById("tableEo");
         tBodyE = document.getElementById("tboE");
         tBodyE.replaceChildren();
-        let count =0;
         const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
-        
         for(let rC in value){
-           
             if(value[rC]["반출일"] != ""){
             value[rC]["반출일"] = new Date(value[rC]["반출일"].getTime()+offset);
             value[rC]["반출일"]=transDate(value[rC]["반출일"]);
@@ -177,9 +167,6 @@ function eTable(value){
             ch.setAttribute("type","checkbox");
             ch.addEventListener("click",function(e){
                 mSelected(e)
-                // console.log(e.target.parentNode.parentNode.parentNode);
-                // const tr = e.target.parentNode.parentNode.parentNode;
-                // tr.classList.toggle("select");
             });
             td.appendChild(ch);
             trE.appendChild(td);
@@ -191,16 +178,15 @@ function eTable(value){
         }
         tBodyE.appendChild(trE);
         }
-        
     }
 }
     tableE.appendChild(tBodyE);
 }
-    sTable(io);
 };
 
 function sTable(io){
     const dateValue= document.getElementById("datePicker").value;
+    console.log(io);
     if(io=="i"){
     document.getElementById("tbiS").replaceChildren();
     const monValue = dateValue.substring(5,7)+"월";
@@ -216,12 +202,15 @@ function sTable(io){
             let keyValue = Object.keys(kL);
             let value1 = Object.values(kL);
             let trS = document.createElement("tr");
+            trS.style.height="5vh";
+
             if(keyValue !='json 등록시 덥어쓰기 바랍니다'){
                 if(Object.values(value1) != 'json 등록시 덥어쓰기 바랍니다' ||Object.keys(value1) != 'json 등록시 덥어쓰기 바랍니다'){
                         if(kL[kc] !="json 최초등록시 ` { `기호 다음  `,`기호 있으면 `,` 기호삭제후 최초 등록 바랍니다. " && kL["date"] == dateValue){
                             for(let tdC in tdList){
                                 let td = document.createElement("td");
                                 td.innerHTML= kL[tdList[tdC]];
+                                td.style.height="5vh";
                                 if(tdC == tdList.length-1){
                                     td.style.display="none";
                                 }
@@ -246,9 +235,6 @@ function sTable(io){
     const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
     let tHrS = document.createElement("tr");
     let tBodyS = document.getElementById("tboS");
-
-   
-
     for(let kc in snapV){
         let trS = document.createElement("tr");
         for(let tdC in tdList){
@@ -265,36 +251,40 @@ function sTable(io){
     );
     };
 }
-const tabList = document.querySelectorAll(".tab_menu .list li");
+const tabList = document.querySelectorAll("li");
 for(var i=0 ;i<tabList.length;i++){
     tabList[i].querySelector(".btn").addEventListener("click", function(e){
         e.preventDefault();
-        for(var j=0;j<tabList.length;j++){
-            tabList[j].classList.remove("is_on");
-        }
-        this.parentNode.classList.add("is_on");
-        checkIo(this.parentNode.querySelectorAll(".cont")[0].id);
-        sTable(io);
-    });
+       
+        const selectTab=this.parentNode;
+        checkIo(selectTab,selectTab.querySelectorAll(".cont")[0].id);
+        });
 }
 function moveTab(n){
-    const tabList = document.querySelectorAll(".tab_menu .list li");
-    for(var i=0 ;i<tabList.length;i++){
-    tabList[i].classList.remove("is_on");
-    }
-    tabList[n].classList.add("is_on");
-    checkIo(tabList[n].querySelectorAll(".cont")[0].id);
-    sTable(io);
+    const tabList = document.querySelectorAll("li");
+   
+    const selectTab=tabList[n];
+    checkIo(selectTab,selectTab.querySelectorAll(".cont")[0].id);
+    // sTable(io);
 }
-function checkIo(id){
+function checkIo(tab,id){
+    console.log(id);
     if(id =="tab1"){
-        io="i";}
+        tabList[0].classList.remove("is_onI");
+        tab.classList.add("is_onI");
+        eTable("i");}
         else if(id =="tab2"){
-            io="i";}
+            tabList[1].classList.remove("is_onI");
+            tab.classList.add("is_onI");
+            sTable("i");}
             else if(id =="tab3"){
-                io="o";}
+                tabList[2].classList.remove("is_onO");
+                tab.classList.add("is_onO");
+                eTable("o");}
                 else if(id =="tab4"){
-                    io="o";}
+                    tabList[3].classList.remove("is_onO");
+                    tab.classList.add("is_onO");
+                    sTable("o");}
                 }
 
 function thClick(n){

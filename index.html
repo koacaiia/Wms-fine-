@@ -18,82 +18,83 @@
     
     <div id="Main">
         <div id="File">
-            <div id="Settings">
-                <div id="FileSettings">
-                    <div id="FileIn" class="FileDiv">
-                        <label for="fileIn">입고파일 찾기</label>
-                        <input type="file" class ="fileSearch" id="fileIn" onchange="fileIn(event)">
-                        <input type="text" title="입고파일" id="fileInName" value="입고파일"/>
-                    </div>
-                    <div id="FileOut" class="FileDiv">
-                        <label for="fileOut">출고파일 찾기</label>
-                        <input type="file" class="fileSearch" id="fileOut" onchange="fileIn(event)">
-                        <input type="text" title="출고파일" id="fileOutName" value="출고파일">
-                    </div>
-
-                </div>
-                <div id="DateSettings">
-                    <label class="date" for="datePicker">Date Setting</label>
-                    <input clsaa="date" type="date" value="yyyy-MM-dd" id="datePicker" onchange="dateC()">
-                    <button class="date" id="submit_btn" onclick="submitBtn()">UpLoad</button>
-                </div>
-
+                <div class="tab_menuI">
+                    <ul class="listI">
+                        <li class="is_onI">
+                            <a href="#tab2" class ="btn">입고 SERVER</a>
+                            <div id="tab2" class="cont">
+                                    <table id="tableS" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>반입일</th>
+                                                <th>컨테이너번호</th>
+                                                <th style="width:6%;font-size:70%">입고유형</th>
+                                                <th>화주명</th>
+                                                <th>비엘</th>
+                                                <th>품명</th>
+                                                <th>찻수/Seal</th>
+                                                <th style="width:6%;font-size:70%">입고수량</th>
+                                                <th style="width:6%;font-size:70%">팔렛트수량</th>
+                                                <th>비고</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbiS"></tbody>
+                                    </table>
+                                </div>
+                        </li>
+                        <li >
+                            <a href = "#tab1" class="btn" onclick="getFileI()">입고 EXCEL</a>
+                            <div id="tab1" class="cont">
+                                    <table id="tableE" class="table">
+                                        <thead class="tHead" >
+                                            <tr >
+                                                <th style="width:3%">
+                                                    <input type="checkbox" onclick="allS(this)">
+                                                </th>
+                                                <th>반입일</th>
+                                                <th>컨테이너번호</th>
+                                                <th style="width:6%;font-size:70%">입고유형</th>
+                                                <th>화주명</th>
+                                                <th>비엘</th>
+                                                <th>품명</th>
+                                                <th>찻수/Seal</th>
+                                                <th style="width:6%;font-size:70%">입고수량</th>
+                                                <th style="width:6%;font-size:70%">팔렛트수량</th>
+                                                <th>비고</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbiE" ></tbody>
+                                    </table>
+                            </div>
+                        </li>
+                    </ul> 
             </div>
-            <div class="tab_menu">
-                <ul class="list">
-                    <li class="is_on">
-                        <a href = "#tab1" class="btn">입고 EXCEL</a>
-                        <div id="tab1" class="cont">
-                                <table id="tableE" class="table">
-                                    <thead class="tHead" >
-                                        <tr >
-                                            <th style="width:3%">
-                                                <input type="checkbox" onclick="allS(this)">
-                                            </th>
-                                            <th>반입일</th>
-                                            <th>컨테이너번호</th>
-                                            <th style="width:6%;font-size:70%">입고유형</th>
-                                            <th>화주명</th>
-                                            <th>비엘</th>
-                                            <th>품명</th>
-                                            <th>찻수/Seal</th>
-                                            <th style="width:6%;font-size:70%">입고수량</th>
-                                            <th style="width:6%;font-size:70%">팔렛트수량</th>
-                                            <th>비고</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbiE" style="height:90%"></tbody>
-                                </table>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#tab2" class ="btn">입고 SERVER</a>
-                        <div id="tab2" class="cont">
-                            <div id="TableDivS" class="TableDiv">
-                                <table id="tableS" class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>반입일</th>
-                                            <th>컨테이너번호</th>
-                                            <th style="width:6%;font-size:70%">입고유형</th>
-                                            <th>화주명</th>
-                                            <th>비엘</th>
-                                            <th>품명</th>
-                                            <th>찻수/Seal</th>
-                                            <th style="width:6%;font-size:70%">입고수량</th>
-                                            <th style="width:6%;font-size:70%">팔렛트수량</th>
-                                            <th>비고</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbiS"></tbody>
-                                </table>
-                            </div>
-                            </div>
-                    </li>
+                <div class="tab_menuO">
+                    <ul class="listO">
+                        <li class="is_onO">
+                            <a href="#tab4" class ="btn">출고 SERVER</a>
+                            <div id="tab4" class="cont">
+                                    <table id="tableSo" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>출고일</th>
+                                                <th>화주명</th>
+                                                <th>도착지</th>
+                                                <th>출고 총수량</th>
+                                                <th>출고 팔렛트총수량</th>
+                                                <th>출고 수량</th>
+                                                <th>출고 팔렛트수량</th>
+                                                <th>관리번호</th>
+                                                <th>품명</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tboS"></tbody>
+                                    </table>
+                                </div>
+                        </li>
                     <li >
-                        <a href = "#tab3" class="btn">출고 EXCEL</a>
+                        <a href = "#tab3" class="btn" onclick="getFileO()">출고 EXCEL</a>
                         <div id="tab3" class="cont">
-                            <div id="TableDivEo" class="TableDiv">
                                 <table id="tableEo" class="table">
                                     <thead>
                                         <tr>
@@ -113,43 +114,20 @@
                                     </thead>
                                     <tbody id="tboE"></tbody>
                                 </table>
-                            </div>
                         </div>
                     </li>
-                    <li>
-                        <a href="#tab4" class ="btn">출고 SERVER</a>
-                        <div id="tab4" class="cont">
-                            <div id="TableDivSo" class="TableDiv">
-                                <table id="tableSo" class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>출고일</th>
-                                            <th>화주명</th>
-                                            <th>도착지</th>
-                                            <th>출고 총수량</th>
-                                            <th>출고 팔렛트총수량</th>
-                                            <th>출고 수량</th>
-                                            <th>출고 팔렛트수량</th>
-                                            <th>관리번호</th>
-                                            <th>품명</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tboS"></tbody>
-                                </table>
-                            </div>
-                            </div>
-                    </li>
+                   
                 </ul>
             </div>
-            
             <div id="Info">
                 <button id="infoBtn" onclick="resetBtn()">Selected Data Reset</button>
-                <button id="infoBtnTest" onclick="testBtn()">test</button>                 
+                <button id="infoBtnTest" onclick="testBtn()">test</button>
+                <input type="file" class ="fileSearch" id="fileIn" style="display:none" onchange="fileIn(event)">
+                <input type="file" class="fileSearch" id="fileOut" style="display:none" onchange="fileIn(event)">
+                <input clsaa="date" type="date" value="yyyy-MM-dd" id="datePicker" onchange="dateC()">
+                <button class="date" id="submit_btn" onclick="submitBtn()">UpLoad</button>
             </div>
-            <!-- <div id="Update">
-
-            </div> -->
-        </div>
+            </div>
         <div id="Message">
             <div id="messageTitle">
                 입,출고 현황
@@ -185,6 +163,5 @@
         </div>
     </div>
     <script src="main.js" > </script>
-    <script src="test.js" > </script>
 </body>
 </html>
