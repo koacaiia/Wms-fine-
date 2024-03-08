@@ -103,8 +103,8 @@ function excelConvert(target){
 function eTable(value){
     let tdList=[];
     let tBodyE; 
-    // const dateValue = document.getElementById("datePicker").value;
-    const dateValue = "2024-01-30";
+    const dateValue = document.getElementById("datePicker").value;
+    // const dateValue = "2024-01-30";
     const offset = (9*60*60*1000);
     console.log(io)
     if(io =="i"){
