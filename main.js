@@ -611,6 +611,7 @@ function msgLoad(){
             docCheck = document.getElementById("tableEo");
         }
         const ch = doc.querySelectorAll("input[type='checkbox']");
+        console.log(ch);
         for(let i=0; i<ch.length;i++){
             ch[i].classList.remove("select");
             if(ch[i].checked){
@@ -626,16 +627,32 @@ function msgLoad(){
     function mSelected(e){
         const tr = e.target.parentNode.parentNode;
         tr.classList.toggle("select");
-        const trList = document.querySelectorAll("tr");
-        let trIndex = tr.rowIndex;
-        const trValue= trList[trIndex+2].cells[0].innerHTML;
-        while(trValue == trList[trIndex+3].cells[0].innerHTML){
-            const tr=trList[trIndex+3];
-            const ch=tr.querySelectorAll("input[type='checkbox']")[0];
-            tr.classList.toggle("select");
-            ch.checked = true;
-             trIndex++;
+        let trList;
+        if(io=="o"){
+            trList = document.querySelectorAll("#tboE tr");
+        }else{
+            trList = document.querySelectorAll("#tbiE tr");
+        }
+        let trIndex = tr.rowIndex-1;
+        const trValue= trList[trIndex].cells[0].innerHTML;
+        for(let i=trIndex+1 ;i<trList.length;i++){
+            if(trList[i].cells[0].innerHTML == trValue){
+                trList[i].classList.toggle("select");
+                if(trList[i].querySelector("input[type='checkbox']").checked == false){
+                    trList[i].querySelector("input[type='checkbox']").checked = true;
+                }else{
+                    trList[i].querySelector("input[type='checkbox']").checked = false;
+                };
             }
+        }
+
+        // while(trValue == trList[trIndex].cells[0].innerHTML){
+        //     const tr=trList[trIndex+1];
+        //     const ch=tr.querySelectorAll("input[type='checkbox']")[0];
+        //     tr.classList.toggle("select");
+        //     ch.checked = true;
+        //      trIndex++;
+        //     }
         }
     
         
