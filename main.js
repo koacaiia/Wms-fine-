@@ -173,6 +173,7 @@ function eTable(value){
 
             for(let tdC in tdList){
             let tdE = document.createElement("td");
+            console.log(value[rC]["총출고팔렛트수량"]);
             tdE.innerHTML=value[rC][tdList[tdC]];
             trE.appendChild(tdE);
         }
@@ -245,7 +246,6 @@ function sTable(io){
         tBodyS.appendChild(trS);  
                
         }
-    headerS.appendChild(tHrS);
     tableS.appendChild(tBodyS);
     }
     );
@@ -303,7 +303,6 @@ function dateC(){
     }
 };
 function submitBtn(){
-    let refPath;
     let conMessage="";
     let doc;
     if( io=="o"){
@@ -316,22 +315,18 @@ function submitBtn(){
             ar["keypath"]=tdKey;
             for(let j=0 ;j<serverKeyList.length;j++){
                 ar[serverKeyList[j]]=tr[i].cells[(j+2)].innerHTML;
-                console.log(tr[i].cells[(j+2)].innerHTML);
             }
             const monValue = ar["date"].substring(5,7)+"월";
             ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
             ar["workprocess"]="미";
-            console.log(ar["totalQty"])
-            if(ar["totalQty"]!=""){
-                console.log(ar["totalQty"])
-                ar["totalQty"]=ar["totalQty"]+"PLT"
-            }else{
-                ar["totalQty"]=selRow[tdKey]["totalQty"];
+            if(ar["totalEa"]==""){
+                ar["totalQty"]=parseInt(selRow[tdKey]["totalQty"])+parseInt(ar["totalQty"]);
                 ar["description"]=selRow[tdKey]["description"]+","+ar["description"];
                 ar["managementNo"]=selRow[tdKey]["managementNo"]+","+ar["managementNo"];
                 ar["eaQty"]=selRow[tdKey]["eaQty"]+","+ar["eaQty"];
                 ar["pltQty"]=selRow[tdKey]["pltQty"]+","+ar["pltQty"];
             }
+            ar["totalQty"]=ar["totalQty"]+"PLT";
            selRow[tdKey]=ar;
         }
         for(let i in Object.keys(selRow)){
@@ -380,7 +375,6 @@ function submitBtn(){
                 }
                 conMessage="총 "+trL.length+"건의 입고내역 서버에 등록 하시겠습니까?";
             }
-            
             let sendConfirm = confirm(conMessage);
             if(sendConfirm){
                 const seL = Object.keys(selRow);
@@ -405,12 +399,11 @@ function submitBtn(){
                             }
                             
                         }).catch((e)=>{
-                            alert(e);
                             console.error(e);
                         });
                     }
             }
-    // 
+    
     resetBtn();
     
     }
@@ -597,6 +590,7 @@ function msgLoad(){
         const checkboxes 
             = doc.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach((checkbox) => {
+            checkbox.parentNode.parentNode.classList.remove("select");
             checkbox.checked = event.checked
             checkbox.parentNode.parentNode.classList.toggle("select");
         })
@@ -611,11 +605,9 @@ function msgLoad(){
             docCheck = document.getElementById("tableEo");
         }
         const ch = doc.querySelectorAll("input[type='checkbox']");
-        console.log(ch);
         for(let i=0; i<ch.length;i++){
             ch[i].classList.remove("select");
             if(ch[i].checked){
-                    console.log(ch[i])
                     ch[i].parentNode.parentNode.classList.toggle("select");
                     ch[i].checked = false;
                 }
@@ -645,14 +637,6 @@ function msgLoad(){
                 };
             }
         }
-
-        // while(trValue == trList[trIndex].cells[0].innerHTML){
-        //     const tr=trList[trIndex+1];
-        //     const ch=tr.querySelectorAll("input[type='checkbox']")[0];
-        //     tr.classList.toggle("select");
-        //     ch.checked = true;
-        //      trIndex++;
-        //     }
         }
     
         
