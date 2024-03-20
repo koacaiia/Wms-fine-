@@ -173,7 +173,6 @@ function eTable(value){
 
             for(let tdC in tdList){
             let tdE = document.createElement("td");
-            console.log(value[rC]["총출고팔렛트수량"]);
             tdE.innerHTML=value[rC][tdList[tdC]];
             trE.appendChild(tdE);
         }
@@ -320,6 +319,9 @@ function submitBtn(){
             ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
             ar["workprocess"]="미";
             if(ar["totalEa"]==""){
+                if(isNaN(parseInt(ar["totalQty"]))){
+                    ar["totalQty"]="0";
+                }
                 ar["totalQty"]=parseInt(selRow[tdKey]["totalQty"])+parseInt(ar["totalQty"]);
                 ar["description"]=selRow[tdKey]["description"]+","+ar["description"];
                 ar["managementNo"]=selRow[tdKey]["managementNo"]+","+ar["managementNo"];
