@@ -67,6 +67,37 @@
                                     </table>
                             </div>
                         </li>
+                        <li >
+                            <a href = "#tab3" class="btn">입고 Upload</a>
+                            <div id="tab3" class="cont" >
+                                    <table id="tableE" class="table">
+                                        <thead class="tHead" >
+                                            <tr >
+                                                <th style="width:3%">
+                                                    <input type="checkbox" onclick="allS(this)">
+                                                </th>
+                                                <th>반입일</th>
+                                                <th>컨테이너번호</th>
+                                                <th style="width:6%;font-size:70%">입고유형</th>
+                                                <th>화주명</th>
+                                                <th>비엘</th>
+                                                <th>품명</th>
+                                                <th>찻수/Seal</th>
+                                                <th style="width:6%;font-size:70%">입고수량</th>
+                                                <th style="width:6%;font-size:70%">팔렛트수량</th>
+                                                <th>비고</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbiU" ></tbody>
+                                    </table>
+                                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr">
+                                        <button id="addRow" onclick="addRow()">Add Row</button>
+                                        <button id="copyRow" onclick="copyRow()">Copy Row</button>
+                                        <button id="delRow" onclick="delRow()">Del Row</button>
+                                        <button id="selRowUp" onclick="selUpLoad()">Selected Upload</button>
+                                    </div>                                    
+                            </div>
+                        </li>
                     </ul> 
             </div>
                 <div class="tab_menuO">
@@ -93,8 +124,8 @@
                                 </div>
                         </li>
                     <li >
-                        <a href = "#tab3" class="btn" onclick="getFileO()">출고 EXCEL</a>
-                        <div id="tab3" class="cont">
+                        <a href = "#tab5" class="btn" onclick="getFileO()">출고 EXCEL</a>
+                        <div id="tab5" class="cont">
                                 <table id="tableEo" class="table">
                                     <thead>
                                         <tr>
@@ -122,44 +153,98 @@
             <div id="Info">
                 <button id="infoBtn" onclick="resetBtn()">Selected Data Reset</button>
                 <button id="infoBtnTest" onclick="testBtn()">test</button>
+                <input clsaa="date" type="date" value="yyyy-MM-dd" id="datePicker" onchange="dateC()">
                 <input type="file" class ="fileSearch" id="fileIn" style="display:none" onchange="fileIn(event)">
                 <input type="file" class="fileSearch" id="fileOut" style="display:none" onchange="fileIn(event)">
-                <input clsaa="date" type="date" value="yyyy-MM-dd" id="datePicker" onchange="dateC()">
                 <button class="date" id="submit_btn" onclick="submitBtn()">UpLoad</button>
+                <button id="pltReg" onclick="pltBtn()">Plt 현황</button>
             </div>
             </div>
         <div id="Message">
-            <div id="messageTitle">
-                입,출고 현황
-            </div>
-            <div id="messageContent">
-                
-                <div class="message">
-                <h5>입고로그</h5>
-                    <div id="messageIn" class="msgDiv">
-                        <table  class="msgTable">
-                            <tbody id="msgTableIn">
-
-                            </tbody>
-
-                        </table>
-
+            <div id ="msgDivH">
+                <div id="msgDiv">
+                    <div id="messageTitle">
+                        입,출고 현황
                     </div>
-                </div>
-                <div class="message">
-                    <h5>출고로그</h5>
-                    <div id="messageOut" class="msgDiv">
-                        <table  class="msgTable">
-                            <tbody id="msgTableOut">
-
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-            </div>
+                    <div id="messageContentH">
+                        <div id="messageContent">
+                        
+                            <div class="message">
+                            <h5>입고로그</h5>
+                                <div id="messageIn" class="msgDiv">
+                                    <table  class="msgTable">
+                                        <tbody id="msgTableIn">
             
+                                        </tbody>
+            
+                                    </table>
+            
+                                </div>
+                            </div>
+                            <div class="message">
+                                <h5>출고로그</h5>
+                                <div id="messageOut" class="msgDiv">
+                                    <table  class="msgTable">
+                                        <tbody id="msgTableOut">
+            
+                                        </tbody>
+                                    </table>
+            
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
 
+            </div>
+        <div id="pltDivH" class="msgH">
+            <div id="pltDiv" >
+                <div id="pltTitle" >
+                    <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
+                        <select id="pltClient" onchange="pltClient()" style="height:80%;margin-top:5%">
+                            <option value="0">화주선택</option>
+                        </select>
+                        <input type="text" id="pltClientInput" placeholder="직접입력" style="height:70%;margin-top:5%;margin-bottom:10%">
+                    </div>
+                    <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
+                        <select id="pltType" onchange="pltType()" style="height:80%;margin-top:5%;" >
+                            <option value="0">Pallet Type선택</option>
+                        </select>
+                        <input type="text" id="pltTypeInput" placeholder="직접입력" style="height:70%;margin-top:5%;margin-bottom:10%">
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid black;border-radius: 2%;padding:1%;height:80%;margin-top:2%">
+                        <div style="display:grid;grid-template-rows:1fr 1fr 1fr">
+                            <input type="number" id="pltIn" placeholder="입고" >
+                            <input type="number" id="pltOut" placeholder="출고">
+                            <input type="text" id="pltNote" placeholder="비고">
+                        </div>
+                        <div style="display:grid;grid-template-rows:1fr 1fr">
+                            <input type="date" id="pltDate" value="yyyy-MM-dd" style="text-align: center;">
+                            <button id="pltReg" style="background-color:gray"onclick="pltReg()">사용등록</button>
+                        </div>
+                    </div>    
+                </div>
+                <div id="pltTableDiv" >
+                    <table id="pltTable">
+                        <thead style="width:98.5%">
+                            <tr style="width:98.5%">
+                                <th>날짜</th>
+                                <th>입고</th>
+                                <th>출고</th>
+                                <th>재고</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pltTableTbody">
+                        </tbody>
+                    </table>
+                </div>    
+        
+            </div>       
+            
+        </div>    
+        
         </div>
     </div>
     <script src="main.js" > </script>

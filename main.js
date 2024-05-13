@@ -48,6 +48,7 @@ function transDate(dateT){
     
 }
 document.getElementById("datePicker").value =transDate(new Date());
+document.getElementById("pltDate").value =transDate(new Date());
 let tableHeader;
 function getFileI(){
     document.getElementById("fileIn").click();
@@ -100,6 +101,8 @@ function excelConvert(target){
     }
     
 }
+sTable("i");
+sTable("o");
 function eTable(value){
     let tdList=[];
     let tBodyE; 
@@ -211,10 +214,14 @@ function sTable(io){
                                 let td = document.createElement("td");
                                 td.innerHTML= kL[tdList[tdC]];
                                 td.style.height="5vh";
+                                trS.appendChild(td);
                                 if(tdC == tdList.length-1){
                                     td.style.display="none";
-                                }
-                                trS.appendChild(td);
+                               }
+                               console.log(kL["working"]);
+                               if(kL["working"]!=""){
+                                trS.style.backgroundColor="steelblue";
+                               };
                             }
                         }
                 }};
@@ -243,6 +250,8 @@ function sTable(io){
             trS.appendChild(td);
         }
         tBodyS.appendChild(trS);  
+        if(snapV[kc]["workprocess"]!="미"){
+            trS.style.backgroundColor="steelblue";}
                
         }
     tableS.appendChild(tBodyS);
@@ -254,36 +263,43 @@ const tabList = document.querySelectorAll("li");
 for(var i=0 ;i<tabList.length;i++){
     tabList[i].querySelector(".btn").addEventListener("click", function(e){
         e.preventDefault();
-       
         const selectTab=this.parentNode;
         checkIo(selectTab,selectTab.querySelectorAll(".cont")[0].id);
         });
 }
 function moveTab(n){
     const tabList = document.querySelectorAll("li");
-   
     const selectTab=tabList[n];
     checkIo(selectTab,selectTab.querySelectorAll(".cont")[0].id);
-    // sTable(io);
 }
 function checkIo(tab,id){
-    console.log(id);
+    console.log(tab,id);
     if(id =="tab1"){
         tabList[0].classList.remove("is_onI");
+        tabList[2].classList.remove("is_onI");
         tab.classList.add("is_onI");
         eTable("i");}
         else if(id =="tab2"){
             tabList[1].classList.remove("is_onI");
+            tabList[2].classList.remove("is_onI");
             tab.classList.add("is_onI");
             sTable("i");}
             else if(id =="tab3"){
-                tabList[2].classList.remove("is_onO");
-                tab.classList.add("is_onO");
-                eTable("o");}
+                tabList[0].classList.remove("is_onI");
+                tabList[1].classList.remove("is_onI");
+                tab.classList.add("is_onI");
+                
+            }
                 else if(id =="tab4"){
-                    tabList[3].classList.remove("is_onO");
+                    tabList[4].classList.remove("is_onO");
                     tab.classList.add("is_onO");
                     sTable("o");}
+                    else if(id =="tab5"){
+                        tabList[3].classList.remove("is_onO");
+                        tab.classList.add("is_onO");
+                        eTable("o");
+                    }
+                    
                 }
 
 function thClick(n){
@@ -396,7 +412,7 @@ function submitBtn(){
                                     moveTab(1);
                                 }else{
                                     alert("출고 총 "+seL.length+"출고건 서버등록 되었습니다.");
-                                    moveTab(3);
+                                    moveTab(4);
                                 }
                             }
                             
@@ -537,7 +553,6 @@ function msgLoad(){
             tDiv.appendChild(content);
             tr.appendChild(tDiv);
             let inOut="";
-            console.log(value[v]["inOutCargo"])
             if(value[v]["inOutCargo"] =="OutCargo"){
                 tO.appendChild(tr);
                 inOut="/OutCargo/";
@@ -640,6 +655,244 @@ function msgLoad(){
             }
         }
         }
+    function pltBtn(){
+        const msgDiv= document.getElementById("msgDivH");
+        const pltDiv = document.getElementById("pltDivH");
+        msgDiv.classList.toggle("msgH");
+        pltDiv.classList.toggle("msgH");        
+        const pltBtn = document.getElementById("pltReg");
+        if(pltBtn.innerHTML =="Plt 현황"){
+            pltBtn.innerHTML="입,출고 현황";}
+            else{
+                pltBtn.innerHTML="Plt 현황";
+            }
+    }
+    let pltData={};
+    const selClient = document.getElementById("pltClient");
+    database_f.ref("DeptName/"+deptName+"/PltManagement").get().then((snapshot)=>{
+            const value = snapshot.val();
+            pltData=value;
+            for(let c in value){
+                const option = document.createElement("option");
+                option.innerHTML=c;
+                selClient.appendChild(option);
+    }
+    });
+    function pltClient(){
+        const clientValue= selClient.value;
+        const pltType = document.getElementById("pltType");
+            pltType.replaceChildren();
+            const op=document.createElement("option");
+            op.innerHTML="Type선택";
+            pltType.appendChild(op);
+            for(let c in pltData[clientValue]){
+                const option = document.createElement("option");
+                option.innerHTML=c;
+                pltType.appendChild(option);
+            }
+            
+        
+    }
     
+    function pltType(){
+       pltDataTable();
+    }
+   
+    function pltReg(){
+        const date= document.getElementById("pltDate");
+        const inQty=document.getElementById("pltIn");
+        const outQty=document.getElementById("pltOut");
+        const remark=document.getElementById("pltNote");
+        const confirmPlt = confirm("입고수량 : "+inQty.value+"\n"+"출고수량 : "+outQty.value+"\n"+"재고수량 : "+remark.value+"\n"+"위 내용으로 등록 하시겠습니까?");
+        if(confirmPlt){
+            const client = document.getElementById("pltClient").value;
+            const time = new Date().getTime();
+            const type = document.getElementById("pltType").value;
+            const refPath = "DeptName/"+deptName+"/PltManagement/"+client+"/"+type+"/"+date.value+"_"+time;
+            const pltValue = {"date":date.value,"inQty":inQty.value,"outQty":outQty.value,"remark":remark.value};
+            database_f.ref(refPath).update(pltValue).then(()=>{
+                alert("Plt 현황이 등록 되었습니다.");
+                pltDataTable();
+                inQty.value=null;
+                outQty.value=null;
+                remark.value=null;
+            }).catch((e)=>{
+                console.error(e);
+            });
+        }
+    }
+    
+    function pltDataTable(){
+        const tbody=document.getElementById("pltTableTbody");
+        tbody.replaceChildren();
+        const client = document.getElementById("pltClient").value;
+        const type = document.getElementById("pltType").value;
+        database_f.ref("DeptName/"+deptName+"/PltManagement/"+client+"/"+type).get().then((snapshot)=>{
+            let value = snapshot.val();
+            let values = Object.values(value);
+            values=values.sort(function(a,b){
+                return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+            });
+            let totalIn=0;
+            let totalOut=0;
+            for(let p in values){
+                const tr = document.createElement("tr");
+                tbody.appendChild(tr);
+                const pltTh =["date","inQty","outQty","stockQty","remark"];
+                if(values[p]["inQty"]==""){
+                    values[p]["inQty"]=0;
+                }
+                if(values[p]["outQty"]==""){
+                    values[p]["outQty"]=0;
+                }
+                totalIn = totalIn+parseInt(values[p]["inQty"]);
+                totalOut = totalOut+parseInt(values[p]["outQty"]);
+                for(let t in pltTh){
+                    const td = document.createElement("td");
+                    console.log(totalIn,totalOut,pltTh[t]);
+                    if(pltTh[t]=="stockQty"){
+                        console.log("stockQty",parseInt(totalIn)-parseInt(totalOut));
+                        td.innerHTML=parseInt(totalIn)-parseInt(totalOut);
+                    }else{
+                        td.innerHTML=values[p][pltTh[t]];
+                        if(values[p][pltTh[t]]==undefined){
+                            td.innerHTML="";
+                        }
+                    }
+                    
+                    tr.appendChild(td);
+                }
+            }
+           
+        });
+    }
+    function addRow(){
+        const body=document.getElementById("tbiU");
+        const tr = document.createElement("tr");
+        const td= document.createElement("td");
+        const ch = document.createElement("input");
+        ch.setAttribute("type","checkbox");
+        ch.addEventListener("click",function(e){
+            const tr = e.target.parentNode.parentNode;
+            tr.classList.toggle("select");
+        });
+        td.appendChild(ch);
+        tr.appendChild(td);
+        const tdD = document.createElement("td");
+        const tdDate = document.createElement("input");
+        tdDate.setAttribute("type","date");
+        tdDate.value=transDate(new Date());
+        tdD.appendChild(tdDate);
+        tr.appendChild(tdD);
+        for(let i=0;i<9;i++){
+            if(i==1){
+                const td = document.createElement("td");
+                const select = document.createElement("select");
+                const typeList =["Type","40Ft","20Ft","Console","LCL"];
+                for(let t in typeList){
+                    const option = document.createElement("option");
+                    option.innerHTML=typeList[t];
+                    option.value=typeList[t];
+                    select.appendChild(option);
+                }
+                select.style.height="90%";
+                select.style.width="90%";
+                td.appendChild(select);
+                tr.appendChild(td);
+            }else{
+                const td = document.createElement("td");
+                const input = document.createElement("input");
+                input.setAttribute("type","text");
+                input.style.height="90%";
+                input.style.width="90%";
+                td.appendChild(input);
+                tr.appendChild(td);
+            }
+        }
+        body.appendChild(tr);
+    }
+    function delRow(e){
+        const body=document.getElementById("tbiU");
+        const tr = body.querySelectorAll("tr");
+        for(let i=0;i<tr.length;i++){
+            if(tr[i].classList.contains("select")){
+                body.removeChild(tr[i]);
+            }
+        }
+    }
+    function selUpLoad(){
+        const body=document.getElementById("tbiU");
+        const tr = body.querySelectorAll(".select");
+        let selRow={};
+        for(let i=0;i<tr.length;i++){
+            let ar={};
+            for(let key=0;key<key_f.length-4;key++){
+                if(key ==2){
+                    const type=tr[i].cells[3].querySelector("select").value;
+                    if(type=="40Ft"){
+                        ar["container40"]="1";
+                        ar["container20"]="0";
+                        ar["lclcargo"]="0";
+                    }else if(type =="20Ft"){
+                        ar["container40"]="0"; 
+                        ar["container20"]="1";
+                        ar["lclcargo"]="0";
+                    }else if(type =="LCL"){
+                        ar["container40"]="0";
+                        ar["container20"]="0";
+                        ar["lclcargo"]="1";
+                    }else{
+                        ar["container40"]="0";
+                        ar["container20"]="0";
+                        ar["lclcargo"]="0";
+                    }
+                }else{
+                    ar[key_f[key]]=tr[i].cells[parseInt(key)+parseInt(1)].querySelector("input").value;
+                }
+            }
+            const month = ar["date"].substring(5,7)+"월";
+            ar["keyValue"]=ar["date"]+"_"+ar["bl"]+"_"+ar["description"]+"_"+ar["count"]+"_"+ar["container"];
+            ar["refValue"]="DeptName/"+deptName+"/InCargo/"+month+"/"+ar["date"]+"/"+ar["keyValue"];
+            ar["working"]="";
+            ar["location"]=""; 
+           
+            selRow[i]=ar;
+        }
+        for(let r in selRow){
+            // database_f.ref(ar["refValue"]).update(ar).then(()=>{
+            //     console.log("Successfully uploaded",ar["refValue"]);
+            // }).catch((e)=>{
+            //     console.error(e);
+            // });
+            console.log(selRow[r]);
+        }
+        body.replaceChildren();
+        }
+    function copyRow(){
+        const body=document.getElementById("tbiU");
+        const tr = body.querySelectorAll(".select");
+        if(tr.length>1){
+            alert("하나의 행만 선택해 주세요.");}
+            else{
+                tr[0].classList.toggle("select");
+                const ch=tr[0].querySelector("input[type='checkbox']");
+                ch.checked=false;
+                const trC = tr[0].cloneNode(true);
+                trC.rowIndex=tr[0].rowIndex+1;
+                body.insertBefore(trC,tr[0]);
+                
+                const trL = body.querySelectorAll("tr");
+                // const trCloned = trL[trC.rowIndex-1];
+                const chC = trL[trC.rowIndex-1].querySelector("input[type='checkbox']");
+                chC.addEventListener("click",function(e){
+                    e.target.parentNode.parentNode.classList.toggle("select");
+                    console.log(trCloned.rowIndex,e.target);
+                });
+
+                // // body.appendChild(trC);
+            }
+    }    
+        
+
         
        

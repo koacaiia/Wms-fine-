@@ -107,17 +107,23 @@ td{
     overflow-y:scroll;
     width:20vw;
 }
-#Message{
+#msgDiv{
     display:grid;
     grid-template-rows:0.5fr 10fr;
     height:95vh;
 
+}
+#pltDiv{
+    display:grid;
+    grid-template-rows:1fr 9fr;
+    height:95vh;
 }
 .msgDiv{
     border:0.5px solid black;
     height:100%;
     width:20vw;
 }
+
 #messageContent{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -159,8 +165,10 @@ height:8vh;
 .listI li{float:left;}
 .listI .btn{width:100px;font-size:13px; margin-right:14px;}
 .listI .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%; height:90%; left:10px}
+.listI .contU{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%; height:90%; left:10px}
 .is_onI .btn{font-weight:bold; color:red;background: gray;width:150px}
 .is_onI .cont{display:block;background:gray;overflow-y: scroll;}
+.is_onI .contU{display:grid;grid-template-rows:9fr 1fr;overflow-y: scroll;}
 
 .tab_menuO {position:relative;}
 .listO{overflow:hidden;}
@@ -170,3 +178,17 @@ height:8vh;
 .is_onO .btn{font-weight:bold; color:red;background: gray;width:150px}
 .is_onO .cont{display:block;background:gray;overflow-y:scroll}
 
+.msgH{
+    display:none;
+}
+#pltTitle{
+    display:grid;
+    grid-template-columns:1fr 1fr 2fr;
+}
+#pltTable{
+    table-layout:fixed;
+    width:100%;
+}
+#pltTable th{
+    color:white;
+}
