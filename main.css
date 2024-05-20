@@ -4,7 +4,6 @@ body{
 }
 #Main{
     height:98vh;
-    width:98vw;
     display:grid;
     grid-template-columns:60vw 40vw;
 }

@@ -199,13 +199,15 @@ function sTable(io){
     const tdList =["date","container","container40","consignee","bl","description","count","incargo","Pqty","remark","keyValue"];
     let tableS = document.getElementById("tableS");
     let tBodyS = document.getElementById("tbiS");
-
+    let containerList =[];    
     for(let kc in snapV){
         let kL =snapV[kc];
             let keyValue = Object.keys(kL);
             let value1 = Object.values(kL);
             let trS = document.createElement("tr");
             trS.style.height="5vh";
+            if(kL["working"]!=""){
+            containerList.push(kL["container"]);}
 
             if(keyValue !='json 등록시 덥어쓰기 바랍니다'){
                 if(Object.values(value1) != 'json 등록시 덥어쓰기 바랍니다' ||Object.keys(value1) != 'json 등록시 덥어쓰기 바랍니다'){
@@ -218,16 +220,20 @@ function sTable(io){
                                 if(tdC == tdList.length-1){
                                     td.style.display="none";
                                }
-                               console.log(kL["working"]);
-                               if(kL["working"]!=""){
-                                trS.style.backgroundColor="steelblue";
-                               };
+                              
                             }
                         }
                 }};
                 tBodyS.appendChild(trS);  
     };
     tableS.appendChild(tBodyS);
+    const trContainer = tBodyS.querySelectorAll("tr");
+    for(let r=0;r<trContainer.length;r++){
+        const containerName = trContainer[r].cells[1].innerHTML;
+        if(containerList.includes(containerName)){
+            trContainer[r].style.backgroundColor="steelblue";
+        }
+    }
     }
     );
     }else{
@@ -891,6 +897,12 @@ function msgLoad(){
 
                 // // body.appendChild(trC);
             }
+    }
+    function incargoExcel(){
+        const dateValue= document.getElementById("datePicker").value;
+        const fileName = dateValue+"_"+deptName+"_입고내역.xlsx";
+        const wb = XLSX.utils.table_to_book(document.getElementById("tableS"),{sheet:dateValue+"입고내역",raw:true});
+        XLSX.writeFile(wb,fileName);
     }    
         
 
