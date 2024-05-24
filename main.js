@@ -554,7 +554,7 @@ function msgLoad(){
             content.innerHTML=msgContent;
             tDiv.style.border="0.5px solid black";
             tDiv.style.borderRadius="1px";
-            tDiv.style.width="20vw";
+            tDiv.style.width="100%";
             tDiv.appendChild(h6);
             tDiv.appendChild(content);
             tr.appendChild(tDiv);
@@ -903,7 +903,23 @@ function msgLoad(){
         const fileName = dateValue+"_"+deptName+"_입고내역.xlsx";
         const wb = XLSX.utils.table_to_book(document.getElementById("tableS"),{sheet:dateValue+"입고내역",raw:true});
         XLSX.writeFile(wb,fileName);
-    }    
+    }
+    const mainTabList = document.querySelectorAll(".mainTab");
+    console.log(mainTabList)
+    for(let i=0; i<mainTabList.length;i++ ){
+        const tabI= document.getElementById("tabI");
+        const tabO= document.getElementById("tabO");
+        mainTabList[i].addEventListener("click",function(e){
+            const idValue= e.target.id;
+            if(idValue=="tabMenuI"){
+                tabI.style.display="grid";
+                tabO.style.display="none";
+            }else if(idValue=="tabMenuO"){
+                tabI.style.display="none";
+                tabO.style.display="grid";
+            }
+        });
+    };
         
 
         
