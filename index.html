@@ -32,7 +32,7 @@
         <div id="File">
             <div class="tabMenu" id="tabI" style="border:1px solid black;">
                 <div class="tab_menuI" style="display:grid;grid-template-rows:5vh 85vh;border:1px solid black;height:90vh;">
-                    <div style="display:grid;grid-template-columns:5fr 1fr">
+                    <div style="display:grid;grid-template-columns:3fr 1fr">
                     <ul class="listI" >
                          <li class="is_onI">
                             <a href="#tab2" class ="btn">입고 SERVER</a>
@@ -113,8 +113,9 @@
                             </div>
                         </li>
                     </ul>
-                    <div >
-                        <button id="incargoExcel" onclick="incargoExcel()" style="margin-top:5%">Incargo Excel</button>
+                    <div style="display:grid;grid-template-columns:1fr 1fr">
+                        <button id="incargoExcel" onclick="incargoExcel()" style="margin-top:5%;margin-bottom: 10%;">Incargo Excel</button>
+                        <button id="incargoUpdate" onclick="incargoUpdate()" style="margin-top:5%;margin-bottom:10%">Incargo Update</button>
                     </div> 
                 </div>
             </div>
@@ -178,6 +179,19 @@
                 
             </div>    
             
+            </div>
+            <div id="tabInDiv" style="display:none;">
+                <div style="display:grid;grid-template-columns:1fr 1fr">
+                    <h5>입고 업로드</h5> 
+                    <button id="returnMsg" onclick="returnMsg()">입고현황 돌아가기</button>
+                    <script>
+                        function returnMsg(){
+                            document.getElementById("tabInDiv").style.display="none";
+                            document.getElementById("Message").style.display="grid";
+                        }
+                    </script>    
+                 </div>   
+                
             </div>
             </div>
             <div class="tabMenu" id="tabO" style="display:none">

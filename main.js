@@ -861,8 +861,8 @@ function msgLoad(){
             ar["refValue"]="DeptName/"+deptName+"/InCargo/"+month+"/"+ar["date"]+"/"+ar["keyValue"];
             ar["working"]="";
             ar["location"]=""; 
-           
             selRow[i]=ar;
+            console.log(selRow[i]["container"])
         }
         for(let r in selRow){
             // database_f.ref(ar["refValue"]).update(ar).then(()=>{
@@ -920,6 +920,12 @@ function msgLoad(){
             }
         });
     };
+    function incargoUpdate(){
+        const msgDiv= document.getElementById("Message");
+        msgDiv.style.display="none";
+        const upDiv =document.getElementById("tabInDiv");
+        upDiv.style.display="grid";
+    }
         
 
         
