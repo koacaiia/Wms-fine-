@@ -925,6 +925,7 @@ function msgLoad(){
         msgDiv.style.display="none";
         const upDiv =document.getElementById("tabInDiv");
         upDiv.style.display="grid";
+        upDiv.style.gridTemplateRows="5vh 85vh";
     }
         
 
