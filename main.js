@@ -189,7 +189,6 @@ function eTable(value){
 
 function sTable(io){
     const dateValue= document.getElementById("datePicker").value;
-    console.log(io);
     if(io=="i"){
     document.getElementById("tbiS").replaceChildren();
     const monValue = dateValue.substring(5,7)+"월";
@@ -234,8 +233,17 @@ function sTable(io){
             trContainer[r].style.backgroundColor="steelblue";
         }
     }
-    }
-    );
+    trContainer.forEach((tr)=>{tr.addEventListener("click",function(e){
+        const rowIndex = e.target.parentNode.rowIndex;
+        console.log(trContainer[rowIndex-1].cells[1].innerHTML);
+        const tabInDiv = document.getElementById("tabInDiv");
+        const tabInDivCheck =tabInDiv.style.display;
+        if(tabInDivCheck=="none"){
+            incargoUpdate(trContainer[rowIndex-1]);
+        }
+
+    })});
+    });
     }else{
     const dateValue = document.getElementById("datePicker").value;
     const monValue = dateValue.substring(5,7)+"월";
@@ -920,12 +928,31 @@ function msgLoad(){
             }
         });
     };
-    function incargoUpdate(){
+    function incargoUpdate(v){
+        console.log(v);
         const msgDiv= document.getElementById("Message");
         msgDiv.style.display="none";
         const upDiv =document.getElementById("tabInDiv");
         upDiv.style.display="grid";
         upDiv.style.gridTemplateRows="5vh 85vh";
+        const infoDiv=document.getElementById("infoDiv");
+        const thList = document.querySelectorAll("#tableS th");
+        for(let i=0;i<thList.length;i++){
+            const tr = document.createElement("tr");
+            const tdH = document.createElement("td");
+            tdH.innerHTML=thList[i].innerHTML;
+            const td = document.createElement("td");
+            const tdInput = document.createElement("input");
+            tdInput.setAttribute("type","text");
+            tdInput.value=v.cells[i].innerHTML;
+            td.appendChild(tdInput);
+            tr.appendChild(tdH);
+            tr.appendChild(td);
+            infoDiv.appendChild(tr);
+
+        }
+        
+
     }
         
 
