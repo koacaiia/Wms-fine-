@@ -929,13 +929,13 @@ function msgLoad(){
         });
     };
     function incargoUpdate(v){
-        console.log(v);
         const msgDiv= document.getElementById("Message");
         msgDiv.style.display="none";
         const upDiv =document.getElementById("tabInDiv");
         upDiv.style.display="grid";
         upDiv.style.gridTemplateRows="5vh 85vh";
         const infoDiv=document.getElementById("infoDiv");
+        infoDiv.replaceChildren();
         const thList = document.querySelectorAll("#tableS th");
         for(let i=0;i<thList.length;i++){
             const tr = document.createElement("tr");
@@ -949,12 +949,9 @@ function msgLoad(){
             tr.appendChild(tdH);
             tr.appendChild(td);
             infoDiv.appendChild(tr);
-
         }
-        
-
-    }
-        
+        const keyValue = v.cells[0].innerHTML+"_"+v.cells[4].innerHTML+"_"+v.cells[5].innerHTML+"_"+v.cells[6].innerHTML+"_"+v.cells[1].innerHTML;
+    }     
 
         
        
