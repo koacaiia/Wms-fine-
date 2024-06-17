@@ -238,7 +238,6 @@ function sTable(io){
     }
     trContainer.forEach((tr)=>{tr.addEventListener("click",function(e){
         const rowIndex = e.target.parentNode.rowIndex;
-        console.log(trContainer[rowIndex-1].cells[1].innerHTML);
         const tabInDiv = document.getElementById("tabInDiv");
         const tabInDivCheck =tabInDiv.style.display;
         if(tabInDivCheck=="none"){
@@ -915,7 +914,6 @@ function msgLoad(){
         XLSX.writeFile(wb,fileName);
     }
     const mainTabList = document.querySelectorAll(".mainTab");
-    console.log(mainTabList)
     for(let i=0; i<mainTabList.length;i++ ){
         const tabI= document.getElementById("tabI");
         const tabO= document.getElementById("tabO");
@@ -944,16 +942,101 @@ function msgLoad(){
             const tdH = document.createElement("td");
             tdH.innerHTML=thList[i].innerHTML;
             const td = document.createElement("td");
-            const tdInput = document.createElement("input");
-            tdInput.setAttribute("type","text");
-            tdInput.value=v.cells[i].innerHTML;
+            let tdInput; 
+            if(i==2){
+                tdInput= document.createElement("select");
+                const typeList=["20Ft","40Ft","LCL"];
+                for(let t in typeList){
+                    const option = document.createElement("option");
+                    option.innerHTML=typeList[t];
+                    option.value=typeList[t];
+                    tdInput.appendChild(option);
+                }
+
+            }else{
+                tdInput = document.createElement("input");
+                tdInput.setAttribute("type","text");
+                tdInput.value=v.cells[i].innerHTML;
+            }
+            tdInput.setAttribute("class","infoInput");
             td.appendChild(tdInput);
             tr.appendChild(tdH);
             tr.appendChild(td);
             infoDiv.appendChild(tr);
         }
-        const keyValue = v.cells[0].innerHTML+"_"+v.cells[4].innerHTML+"_"+v.cells[5].innerHTML+"_"+v.cells[6].innerHTML+"_"+v.cells[1].innerHTML;
-    }     
+        bKeyValue = v.cells[0].innerHTML+"_"+v.cells[4].innerHTML+"_"+v.cells[5].innerHTML+"_"+v.cells[6].innerHTML+"_"+v.cells[1].innerHTML;
+        
+    }
+    
+    function infoUp(){
+        const infoValueList= infoDiv.querySelectorAll(".infoInput");
+        // console.log(infoValueList);
+        // const infoSelList = infoDiv.querySelectorAll("select");
+        // console.log(infoSelList[0].value);
+        // infoValueList.splice(2,0,infoSelList[0].value);
+        console.log(infoValueList);
+        aKeyValue =infoValueList[0].value+"_"+infoValueList[4].value+"_"+infoValueList[5].value+"_"+infoValueList[6].value+"_"+infoValueList[1].value;
+        let upCheck = confirm(aKeyValue+"\n값을 DataBase Key 로 Upload 하시겠습니까?");
+        let upData={};
+        if(upCheck){
+            for(let i=0;i<10;i++){
+                console.log(infoValueList[i].value);
+                upData[[key_f[i]]]=infoValueList[i].value;
+            }
+            if(upData["spec"]=="20Ft"){
+                upData["container40"]="0";
+                upData["container20"]="1";
+                upData["lclcargo"]="0";
+            }else if(upData["spec"]=="40Ft"){
+                upData["container40"]="1";
+                upData["container20"]="0";
+                upData["lclcargo"]="0";
+            }else{
+                upData["container40"]="0";
+                upData["container20"]="0";
+                upData["lclcargo"]="1";
+            }
+            const monValue = upData["date"].substring(5,7)+"월";
+            const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+upData["date"]+"/"+aKeyValue;
+            if(upData["incargo"]==""){
+                upData["incargo"]="0";
+            }
+            upData["keyValue"]=aKeyValue;
+            upData["refValue"]=refValue;
+            database_f.ref(refValue).update(upData).then(()=>{
+                // const toast= document.createElement("div");
+                // toast.setAttribute("id","tost_message");
+                // toast.innerHTML=aKeyValue+"값이 DataBase에 Upload 되었습니다.";
+                // document.body.appendChild(toast);
+                // toast.classList.add("show");
+                // setTimeout(function(){
+                //     toast.className=toast.className.replace("show","");
+                //     document.body.removeChild(toast);
+                // },3000)
+                location.reload();
+                // location.reload();
+                // alert(aKeyValue+"\n값이 DataBase에 Upload 되었습니다.");
+            }).catch((e)=>{
+                console.error(e);
+            });
+        }
+    }
+    function infoDel(){
+        let delCheck = confirm(bKeyValue+"\nKey 값을 Database에서 Delete 하시겠습니까?");
+        const dateValue= bKeyValue.substring(0,10);
+        const monthValue = dateValue.substring(5,7)+"월";
+        if(delCheck){
+            database_f.ref("DeptName/"+deptName+"/InCargo/"+monthValue+"/"+dateValue+"/"+bKeyValue).remove().then(()=>{
+                alert(bKeyValue+"\nKey 값이 Database에서 Delete 되었습니다.");
+                location.reload();
+            }).catch((e)=>{
+                console.error(e);
+            });
+        }
+    }
+
+    //toast message
+
 
         
        

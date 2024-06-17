@@ -191,8 +191,7 @@ height:8vh;
 #pltTable th{
     color:white;
 }
-<<<<<<< HEAD
-=======
+
 .tabMenu{
     display:grid;
     grid-template-columns:75fr 25fr;
@@ -218,5 +217,9 @@ height:8vh;
 #tost_message.show{
     opacity:1;
     bottom:50px;
+<<<<<<< HEAD
+}
+>>>>>>> 661adc9 (0617)
+=======
 }
 >>>>>>> 661adc9 (0617)
