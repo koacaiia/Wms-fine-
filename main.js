@@ -191,7 +191,6 @@ function eTable(value){
 
 function sTable(io){
     const dateValue= document.getElementById("datePicker").value;
-    console.log(io);
     if(io=="i"){
     document.getElementById("tbiS").replaceChildren();
     const monValue = dateValue.substring(5,7)+"월";
@@ -563,7 +562,7 @@ function msgLoad(){
             content.innerHTML=msgContent;
             tDiv.style.border="0.5px solid black";
             tDiv.style.borderRadius="1px";
-            tDiv.style.width="20vw";
+            tDiv.style.width="100%";
             tDiv.appendChild(h6);
             tDiv.appendChild(content);
             tr.appendChild(tDiv);
@@ -870,8 +869,8 @@ function msgLoad(){
             ar["refValue"]="DeptName/"+deptName+"/InCargo/"+month+"/"+ar["date"]+"/"+ar["keyValue"];
             ar["working"]="";
             ar["location"]=""; 
-           
             selRow[i]=ar;
+            console.log(selRow[i]["container"])
         }
         for(let r in selRow){
             database_f.ref(ar["refValue"]).update(ar).then(()=>{
