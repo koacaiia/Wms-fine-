@@ -19,6 +19,8 @@ const key_f = ['date','container','spec','consignee','bl', 'description','count'
 let selRow={};
 let initRow={};
 let io;
+let bKeyValue;
+let aKeyValue;
 if ('serviceWorker' in navigator) {
 navigator.serviceWorker.register('/firebase-messaging-sw.js')
     .then(function(registration) {
@@ -234,8 +236,17 @@ function sTable(io){
             trContainer[r].style.backgroundColor="steelblue";
         }
     }
-    }
-    );
+    trContainer.forEach((tr)=>{tr.addEventListener("click",function(e){
+        const rowIndex = e.target.parentNode.rowIndex;
+        console.log(trContainer[rowIndex-1].cells[1].innerHTML);
+        const tabInDiv = document.getElementById("tabInDiv");
+        const tabInDivCheck =tabInDiv.style.display;
+        if(tabInDivCheck=="none"){
+            incargoUpdate(trContainer[rowIndex-1]);
+        }
+
+    })});
+    });
     }else{
     const dateValue = document.getElementById("datePicker").value;
     const monValue = dateValue.substring(5,7)+"월";
@@ -402,7 +413,6 @@ function submitBtn(){
             let sendConfirm = confirm(conMessage);
             if(sendConfirm){
                 const seL = Object.keys(selRow);
-                console.log(seL);
                 const seLlast = seL[seL.length-1];
                 for (let i in selRow){
                         if( io=="o"){
@@ -830,8 +840,8 @@ function msgLoad(){
         const body=document.getElementById("tbiU");
         const tr = body.querySelectorAll(".select");
         let selRow={};
+        let ar={};
         for(let i=0;i<tr.length;i++){
-            let ar={};
             for(let key=0;key<key_f.length-4;key++){
                 if(key ==2){
                     const type=tr[i].cells[3].querySelector("select").value;
@@ -865,11 +875,11 @@ function msgLoad(){
             selRow[i]=ar;
         }
         for(let r in selRow){
-            // database_f.ref(ar["refValue"]).update(ar).then(()=>{
-            //     console.log("Successfully uploaded",ar["refValue"]);
-            // }).catch((e)=>{
-            //     console.error(e);
-            // });
+            database_f.ref(ar["refValue"]).update(ar).then(()=>{
+                console.log("Successfully uploaded",ar["refValue"]);
+            }).catch((e)=>{
+                console.error(e);
+            });
             console.log(selRow[r]);
         }
         body.replaceChildren();
@@ -903,8 +913,47 @@ function msgLoad(){
         const fileName = dateValue+"_"+deptName+"_입고내역.xlsx";
         const wb = XLSX.utils.table_to_book(document.getElementById("tableS"),{sheet:dateValue+"입고내역",raw:true});
         XLSX.writeFile(wb,fileName);
-    }    
-        
+    }
+    const mainTabList = document.querySelectorAll(".mainTab");
+    console.log(mainTabList)
+    for(let i=0; i<mainTabList.length;i++ ){
+        const tabI= document.getElementById("tabI");
+        const tabO= document.getElementById("tabO");
+        mainTabList[i].addEventListener("click",function(e){
+            const idValue= e.target.id;
+            if(idValue=="tabMenuI"){
+                tabI.style.display="grid";
+                tabO.style.display="none";
+            }else if(idValue=="tabMenuO"){
+                tabI.style.display="none";
+                tabO.style.display="grid";
+            }
+        });
+    };
+    function incargoUpdate(v){
+        const msgDiv= document.getElementById("Message");
+        msgDiv.style.display="none";
+        const upDiv =document.getElementById("tabInDiv");
+        upDiv.style.display="grid";
+        upDiv.style.gridTemplateRows="5vh 85vh";
+        const infoDiv=document.getElementById("infoDiv");
+        infoDiv.replaceChildren();
+        const thList = document.querySelectorAll("#tableS th");
+        for(let i=0;i<thList.length;i++){
+            const tr = document.createElement("tr");
+            const tdH = document.createElement("td");
+            tdH.innerHTML=thList[i].innerHTML;
+            const td = document.createElement("td");
+            const tdInput = document.createElement("input");
+            tdInput.setAttribute("type","text");
+            tdInput.value=v.cells[i].innerHTML;
+            td.appendChild(tdInput);
+            tr.appendChild(tdH);
+            tr.appendChild(td);
+            infoDiv.appendChild(tr);
+        }
+        const keyValue = v.cells[0].innerHTML+"_"+v.cells[4].innerHTML+"_"+v.cells[5].innerHTML+"_"+v.cells[6].innerHTML+"_"+v.cells[1].innerHTML;
+    }     
 
         
        
