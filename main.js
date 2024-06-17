@@ -239,9 +239,7 @@ function sTable(io){
         const rowIndex = e.target.parentNode.rowIndex;
         const tabInDiv = document.getElementById("tabInDiv");
         const tabInDivCheck =tabInDiv.style.display;
-        if(tabInDivCheck=="none"){
             incargoUpdate(trContainer[rowIndex-1]);
-        }
 
     })});
     });
@@ -932,7 +930,7 @@ function msgLoad(){
         msgDiv.style.display="none";
         const upDiv =document.getElementById("tabInDiv");
         upDiv.style.display="grid";
-        upDiv.style.gridTemplateRows="5vh 85vh";
+        upDiv.style.gridTemplateRows="10vh 80vh";
         const infoDiv=document.getElementById("infoDiv");
         infoDiv.replaceChildren();
         const thList = document.querySelectorAll("#tableS th");
@@ -967,15 +965,25 @@ function msgLoad(){
         
     }
     
-    function infoUp(){
+    function infoUp(v){
+        console.log(v.id);
         const infoValueList= infoDiv.querySelectorAll(".infoInput");
-        // console.log(infoValueList);
-        // const infoSelList = infoDiv.querySelectorAll("select");
-        // console.log(infoSelList[0].value);
-        // infoValueList.splice(2,0,infoSelList[0].value);
-        console.log(infoValueList);
         aKeyValue =infoValueList[0].value+"_"+infoValueList[4].value+"_"+infoValueList[5].value+"_"+infoValueList[6].value+"_"+infoValueList[1].value;
-        let upCheck = confirm(aKeyValue+"\n값을 DataBase Key 로 Upload 하시겠습니까?");
+        let upCheck;
+        if(v.id=="infoUp"){
+            upCheck = confirm(bKeyValue+" 값에 이어서 \n"+aKeyValue+" 값을 \n DataBase Key 로 Upload 하시겠습니까?");
+           
+        }else{
+            upCheck = confirm(bKeyValue+" 값을 삭제후 \n"+aKeyValue+" 값을 \n DataBase Key 로 Upload 하시겠습니까?");
+            if(upCheck){
+                database_f.ref("DeptName/"+deptName+"/InCargo/"+monthValue+"/"+dateValue+"/"+bKeyValue).remove().then(()=>{
+                    alert(bKeyValue+"\nKey 값이 Database에서 Delete 되었습니다.");
+                    location.reload();
+                }).catch((e)=>{
+                    console.error(e);
+                });
+            }
+        }
         let upData={};
         if(upCheck){
             for(let i=0;i<10;i++){

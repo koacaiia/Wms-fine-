@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -181,9 +180,9 @@
             
             </div>
             <div id="tabInDiv" style="display:none;">
-                    <h5 style="text-align: center;">입고 업로드</h5> 
+                    <h5 style="text-align: center;align-items: center;">입고 업로드</h5> 
                         
-                <div style="display:grid;grid-template-rows:5vh 80vh">
+                <div style="display:grid;grid-template-rows:10vh 7vh">
                     <div id="infoBtnDiv" style="display:grid;grid-template-columns:1fr 1fr 1fr">
                         <button class="infoBtn" id="infoRe" onclick="infoRe()">입고현황 돌아가기</button>
                         <script>
@@ -192,9 +191,11 @@
                                 document.getElementById("Message").style.display="grid";
                             }
                         </script>
-                        <button class="infoBtn" id="infoUp" onclick="infoUp()">입고업로드</button>
+                        <div style="display:grid;grid-template-rows: 1fr 1fr">
+                                <button class="infoBtn" id="infoUp" onclick="infoUp(this)">이어쓰기</button>
+                                <button class="infoBtn" id="infoNew" onclick="infoUp(this)">덮어쓰기</button>
+                        </div>
                         <button class="infoBtn" id="infoDel" onclick="infoDel()">입고삭제</button>
-
                     </div>
                     <div id="infoDiv">
 
