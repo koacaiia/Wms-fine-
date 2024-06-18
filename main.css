@@ -155,7 +155,6 @@ height:8vh;
     width:20vw;
     overflow:scroll;
 }
-.tab_menuI {position:relative;}
 .listI{overflow:hidden;margin-top:2%;margin-bottom: 0;}
 .listI li{float:left;}
 .listI .btn{width:100px;font-size:13px; margin-right:14px;}
@@ -165,8 +164,7 @@ height:8vh;
 .is_onI .cont{display:block;background:gray;overflow-y: scroll;}
 .is_onI .contU{display:grid;grid-template-rows:9fr 1fr;overflow-y: scroll;}
 
-.tab_menuO {height:89vh;position:relative;}
-.listO{overflow:hidden;}
+.listO{overflow:hidden;margin-top:2%;margin-bottom: 0;}
 .listO li{float:left;}
 .listO .btn{width:100px;font-size:13px; margin-right:14px;}
 .listO .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%;  left:10px}
@@ -191,10 +189,13 @@ height:8vh;
     display:grid;
     grid-template-columns:75fr 25fr;
     height:90vh;
+    border:1px solid black;
 }
 #Message{
     display:grid;
-    grid-template-rows:5fr 95fr;
+    grid-template-rows:5vh 85vh;
+    border:1px solid black;
+    height:90vh;
 }
 #tost_message{
     opacity:0;
@@ -212,4 +213,15 @@ height:8vh;
 #tost_message.show{
     opacity:1;
     bottom:50px;
+}
+.tab_menuI, .tab_menuO{
+    position: relative;
+    display:grid;
+    grid-template-rows:5vh 85vh;
+    border:1px solid black;
+    height:90vh;
+}
+.tab_title{
+    display:grid;
+    grid-template-columns:3fr 1fr;
 }
