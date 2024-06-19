@@ -214,7 +214,7 @@ height:8vh;
     opacity:1;
     bottom:50px;
 }
-.tab_menuI, .tab_menuO{
+.tab_menuI,.tab_menuO{
     position: relative;
     display:grid;
     grid-template-rows:5vh 85vh;
