@@ -21,9 +21,12 @@
         <button id="tabMenuS" class="mainTab" >재고</button>
         <button id="tabMenuP" class="mainTab" >팔렛트</button>
         <button id="infoBtn" class="mainTab"onclick="resetBtn()">Selected Data Reset</button>
-        <input clsas="mainTab" type="date" value="yyyy-MM-dd" id="datePicker" onchange="dateC()">
+        <button id="infoBtnTest" class="mainTab" onclick="testBtn()">test</button>
+        <input clsaa="date" type="date" value="yyyy-MM-dd" id="datePicker" onchange="dateC()">
+        <input type="file" class ="fileSearch" id="fileIn" style="display:none" onchange="fileIn(event)">
+        <input type="file" class="fileSearch" id="fileOut" style="display:none" onchange="fileIn(event)">
         <button class="mainTab" id="submit_btn" onclick="submitBtn()">UpLoad</button>
-        <button id="pltReg" class="mainTab"onclick="pltBtn()">Plt 현황</button>
+        <button  class="mainTab" id="pltReg" onclick="pltBtn()">Plt 현황</button>
     </div>
         <div id="File">
             <div class="tabMenu" id="tabI" >
