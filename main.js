@@ -962,7 +962,6 @@ function msgLoad(){
             infoDiv.appendChild(tr);
         }
         bKeyValue = v.cells[0].innerHTML+"_"+v.cells[4].innerHTML+"_"+v.cells[5].innerHTML+"_"+v.cells[6].innerHTML+"_"+v.cells[1].innerHTML;
-        
     }
     
     function infoUp(v){
