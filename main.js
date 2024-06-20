@@ -1040,6 +1040,18 @@ function msgLoad(){
             });
         }
     }
+    function periodBtn(){
+        console.log("periodBtn");
+        const periodDiv = document.getElementById("periodPop");
+        periodDiv.style.display="grid";
+        periodDiv.style.position="fixed";
+        periodDiv.style.top="50%";
+        periodDiv.style.left="50%";
+        periodDiv.style.transform="translate(-50%,-50%)";
+        
+        
+    }
+    
 
     //toast message
 
