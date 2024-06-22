@@ -158,7 +158,7 @@ height:8vh;
 .listI{overflow:hidden;margin-top:2%;margin-bottom: 0;}
 .listI li{float:left;}
 .listI .btn{width:100px;font-size:13px; margin-right:14px;}
-.listI .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%;  left:10px}
+.listI .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%;  left:10px;height:93%}
 .listI .contU{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%;  left:10px}
 .is_onI .btn{font-weight:bold; color:red;background: gray;width:150px}
 .is_onI .cont{display:block;background:gray;overflow-y: scroll;}
@@ -167,7 +167,7 @@ height:8vh;
 .listO{overflow:hidden;margin-top:2%;margin-bottom: 0;}
 .listO li{float:left;}
 .listO .btn{width:100px;font-size:13px; margin-right:14px;}
-.listO .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%;  left:10px}
+.listO .cont{display:none; position:absolute; background:white; color:#fff; text-align:center; width:98%;  left:10px;height:93%}
 .is_onO .btn{font-weight:bold; color:red;background: gray;width:150px}
 .is_onO .cont{display:block;background:gray;overflow-y:scroll}
 

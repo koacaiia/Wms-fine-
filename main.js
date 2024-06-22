@@ -8,8 +8,6 @@ const firebaseConfig = {
     appId: "1:415417723331:web:15212f190062886281b576",
     measurementId: "G-SWBR4359JQ"
 };
-// const app=initializeApp();
-// console.log(app)
 firebase.initializeApp(firebaseConfig);
 const database_f = firebase.database();
 const messaging = firebase.messaging();
@@ -61,17 +59,13 @@ function getFileO(){
     io="o";
 }
 function fileIn(event){
-    
     const target = event.target;
-    console.log(target.id);
-    // excelConvert("C:\Users\koaca\OneDrive\문서\화인통상2물류 incargo(2024).xlsm");
     excelConvert(target);
 
 };
 function excelConvert(target){
     try{
     let file =target.files[0];
-    console.log(file)
     let op={};
     let sheetName;
     let reader = new FileReader();
@@ -99,7 +93,6 @@ function excelConvert(target){
     reader.readAsBinaryString(file);
     }catch(e){
         alert(e);
-        console.log(e);
     }
     
 }
@@ -111,7 +104,6 @@ function eTable(value){
     const dateValue = document.getElementById("datePicker").value;
     // const dateValue = "2024-01-30";
     const offset = (9*60*60*1000);
-    console.log(io)
     if(io =="i"){
         const tableE=document.getElementById("tableE");
         tBodyE = document.getElementById("tbiE");
@@ -250,7 +242,6 @@ function sTable(io){
     // tableS.replaceChildren();
     database_f.ref("DeptName/"+deptName+"/OutCargo/"+monValue+"/"+dateValue).get().then((snapshot)=>{
     let snapV = snapshot.val();
-    // console.log(snapV)
     let keyList =[];
     const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
     let tHrS = document.createElement("tr");
@@ -286,7 +277,6 @@ function moveTab(n){
     checkIo(selectTab,selectTab.querySelectorAll(".cont")[0].id);
 }
 function checkIo(tab,id){
-    console.log(tab,id);
     if(id =="tab1"){
         tabList[0].classList.remove("is_onI");
         tabList[2].classList.remove("is_onI");
@@ -316,7 +306,6 @@ function checkIo(tab,id){
                 }
 
 function thClick(n){
-    console.log(n);
 };
 function dateC(){
     let target;
@@ -327,7 +316,9 @@ function dateC(){
         target = document.getElementById("fileOut");
         excelConvert(target);
     }else{
-        alert(document.getElementById("datePicker").value+" 로 날짜 변경 했습니다.");
+        const value= document.getElementById("datePicker").value;
+        alert(value+" 로 날짜 변경 했습니다.");
+        periodSearch(value);
     }
 };
 function submitBtn(){
@@ -416,7 +407,6 @@ function submitBtn(){
                         }else{
                             refPath=selRow[i]["refValue"];
                         }
-                        console.log(refPath);
                         database_f.ref(refPath).update(selRow[i]).then(()=>{
                             if( i== seLlast){
                                 if(io == "i"){
@@ -454,12 +444,12 @@ function submitBtn(){
            
             console.log(c)
             // messaging.send(c,message).then((r)=>{
-            // console.log("Successfully sent Message",r)
+            // remove("Successfully sent Message",r)
             // }).catch((e)=>{
-            //     console.log("Error sending message",e);
+            //     remove("Error sending message",e);
             // });
             } else {
-                console.log('토큰이 없습니다. 권한을 다시 확인하세요.');
+                remove('토큰이 없습니다. 권한을 다시 확인하세요.');
             }
         }
             ).catch((err) => {
@@ -472,24 +462,24 @@ function submitBtn(){
     console.log('알림 권한 요청 중 오류가 발생했습니다.', err);
     });
     // messaging.requestPermission().then(function(){
-    //     console.log("Permission Allowed");
+    //     remove("Permission Allowed");
     //     return messaging.getToken();
     // }).then(function(token){
-    //     console.log("Token",token);
+    //     remove("Token",token);
     //     // messaging.subscribeToTopic(token,"WareHouseDept2").
     //     // then((re)=>{
-    //     //     console.log("Successfully subscribed to Topic",re);
+    //     //     remove("Successfully subscribed to Topic",re);
     //     // }).catch((e)=>{
-    //     //     console.log("Error subscribing to Topic",e);
+    //     //     remove("Error subscribing to Topic",e);
     //     // })
         
     // }).catch(function(e){
-    //     console.log(e);
+    //     remove(e);
     // });
-    // console.log(messaging)
+    // remove(messaging)
    
     messaging.onMessage((payload)=>{
-        console.log("message received",payload)
+        remove("message received",payload)
         alert(payload)
     })
 
@@ -525,19 +515,25 @@ function submitBtn(){
     });
     }
     sendFCMMessage(topic, messageTitle, messageBody,token);
-
+let periodMsg;
 msgLoad();
 function msgLoad(){
     const dateValue = document.getElementById("datePicker").value;
-    
-    const ref = "DeptName/WareHouseDept2/WorkingMessage/"+dateValue;
-    database_f.ref(ref).get().then((snapshot)=>{
-        // console.log(snapshot.val())
-        const value= snapshot.val();
-        const tI= document.getElementById("msgTableIn");
+    if(dateValue !=""){
+        periodMsg=[];
+        periodMsg.push(dateValue);
+    }
+    const tI= document.getElementById("msgTableIn");
         tI.replaceChildren();
         const tO= document.getElementById("msgTableOut");
         tO.replaceChildren();
+    for(let i=0;i<periodMsg.length;i++){
+    const dateValue = periodMsg[i];
+    const ref = "DeptName/WareHouseDept2/WorkingMessage/"+dateValue;
+    database_f.ref(ref).get().then((snapshot)=>{
+        // remove(snapshot.val())
+        const value= snapshot.val();
+        
 
         for(let v in value){
             const ob = Object.keys(value[v]);
@@ -546,22 +542,22 @@ function msgLoad(){
             tr.classList.toggle("tableTrB");
             const tDiv = document.createElement("div");
             tDiv.classList.toggle("tableMsgDiv");
-            const h6 = document.createElement("h7");
-            h6.style.className="msgTitle";
-            h6.innerHTML=v;
+            // const h6 = document.createElement("h7");
+            // h6.style.className="msgTitle";
+            // h6.innerHTML=v;
             const content = document.createElement("h8");
             content.classList.add("msgContent");
             let msgContent;
             if(value[v]["inOutCargo"]!="InCargo"){
                 msgContent = value[v]["keyValue"].substring(value[v]["keyValue"].indexOf("_"));
             } else{
-                msgContent= value[v]["msg"];}
+                msgContent= value[v]["msg"].substring(0,value[v]["msg"].length-8);}
           
-            content.innerHTML=msgContent;
+            content.innerHTML=v+"\n"+msgContent;
             tDiv.style.border="0.5px solid black";
             tDiv.style.borderRadius="1px";
             tDiv.style.width="100%";
-            tDiv.appendChild(h6);
+            // tDiv.appendChild(h6);
             tDiv.appendChild(content);
             tr.appendChild(tDiv);
             let inOut="";
@@ -599,6 +595,7 @@ function msgLoad(){
             }
         }
     });}
+    }
 
     function picDown(event){
     const link = document.createElement("a");
@@ -761,9 +758,9 @@ function msgLoad(){
                 totalOut = totalOut+parseInt(values[p]["outQty"]);
                 for(let t in pltTh){
                     const td = document.createElement("td");
-                    console.log(totalIn,totalOut,pltTh[t]);
+                    remove(totalIn,totalOut,pltTh[t]);
                     if(pltTh[t]=="stockQty"){
-                        console.log("stockQty",parseInt(totalIn)-parseInt(totalOut));
+                        remove("stockQty",parseInt(totalIn)-parseInt(totalOut));
                         td.innerHTML=parseInt(totalIn)-parseInt(totalOut);
                     }else{
                         td.innerHTML=values[p][pltTh[t]];
@@ -868,15 +865,15 @@ function msgLoad(){
             ar["working"]="";
             ar["location"]=""; 
             selRow[i]=ar;
-            console.log(selRow[i]["container"])
+            remove(selRow[i]["container"])
         }
         for(let r in selRow){
             database_f.ref(ar["refValue"]).update(ar).then(()=>{
-                console.log("Successfully uploaded",ar["refValue"]);
+                remove("Successfully uploaded",ar["refValue"]);
             }).catch((e)=>{
                 console.error(e);
             });
-            console.log(selRow[r]);
+            remove(selRow[r]);
         }
         body.replaceChildren();
         }
@@ -898,7 +895,7 @@ function msgLoad(){
                 const chC = trL[trC.rowIndex-1].querySelector("input[type='checkbox']");
                 chC.addEventListener("click",function(e){
                     e.target.parentNode.parentNode.classList.toggle("select");
-                    console.log(trCloned.rowIndex,e.target);
+                    remove(trCloned.rowIndex,e.target);
                 });
 
                 // // body.appendChild(trC);
@@ -965,7 +962,7 @@ function msgLoad(){
     }
     
     function infoUp(v){
-        console.log(v.id);
+        remove(v.id);
         const infoValueList= infoDiv.querySelectorAll(".infoInput");
         aKeyValue =infoValueList[0].value+"_"+infoValueList[4].value+"_"+infoValueList[5].value+"_"+infoValueList[6].value+"_"+infoValueList[1].value;
         let upCheck;
@@ -986,7 +983,7 @@ function msgLoad(){
         let upData={};
         if(upCheck){
             for(let i=0;i<10;i++){
-                console.log(infoValueList[i].value);
+                remove(infoValueList[i].value);
                 upData[[key_f[i]]]=infoValueList[i].value;
             }
             if(upData["spec"]=="20Ft"){
@@ -1041,15 +1038,128 @@ function msgLoad(){
         }
     }
     function periodBtn(){
-        console.log("periodBtn");
         const periodDiv = document.getElementById("periodPop");
-        periodDiv.style.display="grid";
-        periodDiv.style.position="fixed";
-        periodDiv.style.top="50%";
-        periodDiv.style.left="50%";
-        periodDiv.style.transform="translate(-50%,-50%)";
+        const styleP= periodDiv.style.display;
+        if(styleP=="grid"){
+            periodDiv.style.display="none";}
+            else{
+                periodDiv.style.display="grid";
+                periodDiv.style.gridTemplateRows="1fr 1fr 1fr";
+                periodDiv.style.position="fixed";
+                periodDiv.style.top="30%";
+                periodDiv.style.left="50%";
+                periodDiv.style.transform="translate(-50%,-50%)";
+                periodDiv.style.backgroundColor="white";
+                periodDiv.style.border="2px solid black";
+                periodDiv.style.borderRadius="10px";
+                periodDiv.style.gridGap="10px";
+            }
+        document.getElementById("periodS").value=transDate(new Date());
+        document.getElementById("periodE").value=transDate(new Date());
+
+    }
+    let period;
+    function periodCheck(v){
+        const bId=v.id;
+        let startDate;
+        let endDate;
+        //function  thisweek, lastweek, thismonth, lastmonth, thisyear
+        if(bId=="thisM"){
+            startDate = new Date(new Date().getFullYear(),new Date().getMonth(),1);
+            endDate = new Date(new Date().getFullYear(),new Date().getMonth()+1,0);}
+        else if(bId=="lastM"){
+            startDate = new Date(new Date().getFullYear(),new Date().getMonth()-1,1);
+            endDate = new Date(new Date().getFullYear(),new Date().getMonth(),0);}
+            else if(bId=="thisY"){
+                startDate = new Date(new Date().getFullYear(),0,1);
+                endDate = new Date(new Date().getFullYear(),11,31);}
+                else if(bId=="thisW"){
+                    startDate = new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()-new Date().getDay());
+                    endDate = new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()-new Date().getDay()+6);}
+                    else if(bId=="lastW"){
+                        startDate = new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()-new Date().getDay()-7);
+                        endDate = new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()-new Date().getDay()-1);}
+                        else if(bId=="nextW"){
+                            startDate = new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()-new Date().getDay()+7);
+                            endDate = new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()-new Date().getDay()+13);}
+                            document.getElementById("periodS").value=transDate(startDate);
+                            document.getElementById("periodE").value=transDate(endDate);
+       
+    }
+    
+    function periodSearch(v){
+        let startDate;
+        let endDate;
+        periodMsg=[];
+        if(v==undefined){
+            startDate = document.getElementById("periodS").value;
+            endDate = document.getElementById("periodE").value;
+            document.getElementById("datePicker").value="";
+        }else{
+            startDate = v;
+            endDate = v;
+        }
+        const monSvalue = startDate.substring(5,7);
+        const monEvalue = endDate.substring(5,7);
+        const tabDiv = document.getElementById("tabI");
+        let tabTable;
+        let tabBody;
+        if(tabDiv.style.display !="none"){
+            tabTable = document.getElementById("tableS");
+            tabBody = document.getElementById("tbiS");
+        }else{
+            tabTable = document.getElementById("tableSo");
+            tabBody = document.getElementById("tboS");
+        }
         
-        
+        tabBody.replaceChildren();
+        let vList;
+        let refValue;
+            if(tabDiv.style.display !="none"){
+                vList = key_f;
+                refValue = "DeptName/"+deptName+"/InCargo/"
+              }else{
+                vList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
+                refValue = "DeptName/"+deptName+"/OutCargo/"
+            }
+            console.log(vList);
+        for(let m=monSvalue;m<=monEvalue;m++){
+            if(m<10){
+                if(typeof(m)=="number"){
+                    m="0"+m;
+                }
+            }
+           
+            console.log(refValue);
+            database_f.ref(refValue+m+"월/").get().then((snapshot)=>{
+            let snapV = snapshot.val();
+            console.log(snapV);
+            for(let kc in snapV){
+                if(kc>=startDate && kc<=endDate){
+                    for(let key in snapV[kc]){
+                        if(!periodMsg.includes(kc)){
+                            periodMsg.push(kc);
+                        }
+                        let trS = document.createElement("tr");
+                        for(let tdC=0;tdC<vList.length;tdC++){
+                                let td = document.createElement("td");
+                                td.innerHTML= snapV[kc][key][vList[tdC]];
+                                trS.appendChild(td);
+                                if(tdC>9){
+                                    td.style.display="none";
+                                }
+                            }
+                            tabBody.appendChild(trS);  
+                            if(snapV[kc][key]["working"]!=""){
+                                trS.style.backgroundColor="steelblue";}
+                    }
+                }
+            }
+            tabTable.appendChild(tabBody);
+        });
+    }
+        document.getElementById("periodPop").style.display="none";
+       
     }
     
 

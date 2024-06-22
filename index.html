@@ -120,7 +120,7 @@
             </div>
             <div id="Message" >
                 
-                                <h5 style="margin-bottom:0%;text-align:center">입고로그</h5>
+                                <button id="updateI" onclick="msgLoad(this)">현황 조희</button>
                                     <div id="messageIn" class="msgDiv">
                                         <table  class="msgTable">
                                             <tbody id="msgTableIn">
@@ -257,7 +257,7 @@
             </div>
             <div id="Message">
 
-                                    <h5 style="text-align:center">출고로그</h5>
+                <button id="updateO" onclick="msgLoad(this)">현황 조희</button>
                                     <div id="messageOut" class="msgDiv">
                                         <table  class="msgTable">
                                             <tbody id="msgTableOut">
@@ -318,13 +318,32 @@
             </div>
     </div>
     <div id="periodPop" style="display:none">
-        test
-        <button onclick="periodCloseBtn()">close</button>
+        <div id="periodPopBtn" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr">
+            <button class="periodBtn" id="thisM" onclick="periodCheck(this)">이번달</button>
+            <button class="periodBtn" id="lastM" onclick="periodCheck(this)">지난달</button>
+            <button class="periodBtn" id="thisY" onclick="periodCheck(this)">올해</button>
+            <button class="periodBtn" id="thisW" onclick="periodCheck(this)">이번주</button>
+            <button class="periodBtn" id="lastW" onclick="periodCheck(this)">지난주</button>
+            <button class="periodBtn" id="nextW" onclick="periodCheck(this)">다음주</button>
+        </div>
+        <div id="periodPopDate" style="display:grid;grid-template-columns:1fr 2fr 1fr 2fr ;width:100%">
+            <label>검색 시작일</label>
+            <input type="date" id="periodS" value="yyyy-MM-dd" style="text-align: center;">
+            <label>검색 종료일</label>
+            <input type="date" id="periodE" value="yyyy-MM-dd" style="text-align: center;">
+            
+        </div>    
+            
+        <div style="display:grid;grid-template-columns: 3fr 1fr;">
+            <button id="periodSearch" onclick="periodSearch()">검색</button>
+            <button onclick="periodCloseBtn()">close</button>
         <script>
             function periodCloseBtn(){
                 document.getElementById("periodPop").style.display="none";
             }
             </script>
+        </div>    
+        
     </div>
     <script src="main.js" > </script>
     
