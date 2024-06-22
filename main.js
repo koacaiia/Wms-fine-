@@ -233,7 +233,8 @@ function sTable(io){
         const tabInDivCheck =tabInDiv.style.display;
             incargoUpdate(trContainer[rowIndex-1]);
 
-    })});
+    }
+    )});
     });
     }else{
     const dateValue = document.getElementById("datePicker").value;
@@ -1152,9 +1153,19 @@ function msgLoad(){
                             tabBody.appendChild(trS);  
                             if(snapV[kc][key]["working"]!=""){
                                 trS.style.backgroundColor="steelblue";}
+                                const trContainer = tabBody.querySelectorAll("tr");
+                                trContainer.forEach((trS)=>{trS.addEventListener("click",function(e){
+                                    const rowIndex = e.target.parentNode.rowIndex;
+                                    const tabInDiv = document.getElementById("tabInDiv");
+                                    const tabInDivCheck =tabInDiv.style.display;
+                                        incargoUpdate(trContainer[rowIndex-1]);
+                            
+                                }
+                                )});
                     }
                 }
             }
+            
             tabTable.appendChild(tabBody);
         });
     }
