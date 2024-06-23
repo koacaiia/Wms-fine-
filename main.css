@@ -171,9 +171,6 @@ height:8vh;
 .is_onO .btn{font-weight:bold; color:red;background: gray;width:150px}
 .is_onO .cont{display:block;background:gray;overflow-y:scroll}
 
-.msgH{
-    display:none;
-}
 #pltTitle{
     display:grid;
     grid-template-columns:1fr 1fr 2fr;

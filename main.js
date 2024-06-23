@@ -666,16 +666,21 @@ function msgLoad(){
         }
         }
     function pltBtn(){
-        const msgDiv= document.getElementById("msgDivH");
-        const pltDiv = document.getElementById("pltDivH");
-        msgDiv.classList.toggle("msgH");
-        pltDiv.classList.toggle("msgH");        
         const pltBtn = document.getElementById("pltReg");
+        const fileDiv = document.getElementById("File");
+        const pltDiv = document.getElementById("pltDivH");
         if(pltBtn.innerHTML =="Plt 현황"){
-            pltBtn.innerHTML="입,출고 현황";}
+            pltBtn.innerHTML="입,출고 현황";
+            fileDiv.style.display="none";
+            pltDiv.style.display="block";  
+        }
             else{
                 pltBtn.innerHTML="Plt 현황";
+                fileDiv.style.display="block";
+                pltDiv.style.display="none";
             }
+             
+        
     }
     let pltData={};
     const selClient = document.getElementById("pltClient");
@@ -1091,6 +1096,7 @@ function msgLoad(){
     function periodSearch(v){
         let startDate;
         let endDate;
+        console.log(periodMsg)
         periodMsg=[];
         if(v==undefined){
             startDate = document.getElementById("periodS").value;
@@ -1123,7 +1129,6 @@ function msgLoad(){
                 vList = ["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
                 refValue = "DeptName/"+deptName+"/OutCargo/"
             }
-            console.log(vList);
         for(let m=monSvalue;m<=monEvalue;m++){
             if(m<10){
                 if(typeof(m)=="number"){
@@ -1131,7 +1136,6 @@ function msgLoad(){
                 }
             }
            
-            console.log(refValue);
             database_f.ref(refValue+m+"월/").get().then((snapshot)=>{
             let snapV = snapshot.val();
             console.log(snapV);
@@ -1173,7 +1177,7 @@ function msgLoad(){
        
     }
     
-
+    console.log(periodMsg);
     //toast message
 
 

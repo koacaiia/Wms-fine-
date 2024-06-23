@@ -131,52 +131,7 @@
                 
                                     </div>
                  
-            <div id="pltDivH" class="msgH">
-                <div id="pltDiv" >
-                    <div id="pltTitle" >
-                        <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
-                            <select id="pltClient" onchange="pltClient()" style="height:80%;margin-top:5%">
-                                <option value="0">화주선택</option>
-                            </select>
-                            <input type="text" id="pltClientInput" placeholder="직접입력" style="height:70%;margin-top:5%;margin-bottom:10%">
-                        </div>
-                        <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
-                            <select id="pltType" onchange="pltType()" style="height:80%;margin-top:5%;" >
-                                <option value="0">Pallet Type선택</option>
-                            </select>
-                            <input type="text" id="pltTypeInput" placeholder="직접입력" style="height:70%;margin-top:5%;margin-bottom:10%">
-                        </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid black;border-radius: 2%;padding:1%;height:80%;margin-top:2%">
-                            <div style="display:grid;grid-template-rows:1fr 1fr 1fr">
-                                <input type="number" id="pltIn" placeholder="입고" >
-                                <input type="number" id="pltOut" placeholder="출고">
-                                <input type="text" id="pltNote" placeholder="비고">
-                            </div>
-                            <div style="display:grid;grid-template-rows:1fr 1fr">
-                                <input type="date" id="pltDate" value="yyyy-MM-dd" style="text-align: center;">
-                                <button id="pltReg" style="background-color:gray"onclick="pltReg()">사용등록</button>
-                            </div>
-                        </div>    
-                    </div>
-                    <div id="pltTableDiv" >
-                        <table id="pltTable">
-                            <thead style="width:98.5%">
-                                <tr style="width:98.5%">
-                                    <th>날짜</th>
-                                    <th>입고</th>
-                                    <th>출고</th>
-                                    <th>재고</th>
-                                    <th>비고</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pltTableTbody">
-                            </tbody>
-                        </table>
-                    </div>    
-            
-                </div>       
-                
-            </div>    
+           
             
             </div>
             <div id="tabInDiv" style="display:none;">
@@ -267,54 +222,7 @@
                 
                                     </div>
                          
-            <div id="pltDivH" class="msgH">
-                <div id="pltDiv" >
-                    <div id="pltTitle" >
-                        <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
-                            <select id="pltClient" onchange="pltClient()" style="height:80%;margin-top:5%">
-                                <option value="0">화주선택</option>
-                            </select>
-                            <input type="text" id="pltClientInput" placeholder="직접입력" style="height:70%;margin-top:5%;margin-bottom:10%">
-                        </div>
-                        <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
-                            <select id="pltType" onchange="pltType()" style="height:80%;margin-top:5%;" >
-                                <option value="0">Pallet Type선택</option>
-                            </select>
-                            <input type="text" id="pltTypeInput" placeholder="직접입력" style="height:70%;margin-top:5%;margin-bottom:10%">
-                        </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid black;border-radius: 2%;padding:1%;height:80%;margin-top:2%">
-                            <div style="display:grid;grid-template-rows:1fr 1fr 1fr">
-                                <input type="number" id="pltIn" placeholder="입고" >
-                                <input type="number" id="pltOut" placeholder="출고">
-                                <input type="text" id="pltNote" placeholder="비고">
-                            </div>
-                            <div style="display:grid;grid-template-rows:1fr 1fr">
-                                <input type="date" id="pltDate" value="yyyy-MM-dd" style="text-align: center;">
-                                <button id="pltReg" style="background-color:gray"onclick="pltReg()">사용등록</button>
-                            </div>
-                        </div>    
-                    </div>
-                    <div id="pltTableDiv" >
-                        <table id="pltTable">
-                            <thead style="width:98.5%">
-                                <tr style="width:98.5%">
-                                    <th>날짜</th>
-                                    <th>입고</th>
-                                    <th>출고</th>
-                                    <th>재고</th>
-                                    <th>비고</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pltTableTbody">
-                            </tbody>
-                        </table>
-                    </div>    
-            
-                </div>       
-                
-            </div>    
-            
-            </div>
+          
             </div>
     </div>
     <div id="periodPop" style="display:none">
@@ -345,7 +253,57 @@
         </div>    
         
     </div>
-    <script src="main.js" > </script>
+   
+    </div>
+    <div id="pltDivH" style="display:none">
+        <div id="pltDiv" >
+            <div id="pltTitle" >
+                <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
+                    <select id="pltClient" onchange="pltClient()" style="height:80%;margin-top:5%">
+                        <option value="0">화주선택</option>
+                    </select>
+                    <input type="text" id="pltClientInput" placeholder="직접입력" style="height:70%;margin-top:5%;margin-bottom:10%">
+                </div>
+                <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
+                    <select id="pltType" onchange="pltType()" style="height:80%;margin-top:5%;" >
+                        <option value="0">Pallet Type선택</option>
+                    </select>
+                    <input type="text" id="pltTypeInput" placeholder="직접입력" style="height:70%;margin-top:5%;margin-bottom:10%">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid black;border-radius: 2%;padding:1%;height:80%;margin-top:2%">
+                    <div style="display:grid;grid-template-rows:1fr 1fr 1fr">
+                        <input type="number" id="pltIn" placeholder="입고" >
+                        <input type="number" id="pltOut" placeholder="출고">
+                        <input type="text" id="pltNote" placeholder="비고">
+                    </div>
+                    <div style="display:grid;grid-template-rows:1fr 1fr">
+                        <input type="date" id="pltDate" value="yyyy-MM-dd" style="text-align: center;">
+                        <button id="pltReg" style="background-color:gray"onclick="pltReg()">사용등록</button>
+                    </div>
+                </div>  
+                   
+                </div>    
+            </div>
+            <div id="pltTableDiv" >
+                <table id="pltTable">
+                    <thead style="width:98.5%">
+                        <tr style="width:98.5%">
+                            <th>날짜</th>
+                            <th>입고</th>
+                            <th>출고</th>
+                            <th>재고</th>
+                            <th>비고</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pltTableTbody">
+                    </tbody>
+                </table>
+            </div>    
     
+        </div>       
+                     
+    </div>
+
+    <script src="main.js" > </script>
 </body>
 </html>
