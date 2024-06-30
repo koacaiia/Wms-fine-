@@ -210,7 +210,7 @@
                 </ul>
             </div>
             </div>
-            <div id="Message">
+            <div id="MessageO">
 
                 <button id="updateO" onclick="msgLoad(this)">현황 조희</button>
                                     <div id="messageOut" class="msgDiv">
@@ -224,6 +224,29 @@
                          
           
             </div>
+            <div id="tabOutDiv" style="display:none;">
+                <h5 style="text-align: center;align-items: center;">출고 업로드</h5> 
+                    
+            <div style="display:grid;grid-template-rows:10vh 7vh">
+                <div id="infoBtnDivO" style="display:grid;grid-template-columns:1fr 1fr 1fr">
+                    <button class="infoBtn" id="infoReO" onclick="infoRe()">출고현황 돌아가기</button>
+                    <script>
+                        function infoRe(){
+                            document.getElementById("tabOutDiv").style.display="none";
+                            document.getElementById("MessageO").style.display="grid";
+                        }
+                    </script>
+                    <div style="display:grid;grid-template-rows: 1fr 1fr">
+                            <button class="infoBtn" id="infoUpO" onclick="infoUp(this)">이어쓰기</button>
+                            <button class="infoBtn" id="infoNewO" onclick="infoUp(this)">덮어쓰기</button>
+                    </div>
+                    <button class="infoBtn" id="infoDelO" onclick="infoDel()">출고삭제</button>
+                </div>
+                <div id="infoDivO">
+
+                </div>
+            </div>
+        </div>
     </div>
     <div id="periodPop" style="display:none">
         <div id="periodPopBtn" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr">

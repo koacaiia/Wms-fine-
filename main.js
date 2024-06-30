@@ -232,7 +232,6 @@ function sTable(io){
         const tabInDiv = document.getElementById("tabInDiv");
         const tabInDivCheck =tabInDiv.style.display;
             incargoUpdate(trContainer[rowIndex-1]);
-
     }
     )});
     });
@@ -246,7 +245,7 @@ function sTable(io){
     let keyList =[];
     const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
     let tHrS = document.createElement("tr");
-    let tBodyS = document.getElementById("tboS");
+    const tBodyS = document.getElementById("tboS");
     for(let kc in snapV){
         let trS = document.createElement("tr");
         for(let tdC in tdList){
@@ -260,6 +259,14 @@ function sTable(io){
                
         }
     tableS.appendChild(tBodyS);
+    const trContainer = tBodyS.querySelectorAll("tr");
+    trContainer.forEach((tr)=>{tr.addEventListener("click",function(e){
+        const rowIndex = e.target.parentNode.rowIndex;
+        const tabInDiv = document.getElementById("tabOutDiv");
+        const tabInDivCheck =tabInDiv.style.display;
+            outcargoUpdate(trContainer[rowIndex-1]);
+    }
+    )});
     }
     );
     };
@@ -550,6 +557,7 @@ function msgLoad(){
             content.classList.add("msgContent");
             let msgContent;
             if(value[v]["inOutCargo"]!="InCargo"){
+                console.log(value[v]["keyValue"]);
                 msgContent = value[v]["keyValue"].substring(value[v]["keyValue"].indexOf("_"));
             } else{
                 msgContent= value[v]["msg"].substring(0,value[v]["msg"].length-8);}
@@ -928,6 +936,17 @@ function msgLoad(){
             }
         });
     };
+    function outcargoUpdate(v){
+        const msgDiv= document.getElementById("MessageO");
+        msgDiv.style.display="none";
+        const upDiv =document.getElementById("tabOutDiv");
+        upDiv.style.display="grid";
+        upDiv.style.gridTemplateRows="10vh 80vh";
+        const infoDiv=document.getElementById("infoDivO");
+        infoDiv.replaceChildren();
+        const thList = document.querySelectorAll("#tableS th");
+    }
+
     function incargoUpdate(v){
         const msgDiv= document.getElementById("Message");
         msgDiv.style.display="none";
