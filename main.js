@@ -961,7 +961,7 @@ function msgLoad(){
             const tdH = document.createElement("td");
             tdH.innerHTML=thList[i].innerHTML;
             const td = document.createElement("td");
-            let tdInput; 
+            let tdInput;                                                                                                        
             if(i==2){
                 tdInput= document.createElement("select");
                 const typeList=["20Ft","40Ft","LCL"];
@@ -1197,7 +1197,21 @@ function msgLoad(){
     }
     
     console.log(periodMsg);
-    //toast message
+    const fileInput = document.getElementById("fileUp");
+    const preview = document.querySelector(".preview");
+
+    fileInput.addEventListener("change",selectFile);
+    function selectFile(e){
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(){
+            const dataURL = reader.result;
+            const img = document.createElement("img");
+            img.src = dataURL;
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
 
 
         

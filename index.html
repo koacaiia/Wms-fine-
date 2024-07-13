@@ -137,7 +137,7 @@
             <div id="tabInDiv" style="display:none;">
                     <h5 style="text-align: center;align-items: center;">입고 업로드</h5> 
                         
-                <div style="display:grid;grid-template-rows:10vh 7vh">
+                <div style="display:grid;grid-template-rows:10vh 50vh 20vh">
                     <div id="infoBtnDiv" style="display:grid;grid-template-columns:1fr 1fr 1fr">
                         <button class="infoBtn" id="infoRe" onclick="infoRe()">입고현황 돌아가기</button>
                         <script>
@@ -154,6 +154,12 @@
                     </div>
                     <div id="infoDiv">
 
+                    </div>
+                    <div id="fileDiv">
+                        <input multiple="multiple" type="file" id="fileUp" name="filename[]" />
+                        <div class="preview">
+                            <p></p>
+                        </div>
                     </div>
                 </div>
             </div>
