@@ -1196,22 +1196,51 @@ function msgLoad(){
        
     }
     
-    console.log(periodMsg);
     const fileInput = document.getElementById("fileUp");
-    const preview = document.querySelector(".preview");
-
+    const fileTr = document.getElementById("previewTr");
     fileInput.addEventListener("change",selectFile);
+    let upfileList ={};
     function selectFile(e){
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function(){
+        upfileList = e.target.files;
+        console.log(upfileList,"selectFile");
+        for(let i=0;i<upfileList.length;i++){
+            console.log(Object.keys(upfileList)[i],upfileList[i],i);
+            const reader = new FileReader();
+            const fileTd = document.createElement("td");
+            const fileIdDiv = document.createElement("div");
+            const fileImg = document.createElement("img");
+            const fileName = document.createElement("p");
+            reader.onload = function(){
             const dataURL = reader.result;
-            const img = document.createElement("img");
-            img.src = dataURL;
-            preview.appendChild(img);
+            // const img = document.createElement("img");
+            // img.src = dataURL;
+            // preview.appendChild(img);
+            fileName.innerHTML= upfileList[i].name;
+            fileImg.src = dataURL;
+            fileImg.style.width="10vh";
+            fileImg.style.height="10vh";
+            fileIdDiv.appendChild(fileImg);
+            fileIdDiv.appendChild(fileName);
+            fileTd.appendChild(fileIdDiv);
+            let list = Array.from(upfileList);
+            fileImg.addEventListener("click",function(e){
+                const removeDiv = e.target.parentNode;
+                console.log(e.target.parentNode);
+                removeDiv.parentNode.removeChild(removeDiv);
+                list.splice(i,1);
+                upfileList = list;
+                console.log(upfileList);
+            });
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(upfileList[i]);
+        fileTr.appendChild(fileTd);
+        }
     }
+    function fileUp(){
+        const upfileList = document.getElementById("fileUp").files;
+        console.log(upfileList);
+    }
+    
 
 
         

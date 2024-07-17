@@ -134,11 +134,11 @@
            
             
             </div>
-            <div id="tabInDiv" style="display:none;">
+            <div id="tabInDiv" style="display:none;width:25vw">
                     <h5 style="text-align: center;align-items: center;">입고 업로드</h5> 
                         
-                <div style="display:grid;grid-template-rows:10vh 50vh 20vh">
-                    <div id="infoBtnDiv" style="display:grid;grid-template-columns:1fr 1fr 1fr">
+                <div id="test" style="display:grid;grid-template-rows:10vh 50vh 20vh;width:25vw">
+                    <div id="infoBtnDiv" style="display:grid;grid-template-columns:1fr 1fr 1fr;width:25vw">
                         <button class="infoBtn" id="infoRe" onclick="infoRe()">입고현황 돌아가기</button>
                         <script>
                             function infoRe(){
@@ -155,13 +155,27 @@
                     <div id="infoDiv">
 
                     </div>
-                    <div id="fileDiv">
-                        <input multiple="multiple" type="file" id="fileUp" name="filename[]" />
-                        <div class="preview">
-                            <p></p>
+                    <div id="fileDiv" style="height:100%;width:25vw">
+                        <div style="display:grid;grid-template-columns:2fr 1fr;width:25vw">
+                            <input multiple="multiple" type="file" id="fileUp" name="filename[]" >
+                            <button id="fileUpBtn" onclick="fileUp()">Upload</button>
+                        </div>
+                        
+                        <div class="preview" style="height:100%;width:25vw;overflow-x: scroll;" >
+                            <table id="fileTable" style="table-layout: fixed;">
+                                <tbody style="height:15vh">
+                                    <div>
+                                        <tr id="previewTr" style="height:100%">
+
+                                        </tr>
+                                    </div>
+                                </tbody>
+                            </table>
+                            
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
             </div>
             <div class="tabMenu" id="tabO" style="display:none">
