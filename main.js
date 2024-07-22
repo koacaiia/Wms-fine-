@@ -346,10 +346,16 @@ function submitBtn(){
             const monValue = ar["date"].substring(5,7)+"월";
             ar["keyValue"]="DeptName/"+deptName+"/OutCargo/"+monValue+"/"+ar["date"]+"/"+ar["keypath"];
             ar["workprocess"]="미";
+            
             if(ar["totalEa"]==""){
                 if(isNaN(parseInt(ar["totalQty"]))){
                     ar["totalQty"]="0";
                 }
+                if(selRow[tdKey]["totalQty"] ==undefined){
+                    selRow[tdKey]["totalQty"]="0";
+                }
+
+                console.log(ar["totalQty"],selRow[tdKey]["totalQty"],tdKey);
                 ar["totalQty"]=parseInt(selRow[tdKey]["totalQty"])+parseInt(ar["totalQty"]);
                 ar["description"]=selRow[tdKey]["description"]+","+ar["description"];
                 ar["managementNo"]=selRow[tdKey]["managementNo"]+","+ar["managementNo"];
