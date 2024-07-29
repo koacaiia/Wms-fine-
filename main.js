@@ -991,7 +991,9 @@ function msgLoad(){
         }
         bKeyValue = v.cells[0].innerHTML+"_"+v.cells[4].innerHTML+"_"+v.cells[5].innerHTML+"_"+v.cells[6].innerHTML+"_"+v.cells[1].innerHTML;
     }
-    
+    function infoRe(){
+        document.getElementById("tabInDiv").style.display="none";
+        document.getElementById("Message").style.display="grid";}
     function infoUp(v){
         remove(v.id);
         const infoValueList= infoDiv.querySelectorAll(".infoInput");
@@ -1206,23 +1208,55 @@ function msgLoad(){
     const fileTr = document.getElementById("previewTr");
     fileInput.addEventListener("change",selectFile);
     let upfileList ={};
+    let upRef;
+    let ioValue;
     function selectFile(e){
         upfileList = e.target.files;
         console.log(upfileList,"selectFile");
         for(let i=0;i<upfileList.length;i++){
-            console.log(Object.keys(upfileList)[i],upfileList[i],i);
             const reader = new FileReader();
             const fileTd = document.createElement("td");
             const fileIdDiv = document.createElement("div");
             const fileImg = document.createElement("img");
             const fileName = document.createElement("p");
-            reader.onload = function(){
-            const dataURL = reader.result;
-            // const img = document.createElement("img");
-            // img.src = dataURL;
-            // preview.appendChild(img);
-            fileName.innerHTML= upfileList[i].name;
-            fileImg.src = dataURL;
+            reader.onload = function(e){
+            const dataURL = e.target.result;
+            console.log(dataURL.size);
+            const img = new Image();
+            img.onload = function(){
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = 10;
+                canvas.height = 10;
+                ctx.drawImage(img,0,0,canvas.wigth,canvas.height);
+                const data = canvas.toDataURL("image/jpeg");
+                const dataURItoBlob = (dataURI) => {
+                    const bytes =
+                      dataURI.split(",")[0].indexOf("base64") >= 0
+                        ? atob(dataURI.split(",")[1])
+                        : unescape(dataURI.split(",")[1]);
+                    const mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
+                    const max = bytes.length;
+                    const ia = new Uint8Array(max);
+                    for (let i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
+                    return new Blob([ia], { type: mime });
+                  };
+                const dataRe = dataURItoBlob(data); 
+                fileImg.src = dataRe;
+            };
+            img.src = dataURL;
+            const inputList = document.querySelectorAll(".infoInput");
+            const fileInputName = inputList[1].value+"_"+inputList[3].value+"("+i+")";
+            const tabInDiv = document.getElementById("tabO").display;
+            if(tabInDiv!="grid"){
+                ioValue="InCargo";
+            }else{
+                ioValue="OutCargo";
+            }
+            upRef ="images/"+deptName+"/"+inputList[0].value+"/"+ioValue+"/"+inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value;
+            console.log()
+            fileName.innerHTML= fileInputName;
+            // fileImg.src = dataURL;
             fileImg.style.width="10vh";
             fileImg.style.height="10vh";
             fileIdDiv.appendChild(fileImg);
@@ -1231,11 +1265,9 @@ function msgLoad(){
             let list = Array.from(upfileList);
             fileImg.addEventListener("click",function(e){
                 const removeDiv = e.target.parentNode;
-                console.log(e.target.parentNode);
                 removeDiv.parentNode.removeChild(removeDiv);
                 list.splice(i,1);
                 upfileList = list;
-                console.log(upfileList);
             });
         };
         reader.readAsDataURL(upfileList[i]);
@@ -1243,8 +1275,26 @@ function msgLoad(){
         }
     }
     function fileUp(){
-        const upfileList = document.getElementById("fileUp").files;
-        console.log(upfileList);
+        const inputList = document.querySelectorAll(".infoInput");
+        const today = new Date();
+        const monthValue = today.getMonth()+1;
+        const timeValue=today.getFullYear()+"년"+monthValue+"월"+today.getDate()+"일"+today.getHours()+"시"+today.getMinutes()+"분"+today.getSeconds()+"초";
+        const workMsgRef = "DeptName/"+deptName+"/WorkingMessage/"+inputList[0].value+"/web_"+timeValue;
+        const workObj={"consignee":inputList[3].value,"msg":inputList[3].value+"_"+inputList[1].value+"_사진업로드","inOutCargo":ioValue,"date":inputList[0].value,"keyValue":inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value,"nickName":"web","time":timeValue};
+        database_f.ref(workMsgRef).update(workObj).then(()=>{
+            console.log("Successfully uploaded");
+        }).catch((e)=>{
+            console.error(e);
+        });
+        for(let i=0;i<upfileList.length;i++){
+            const file = upfileList[i];
+            const ref = storage_f.ref(upRef+"/"+file.name);
+            ref.put(file).then(()=>{
+                console.log(file+"Successfully uploaded");
+            }).catch((e)=>{
+                alert(e);
+            });
+        }
     }
     
 
