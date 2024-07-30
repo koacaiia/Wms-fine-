@@ -1366,7 +1366,7 @@ function msgLoad(){
     function fileUp(){
         const inputList = document.querySelectorAll(".infoInput");
         const tabInDiv = document.getElementById("tabO").display;
-        const refValue = "DeptName/"+deptName+"/"+inValue+"/"+monthValue+"/"+dateValue+"/"+bKeyValue;
+        const refValue = "DeptName/"+deptName+"/"+ioValue+"/"+monthValue+"/"+dateValue+"/"+bKeyValue;
         if(tabInDiv!="grid"){
                         ioValue="InCargo";
                     }else{
