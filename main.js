@@ -1366,14 +1366,21 @@ function msgLoad(){
     function fileUp(){
         const inputList = document.querySelectorAll(".infoInput");
         const tabInDiv = document.getElementById("tabO").display;
-        const refValue = "DeptName/"+deptName+"/"+ioValue+"/"+monthValue+"/"+dateValue+"/"+bKeyValue;
         if(tabInDiv!="grid"){
                         ioValue="InCargo";
                     }else{
                         ioValue="OutCargo";
                     }
+                    
         const today = new Date();
         const monthValue = today.getMonth()+1;
+        const dateValue= bKeyValue.substring(0,10);
+        let month;
+        if(monthValue<10){
+            month="0"+monthValue;
+        }else{
+            month=monthValue;}
+        const refValue = "DeptName/"+deptName+"/"+ioValue+"/"+month+"월/"+dateValue+"/"+bKeyValue;
         const timeValue=today.getFullYear()+"년"+monthValue+"월"+today.getDate()+"일"+today.getHours()+"시"+today.getMinutes()+"분"+today.getSeconds()+"초";
         const workMsgRef = "DeptName/"+deptName+"/WorkingMessage/"+inputList[0].value+"/web_"+timeValue;
         const workObj={"consignee":inputList[3].value,"msg":inputList[3].value+"_"+inputList[1].value+"_사진업로드","inOutCargo":ioValue,"date":inputList[0].value,"keyValue":inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value,"nickName":"web","time":timeValue};
