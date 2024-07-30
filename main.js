@@ -1203,84 +1203,182 @@ function msgLoad(){
         document.getElementById("periodPop").style.display="none";
        
     }
-    
+    let upfileList ={};
     const fileInput = document.getElementById("fileUp");
     const fileTr = document.getElementById("previewTr");
-    fileInput.addEventListener("change",selectFile);
-    let upfileList ={};
-    let upRef;
-    let ioValue;
-    function selectFile(e){
-        upfileList = e.target.files;
-        console.log(upfileList,"selectFile");
-        for(let i=0;i<upfileList.length;i++){
-            const reader = new FileReader();
-            const fileTd = document.createElement("td");
-            const fileIdDiv = document.createElement("div");
-            const fileImg = document.createElement("img");
-            const fileName = document.createElement("p");
-            reader.onload = function(e){
-            const dataURL = e.target.result;
-            console.log(dataURL.size);
-            const img = new Image();
-            img.onload = function(){
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
-                canvas.width = 10;
-                canvas.height = 10;
-                ctx.drawImage(img,0,0,canvas.wigth,canvas.height);
-                const data = canvas.toDataURL("image/jpeg");
-                const dataURItoBlob = (dataURI) => {
-                    const bytes =
-                      dataURI.split(",")[0].indexOf("base64") >= 0
-                        ? atob(dataURI.split(",")[1])
-                        : unescape(dataURI.split(",")[1]);
-                    const mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
-                    const max = bytes.length;
-                    const ia = new Uint8Array(max);
-                    for (let i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
-                    return new Blob([ia], { type: mime });
-                  };
-                const dataRe = dataURItoBlob(data); 
-                fileImg.src = dataRe;
-            };
-            img.src = dataURL;
-            const inputList = document.querySelectorAll(".infoInput");
-            const fileInputName = inputList[1].value+"_"+inputList[3].value+"("+i+")";
-            const tabInDiv = document.getElementById("tabO").display;
-            if(tabInDiv!="grid"){
-                ioValue="InCargo";
-            }else{
-                ioValue="OutCargo";
-            }
-            upRef ="images/"+deptName+"/"+inputList[0].value+"/"+ioValue+"/"+inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value;
-            console.log()
-            fileName.innerHTML= fileInputName;
-            // fileImg.src = dataURL;
-            fileImg.style.width="10vh";
-            fileImg.style.height="10vh";
-            fileIdDiv.appendChild(fileImg);
-            fileIdDiv.appendChild(fileName);
-            fileTd.appendChild(fileIdDiv);
-            let list = Array.from(upfileList);
-            fileImg.addEventListener("click",function(e){
-                const removeDiv = e.target.parentNode;
-                removeDiv.parentNode.removeChild(removeDiv);
-                list.splice(i,1);
-                upfileList = list;
-            });
+    // fileInput.addEventListener("change",selectFile);
+    const resizeImage = (settings) => {
+        const file = settings.file;
+        const maxSize = settings.maxSize;
+        const reader = new FileReader();
+        const image = new Image();
+        const canvas = document.createElement("canvas");
+      
+        const dataURItoBlob = (dataURI) => {
+          const bytes =
+            dataURI.split(",")[0].indexOf("base64") >= 0
+              ? atob(dataURI.split(",")[1])
+              : unescape(dataURI.split(",")[1]);
+          const mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
+          const max = bytes.length;
+          const ia = new Uint8Array(max);
+          for (let i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
+          return new Blob([ia], { type: mime });
         };
-        reader.readAsDataURL(upfileList[i]);
-        fileTr.appendChild(fileTd);
+      
+        const resize = () => {
+          let width = image.width;
+          let height = image.height;
+          if (width > height) {
+            if (width > maxSize) {
+              height *= maxSize / width;
+              width = maxSize;
+            }
+          } else {
+            if (height > maxSize) {
+              width *= maxSize / height;
+              height = maxSize;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL("image/jpeg");
+          return dataURItoBlob(dataUrl);
+        };
+      
+        return new Promise((ok, no) => {
+          if (!file) {
+            return;
+          }
+          if (!file.type.match(/image.*/)) {
+            no(new Error("Not an image"));
+            return;
+          }
+          reader.onload = (readerEvent) => {
+            image.onload = () => {
+              return ok(resize());
+            };
+            image.src = readerEvent.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      };
+      const handleImgInput = (e) => {
+        upfileList = e.target.files;
+        for(let i=0;i<e.target.files.length;i++){
+        console.log(e.target.files[i]);     
+        const config = {
+          file: e.target.files[i],
+          maxSize: 150,
+        };
+        const imgTag = document.createElement("td");
+        resizeImage(config)
+          .then((resizedImage) => {
+            const url = window.URL.createObjectURL(resizedImage);
+            const img = document.createElement("img");
+            img.setAttribute("src", url);
+            img.className = "profile-img";
+            img.style.display = "block";
+            imgTag.appendChild(img);
+            fileTr.appendChild(imgTag);
+          })
+          .then(() => {
+            const img = document.querySelector(".profile-img");
+            img.onload = () => {
+              const widthDiff = (img.clientWidth - imgTag.offsetWidth) / 2;
+              const heightDiff = (img.clientHeight - imgTag.offsetHeight) / 2;
+              img.style.transform = `translate( -${widthDiff}px , -${heightDiff}px)`;
+            };
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         }
-    }
+      };
+    fileInput.addEventListener("change",handleImgInput);
+    
+    // function selectFile(e){
+    //     upfileList = e.target.files;
+    //     console.log(upfileList,"selectFile");
+    //     for(let i=0;i<upfileList.length;i++){
+    //         const reader = new FileReader();
+    //         const fileTd = document.createElement("td");
+    //         const fileIdDiv = document.createElement("div");
+    //         const fileImg = document.createElement("img");
+    //         const fileName = document.createElement("p");
+    //         reader.onload = function(e){
+    //         const dataURL = e.target.result;
+    //         console.log(dataURL.size);
+    //         const img = new Image();
+    //         img.onload = function(){
+    //             const canvas = document.createElement("canvas");
+    //             const ctx = canvas.getContext("2d");
+    //             canvas.width = 10;
+    //             canvas.height = 10;
+    //             ctx.drawImage(img,0,0,canvas.wigth,canvas.height);
+    //             const data = canvas.toDataURL("image/jpeg");
+    //             const dataURItoBlob = (dataURI) => {
+    //                 const bytes =
+    //                   dataURI.split(",")[0].indexOf("base64") >= 0
+    //                     ? atob(dataURI.split(",")[1])
+    //                     : unescape(dataURI.split(",")[1]);
+    //                 const mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    //                 const max = bytes.length;
+    //                 const ia = new Uint8Array(max);
+    //                 for (let i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
+    //                 return new Blob([ia], { type: mime });
+    //               };
+    //             const dataRe = dataURItoBlob(data); 
+    //             fileImg.src = dataRe;
+    //         };
+    //         img.src = dataURL;
+    //         const inputList = document.querySelectorAll(".infoInput");
+    //         const fileInputName = inputList[1].value+"_"+inputList[3].value+"("+i+")";
+    //         const tabInDiv = document.getElementById("tabO").display;
+    //         if(tabInDiv!="grid"){
+    //             ioValue="InCargo";
+    //         }else{
+    //             ioValue="OutCargo";
+    //         }
+    //         upRef ="images/"+deptName+"/"+inputList[0].value+"/"+ioValue+"/"+inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value;
+    //         console.log()
+    //         fileName.innerHTML= fileInputName;
+    //         // fileImg.src = dataURL;
+    //         fileImg.style.width="10vh";
+    //         fileImg.style.height="10vh";
+    //         fileIdDiv.appendChild(fileImg);
+    //         fileIdDiv.appendChild(fileName);
+    //         fileTd.appendChild(fileIdDiv);
+    //         let list = Array.from(upfileList);
+    //         fileImg.addEventListener("click",function(e){
+    //             const removeDiv = e.target.parentNode;
+    //             removeDiv.parentNode.removeChild(removeDiv);
+    //             list.splice(i,1);
+    //             upfileList = list;
+    //         });
+    //     };
+    //     reader.readAsDataURL(upfileList[i]);
+    //     fileTr.appendChild(fileTd);
+    //     }
+    // }
+    
     function fileUp(){
         const inputList = document.querySelectorAll(".infoInput");
+        const tabInDiv = document.getElementById("tabO").display;
+        console.log(bKeyValue);
+        if(tabInDiv!="grid"){
+                        ioValue="InCargo";
+                    }else{
+                        ioValue="OutCargo";
+                    }
         const today = new Date();
         const monthValue = today.getMonth()+1;
         const timeValue=today.getFullYear()+"년"+monthValue+"월"+today.getDate()+"일"+today.getHours()+"시"+today.getMinutes()+"분"+today.getSeconds()+"초";
         const workMsgRef = "DeptName/"+deptName+"/WorkingMessage/"+inputList[0].value+"/web_"+timeValue;
         const workObj={"consignee":inputList[3].value,"msg":inputList[3].value+"_"+inputList[1].value+"_사진업로드","inOutCargo":ioValue,"date":inputList[0].value,"keyValue":inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value,"nickName":"web","time":timeValue};
+        const upRef ="images/"+deptName+"/"+inputList[0].value+"/"+ioValue+"/"+inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value;
+        console.log(workMsgRef,workObj,upRef);
         database_f.ref(workMsgRef).update(workObj).then(()=>{
             console.log("Successfully uploaded");
         }).catch((e)=>{
