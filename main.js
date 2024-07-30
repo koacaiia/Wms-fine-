@@ -1366,7 +1366,7 @@ function msgLoad(){
     function fileUp(){
         const inputList = document.querySelectorAll(".infoInput");
         const tabInDiv = document.getElementById("tabO").display;
-        console.log(bKeyValue);
+        const refValue = "DeptName/"+deptName+"/"+inValue+"/"+monthValue+"/"+dateValue+"/"+bKeyValue;
         if(tabInDiv!="grid"){
                         ioValue="InCargo";
                     }else{
@@ -1380,6 +1380,12 @@ function msgLoad(){
         const upRef ="images/"+deptName+"/"+inputList[0].value+"/"+ioValue+"/"+inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value;
         console.log(workMsgRef,workObj,upRef);
         database_f.ref(workMsgRef).update(workObj).then(()=>{
+            console.log("Successfully uploaded");
+        }).catch((e)=>{
+            console.error(e);
+        });
+        const workingProcess={"working":"컨테이너 진입"};
+        database_f.ref(refValue).update(workingProcess).then(()=>{
             console.log("Successfully uploaded");
         }).catch((e)=>{
             console.error(e);
