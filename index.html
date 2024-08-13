@@ -19,7 +19,7 @@
         <button id="tabMenuI" class="mainTab" >입고</button>
         <button id="tabMenuO" class="mainTab" >출고</button>
         <button id="tabMenuS" class="mainTab" >재고</button>
-        <button id="tabMenuP" class="mainTab" >팔렛트</button>
+        <button id="tabMenuP" class="mainTab" onclick="loadMobile()">Mobile</button>
         <button id="infoBtn" class="mainTab"onclick="resetBtn()">Selected Data Reset</button>
         <button id="infoBtnTest" class="mainTab" onclick="periodBtn()">기간검색</button>
         <input class="date" type="date" value="yyyy-MM-dd" id="datePicker" onchange="dateC()">
@@ -149,17 +149,17 @@
                     <div id="infoDiv">
 
                     </div>
-                    <div id="fileDiv" style="height:100%;width:25vw">
+                    <div id="fileInDiv" style="height:100%;width:25vw">
                         <div style="display:grid;grid-template-columns:2fr 1fr;width:25vw">
-                            <input multiple="multiple" type="file" id="fileUp" name="filename[]" >
-                            <button id="fileUpBtn" onclick="fileUp()">Upload</button>
+                            <input multiple="multiple" type="file" id="fileInUp" name="filename[]" >
+                            <button id="fileInUpBtn" onclick="fileUp()">Upload</button>
                         </div>
                         
                         <div class="preview" style="height:100%;width:25vw;overflow-x: scroll;" >
-                            <table id="fileTable" style="table-layout: fixed;">
+                            <table id="fileInTable" style="table-layout: fixed;">
                                 <tbody style="height:15vh">
                                     <div>
-                                        <tr id="previewTr" style="height:100%">
+                                        <tr id="previewInTr" style="height:100%">
 
                                         </tr>
                                     </div>
@@ -258,6 +258,25 @@
                 <div id="infoDivO">
 
                 </div>
+                <div id="fileOutDiv" style="height:100%;width:25vw">
+                    <div style="display:grid;grid-template-columns:2fr 1fr;width:25vw">
+                        <input multiple="multiple" type="file" id="fileOutUp" name="filename[]" >
+                        <button id="fileOutUpBtn" onclick="fileUp()">Upload</button>
+                    </div>
+                    
+                    <div class="preview" style="height:100%;width:25vw;overflow-x: scroll;" >
+                        <table id="fileOutTable" style="table-layout: fixed;">
+                            <tbody style="height:15vh">
+                                <div>
+                                    <tr id="previewOutTr" style="height:100%">
+
+                                    </tr>
+                                </div>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -292,7 +311,7 @@
     </div>
    
     </div>
-    <!-- <div id="pltDivH" style="display:none">
+    <div id="pltDivH" style="display:none">
         <div id="pltDiv" >
             <div id="pltTitle" >
                 <div style="display:grid;grid-template-rows: 1fr 1fr;width:80%">
@@ -336,11 +355,8 @@
                     </tbody>
                 </table>
             </div>    
-    
         </div>       
-                     
     </div>
-
     <script src="main.js" > </script>
 </body>
 </html>

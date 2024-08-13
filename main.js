@@ -19,6 +19,7 @@ let initRow={};
 let io;
 let bKeyValue;
 let aKeyValue;
+let ioValue = "InCargo";
 if ('serviceWorker' in navigator) {
 navigator.serviceWorker.register('/firebase-messaging-sw.js')
     .then(function(registration) {
@@ -198,6 +199,7 @@ function sTable(io){
             let keyValue = Object.keys(kL);
             let value1 = Object.values(kL);
             let trS = document.createElement("tr");
+            trS.id=kL["keyValue"];
             trS.style.height="5vh";
             if(kL["working"]!=""){
             containerList.push(kL["container"]);}
@@ -242,12 +244,11 @@ function sTable(io){
     // tableS.replaceChildren();
     database_f.ref("DeptName/"+deptName+"/OutCargo/"+monValue+"/"+dateValue).get().then((snapshot)=>{
     let snapV = snapshot.val();
-    let keyList =[];
     const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
-    let tHrS = document.createElement("tr");
     const tBodyS = document.getElementById("tboS");
     for(let kc in snapV){
         let trS = document.createElement("tr");
+        trS.id=snapV[kc]["keyValue"];
         for(let tdC in tdList){
             let td = document.createElement("td");
             td.innerHTML= snapV[kc][tdList[tdC]];
@@ -936,9 +937,11 @@ function msgLoad(){
             if(idValue=="tabMenuI"){
                 tabI.style.display="grid";
                 tabO.style.display="none";
+                ioValue="InCargo";
             }else if(idValue=="tabMenuO"){
                 tabI.style.display="none";
                 tabO.style.display="grid";
+                ioValue="OutCargo";
             }
         });
     };
@@ -950,7 +953,22 @@ function msgLoad(){
         upDiv.style.gridTemplateRows="10vh 80vh";
         const infoDiv=document.getElementById("infoDivO");
         infoDiv.replaceChildren();
-        const thList = document.querySelectorAll("#tableS th");
+        const thList = document.querySelectorAll("#tableSo th");
+        for(let i=0;i<thList.length;i++){
+            const tr = document.createElement("tr");
+            const tdH = document.createElement("td");
+            tdH.innerHTML=thList[i].innerHTML;
+            const td = document.createElement("td");
+            const tdInput=document.createElement("input");                                                                                                        
+            tdInput.setAttribute("type","text");
+            tdInput.value=v.cells[i].innerHTML;
+            tdInput.setAttribute("class","infoInput");
+            td.appendChild(tdInput);
+            tr.appendChild(tdH);
+            tr.appendChild(td);
+            infoDiv.appendChild(tr);
+        }
+        bKeyValue = v.id;
     }
 
     function incargoUpdate(v){
@@ -995,66 +1013,71 @@ function msgLoad(){
         document.getElementById("tabInDiv").style.display="none";
         document.getElementById("Message").style.display="grid";}
     function infoUp(v){
-        remove(v.id);
+        let infoDiv;
+        if(v.id=="infoUp"){
+            infoDiv=document.getElementById("infoDiv");}
+            else{
+                infoDiv=document.getElementById("infoDivO");}
         const infoValueList= infoDiv.querySelectorAll(".infoInput");
+        console.log(infoValueList,infoDiv);
+        const dateValue= bKeyValue.substring(0,10);
+        const monthValue = dateValue.substring(5,7)+"월";
         aKeyValue =infoValueList[0].value+"_"+infoValueList[4].value+"_"+infoValueList[5].value+"_"+infoValueList[6].value+"_"+infoValueList[1].value;
         let upCheck;
-        if(v.id=="infoUp"){
+        if(v.id=="infoUp"||v.id=="infoUpO"){
             upCheck = confirm(bKeyValue+" 값에 이어서 \n"+aKeyValue+" 값을 \n DataBase Key 로 Upload 하시겠습니까?");
            
         }else{
             upCheck = confirm(bKeyValue+" 값을 삭제후 \n"+aKeyValue+" 값을 \n DataBase Key 로 Upload 하시겠습니까?");
             if(upCheck){
+                if(ioValue="InCargo"){
                 database_f.ref("DeptName/"+deptName+"/InCargo/"+monthValue+"/"+dateValue+"/"+bKeyValue).remove().then(()=>{
                     alert(bKeyValue+"\nKey 값이 Database에서 Delete 되었습니다.");
-                    location.reload();
                 }).catch((e)=>{
                     console.error(e);
-                });
+                });}else{
+                    database_f.ref("DeptName/"+deptName+"/OutCargo/"+monthValue+"/"+dateValue+"/"+bKeyValue).remove().then(()=>{
+                        alert(bKeyValue+"\nKey 값이 Database에서 Delete 되었습니다.");
+                    }).catch((e)=>{
+                        console.error(e);
+                    });
+                }
             }
         }
         let upData={};
         if(upCheck){
-            for(let i=0;i<10;i++){
-                remove(infoValueList[i].value);
-                upData[[key_f[i]]]=infoValueList[i].value;
-            }
-            if(upData["spec"]=="20Ft"){
-                upData["container40"]="0";
-                upData["container20"]="1";
-                upData["lclcargo"]="0";
-            }else if(upData["spec"]=="40Ft"){
-                upData["container40"]="1";
-                upData["container20"]="0";
-                upData["lclcargo"]="0";
+            if(v.id== "infoUp"){
+                for(let i=0;i<10;i++){
+                    upData[[key_f[i]]]=infoValueList[i].value;
+                }
+                if(upData["spec"]=="20Ft"){
+                    upData["container40"]="0";
+                    upData["container20"]="1";
+                    upData["lclcargo"]="0";
+                }else if(upData["spec"]=="40Ft"){
+                    upData["container40"]="1";
+                    upData["container20"]="0";
+                    upData["lclcargo"]="0";
+                }else{
+                    upData["container40"]="0";
+                    upData["container20"]="0";
+                    upData["lclcargo"]="1";
+                }
+                const monValue = upData["date"].substring(5,7)+"월";
+                const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+upData["date"]+"/"+aKeyValue;
+                if(upData["incargo"]==""){
+                    upData["incargo"]="0";
+                }
+                upData["keyValue"]=aKeyValue;
+                upData["refValue"]=refValue;
+                // database_f.ref(refValue).update(upData).then(()=>{
+                //     location.reload();
+                // }).catch((e)=>{
+                //     console.error(e);
+                // });
             }else{
-                upData["container40"]="0";
-                upData["container20"]="0";
-                upData["lclcargo"]="1";
+
             }
-            const monValue = upData["date"].substring(5,7)+"월";
-            const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+upData["date"]+"/"+aKeyValue;
-            if(upData["incargo"]==""){
-                upData["incargo"]="0";
-            }
-            upData["keyValue"]=aKeyValue;
-            upData["refValue"]=refValue;
-            database_f.ref(refValue).update(upData).then(()=>{
-                // const toast= document.createElement("div");
-                // toast.setAttribute("id","tost_message");
-                // toast.innerHTML=aKeyValue+"값이 DataBase에 Upload 되었습니다.";
-                // document.body.appendChild(toast);
-                // toast.classList.add("show");
-                // setTimeout(function(){
-                //     toast.className=toast.className.replace("show","");
-                //     document.body.removeChild(toast);
-                // },3000)
-                location.reload();
-                // location.reload();
-                // alert(aKeyValue+"\n값이 DataBase에 Upload 되었습니다.");
-            }).catch((e)=>{
-                console.error(e);
-            });
         }
     }
     function infoDel(){
@@ -1204,8 +1227,8 @@ function msgLoad(){
        
     }
     let upfileList ={};
-    const fileInput = document.getElementById("fileUp");
-    const fileTr = document.getElementById("previewTr");
+    const fileInput = document.getElementById("fileInUp");
+    const fileTr = document.getElementById("previewInTr");
     // fileInput.addEventListener("change",selectFile);
     const resizeImage = (settings) => {
         const file = settings.file;
@@ -1296,6 +1319,7 @@ function msgLoad(){
           });
         }
       };
+
     fileInput.addEventListener("change",handleImgInput);
     
     // function selectFile(e){
@@ -1366,11 +1390,11 @@ function msgLoad(){
     function fileUp(){
         const inputList = document.querySelectorAll(".infoInput");
         const tabInDiv = document.getElementById("tabO").display;
-        if(tabInDiv!="grid"){
-                        ioValue="InCargo";
-                    }else{
-                        ioValue="OutCargo";
-                    }
+        // if(tabInDiv!="grid"){
+        //                 ioValue="InCargo";
+        //             }else{
+        //                 ioValue="OutCargo";
+        //             }
                     
         const today = new Date();
         const monthValue = today.getMonth()+1;
@@ -1406,8 +1430,11 @@ function msgLoad(){
                 alert(e);
             });
         }
+        location.reload();
     }
-    
+    function loadMobile(){
+        location.href="https://koacaiia.github.io/WmsMobile/";
+    }
 
 
         
