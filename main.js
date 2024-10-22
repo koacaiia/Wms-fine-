@@ -457,7 +457,7 @@ function submitBtn(){
         messaging.getToken().then((c) => {
         if (c) {
            
-            console.log(c)
+            // console.log(c)
             // messaging.send(c,message).then((r)=>{
             // remove("Successfully sent Message",r)
             // }).catch((e)=>{
@@ -858,12 +858,13 @@ function msgLoad(){
         for(let i=0;i<tr.length;i++){
             for(let key=0;key<key_f.length-4;key++){
                 if(key ==2){
-                    const type=tr[i].cells[3].querySelector("select").value;
-                    if(type=="40Ft"){
+                    const type=tr[i].cells[3].innerHTML;
+                    console.log(type);
+                    if(type=="40FT"){
                         ar["container40"]="1";
                         ar["container20"]="0";
                         ar["lclcargo"]="0";
-                    }else if(type =="20Ft"){
+                    }else if(type =="20FT"){
                         ar["container40"]="0"; 
                         ar["container20"]="1";
                         ar["lclcargo"]="0";
@@ -877,7 +878,7 @@ function msgLoad(){
                         ar["lclcargo"]="0";
                     }
                 }else{
-                    ar[key_f[key]]=tr[i].cells[parseInt(key)+parseInt(1)].querySelector("input").value;
+                    ar[key_f[key]]=tr[i].cells[parseInt(key)+parseInt(1)].innerHTML;
                 }
             }
             const month = ar["date"].substring(5,7)+"월";
@@ -886,15 +887,17 @@ function msgLoad(){
             ar["working"]="";
             ar["location"]=""; 
             selRow[i]=ar;
-            remove(selRow[i]["container"])
+            console.log(selRow[i]);
+            // remove(selRow[i]["container"])
         }
+        console.log(selRow)
         for(let r in selRow){
             database_f.ref(ar["refValue"]).update(ar).then(()=>{
-                remove("Successfully uploaded",ar["refValue"]);
+                console.log("Successfully uploaded",ar["refValue"]);
             }).catch((e)=>{
                 console.error(e);
             });
-            remove(selRow[r]);
+            // remove(selRow[r]);
         }
         body.replaceChildren();
         }
@@ -1435,7 +1438,64 @@ function msgLoad(){
     function loadMobile(){
         location.href="https://koacaiia.github.io/WmsMobile/";
     }
+    function handlePaste(e){
+        const clipboardData = e.clipboardData||window.clipboardData;
+        const pastedData = clipboardData.getData("Text");
+        generateTable(pastedData);
+    }
+    function generateTable(data){
+        const rows=data.split("\n");
+        const yearV = document.getElementById("datePicker").value.substring(0,4);
 
+        console.log(rows);
+        const table = document.querySelector("#tbiU");
+        table.innerHTML="";
+        for( const row of rows){
+            const tr = document.createElement("tr");
+            const columns = row.split("\t");
+            const td= document.createElement("td");
+        const ch = document.createElement("input");
+        ch.setAttribute("type","checkbox");
+        ch.addEventListener("click",function(e){
+            const tr = e.target.parentNode.parentNode;
+            tr.classList.toggle("select");
+        });
+        td.appendChild(ch);
+        tr.appendChild(td);
+            for(let tdC=0;tdC<10;tdC++){
+                const td = document.createElement("td");
+                tr.appendChild(td);
+            }
+            const type= tr.cells[3];
+            for(let i=0;i<columns.length;i++){
+                tr.cells[1].innerHTML=yearV+"-"+columns[0].replace("/","-");
+                tr.cells[2].innerHTML=columns[2];
+                if(columns[4]=="1"){
+                    type.innerHTML="40FT";
+                }else if(columns[5]=="1"){
+                    type.innerHTML="20FT";}
+                    else if(columns[6]!=""){
+                        type.innerHTML="LCL";}
+                tr.cells[4].innerHTML=columns[1];
+                tr.cells[5].innerHTML=columns[19];
+                tr.cells[6].innerHTML=columns[16];
+                tr.cells[7].innerHTML=columns[3];
+                tr.cells[8].innerHTML=Number(columns[8])+Number(columns[9]);
+                tr.cells[9].innerHTML=columns[7];
+                tr.cells[10].innerHTML=columns[20];    
+
+        }
+        table.appendChild(tr);     
+    }
+    }
+    function removePaste(){
+        const table = document.querySelector("#excel_data");
+        console.log(table);
+        table.value="";
+    }
+    function removeTable(){
+        const table = document.querySelector("#tbiU");
+        table.innerHTML="";
+    }
 
         
-       

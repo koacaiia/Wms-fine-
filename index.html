@@ -81,34 +81,47 @@
                             </div>
                         </li>
                         <li >
-                            <a href = "#tab3" class="btn">입고 Upload</a>
-                            <div id="tab3" class="cont" >
-                                    <table id="tableE" class="table">
-                                        <thead class="tHead" >
-                                            <tr >
-                                                <th style="width:3%">
-                                                    <input type="checkbox" onclick="allS(this)">
-                                                </th>
-                                                <th>반입일</th>
-                                                <th>컨테이너번호</th>
-                                                <th style="width:6%;font-size:70%">입고유형</th>
-                                                <th>화주명</th>
-                                                <th>비엘</th>
-                                                <th>품명</th>
-                                                <th>찻수/Seal</th>
-                                                <th style="width:6%;font-size:70%">입고수량</th>
-                                                <th style="width:6%;font-size:70%">팔렛트수량</th>
-                                                <th>비고</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tbiU" ></tbody>
-                                    </table>
-                                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr">
+                            <a href = "#tab3" class="btn">입고 Paste</a>
+                            <div id="tab3" class="cont"  >
+                                <div style="display:grid;grid-template-rows:2fr 6fr">
+                                    <div  style="display:grid;grid-template-rows:5fr 1fr">
+                                        <textarea id="excel_data" onpaste="handlePaste(event)" placeholder="Paste your Excel data here" style="width:100%;text-align: center;"></textarea>
+                                        <div>
+                                            <button onclick="removePaste()">RemovePaste</button>
+                                            <button onclick="removeTable()">RemoveTable</button>
+                                            <button id="delRow" onclick="delRow()">Del Row</button>
+                                            <button id="selRowUp" onclick="selUpLoad()">Selected Upload</button>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                        <table id="tableE" class="table">
+                                            <thead class="tHead">
+                                                <tr >
+                                                    <th style="width:3%">
+                                                        <input type="checkbox" onclick="allS(this)">
+                                                    </th>
+                                                    <th>반입일</th>
+                                                    <th>컨테이너번호</th>
+                                                    <th style="width:6%;font-size:70%">입고유형</th>
+                                                    <th>화주명</th>
+                                                    <th>비엘</th>
+                                                    <th>품명</th>
+                                                    <th>찻수/Seal</th>
+                                                    <th style="width:6%;font-size:70%">입고수량</th>
+                                                    <th style="width:6%;font-size:70%">팔렛트수량</th>
+                                                    <th>비고</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbiU" ></tbody>
+                                        </table>
+                                </div>
+                                
+                                    <!-- <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr">
                                         <button id="addRow" onclick="addRow()">Add Row</button>
                                         <button id="copyRow" onclick="copyRow()">Copy Row</button>
-                                        <button id="delRow" onclick="delRow()">Del Row</button>
-                                        <button id="selRowUp" onclick="selUpLoad()">Selected Upload</button>
-                                    </div>                                    
+                                        
+                                    </div>                                     -->
                             </div>
                         </li>
                     </ul>
