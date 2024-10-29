@@ -241,6 +241,7 @@ function sTable(io){
     const dateValue = document.getElementById("datePicker").value;
     const monValue = dateValue.substring(5,7)+"월";
     let tableS = document.getElementById("tableSo");
+    document.getElementById("tboS").replaceChildren();
     // tableS.replaceChildren();
     database_f.ref("DeptName/"+deptName+"/OutCargo/"+monValue+"/"+dateValue).get().then((snapshot)=>{
     let snapV = snapshot.val();
@@ -1085,10 +1086,12 @@ function msgLoad(){
     }
     function infoDel(){
         let delCheck = confirm(bKeyValue+"\nKey 값을 Database에서 Delete 하시겠습니까?");
+        console.log(bKeyValue);
         const dateValue= bKeyValue.substring(0,10);
         const monthValue = dateValue.substring(5,7)+"월";
+        console.log("DeptName/"+deptName+"/InCargo/"+monthValue+"/"+dateValue+"/"+bKeyValue);
         if(delCheck){
-            database_f.ref("DeptName/"+deptName+"/InCargo/"+monthValue+"/"+dateValue+"/"+bKeyValue).remove().then(()=>{
+            database_f.ref(bKeyValue).remove().then(()=>{
                 alert(bKeyValue+"\nKey 값이 Database에서 Delete 되었습니다.");
                 location.reload();
             }).catch((e)=>{
