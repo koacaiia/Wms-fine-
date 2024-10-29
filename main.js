@@ -1011,7 +1011,7 @@ function msgLoad(){
             tr.appendChild(td);
             infoDiv.appendChild(tr);
         }
-        bKeyValue = v.cells[0].innerHTML+"_"+v.cells[4].innerHTML+"_"+v.cells[5].innerHTML+"_"+v.cells[6].innerHTML+"_"+v.cells[1].innerHTML;
+        bKeyValue = "DeptName/"+deptName+"/InCargo/"+v.id.substring(5,7)+"월"+"/"+v.id.substring(0,10)+"/"+v.id;
     }
     function infoRe(){
         document.getElementById("tabInDiv").style.display="none";
@@ -1089,7 +1089,6 @@ function msgLoad(){
         console.log(bKeyValue);
         const dateValue= bKeyValue.substring(0,10);
         const monthValue = dateValue.substring(5,7)+"월";
-        console.log("DeptName/"+deptName+"/InCargo/"+monthValue+"/"+dateValue+"/"+bKeyValue);
         if(delCheck){
             database_f.ref(bKeyValue).remove().then(()=>{
                 alert(bKeyValue+"\nKey 값이 Database에서 Delete 되었습니다.");
