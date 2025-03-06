@@ -1018,7 +1018,8 @@ function msgLoad(){
         document.getElementById("Message").style.display="grid";}
     function infoUp(v){
         let infoDiv;
-        if(v.id=="infoUp"){
+        console.log(v.id);
+        if(v.id=="infoUp" || v.id=="infoNew"){
             infoDiv=document.getElementById("infoDiv");}
             else{
                 infoDiv=document.getElementById("infoDivO");}
@@ -1050,7 +1051,7 @@ function msgLoad(){
         }
         let upData={};
         if(upCheck){
-            if(v.id== "infoUp"){
+            if(v.id== "infoUp"||v.id=="infoNew"){
                 for(let i=0;i<10;i++){
                     upData[[key_f[i]]]=infoValueList[i].value;
                 }
@@ -1074,11 +1075,11 @@ function msgLoad(){
                 }
                 upData["keyValue"]=aKeyValue;
                 upData["refValue"]=refValue;
-                // database_f.ref(refValue).update(upData).then(()=>{
-                //     location.reload();
-                // }).catch((e)=>{
-                //     console.error(e);
-                // });
+                database_f.ref(refValue).update(upData).then(()=>{
+                    location.reload();
+                }).catch((e)=>{
+                    console.error(e);
+                });
             }else{
 
             }
@@ -1100,7 +1101,7 @@ function msgLoad(){
     }
     function periodBtn(){
         const periodDiv = document.getElementById("periodPop");
-        const styleP= periodDiv.style.display;
+        const styleP= periodDiv.style.display;dw
         if(styleP=="grid"){
             periodDiv.style.display="none";}
             else{
