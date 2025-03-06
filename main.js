@@ -14,6 +14,7 @@ const messaging = firebase.messaging();
 const storage_f = firebase.storage();
 const deptName = "WareHouseDept2";
 const key_f = ['date','container','spec','consignee','bl', 'description','count', 'incargo','Pqty','remark','keyValue','location','shape', 'working'];
+const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
 let selRow={};
 let initRow={};
 let io;
@@ -245,7 +246,7 @@ function sTable(io){
     // tableS.replaceChildren();
     database_f.ref("DeptName/"+deptName+"/OutCargo/"+monValue+"/"+dateValue).get().then((snapshot)=>{
     let snapV = snapshot.val();
-    const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
+    
     const tBodyS = document.getElementById("tboS");
     for(let kc in snapV){
         let trS = document.createElement("tr");
@@ -1022,9 +1023,8 @@ function msgLoad(){
         if(v.id=="infoUp" || v.id=="infoNew"){
             infoDiv=document.getElementById("infoDiv");}
             else{
-                infoDiv=document.getElementById("infoDivO");}
+            infoDiv=document.getElementById("infoDivO");}
         const infoValueList= infoDiv.querySelectorAll(".infoInput");
-        console.log(infoValueList,infoDiv);
         const dateValue= bKeyValue.substring(0,10);
         const monthValue = dateValue.substring(5,7)+"월";
         aKeyValue =infoValueList[0].value+"_"+infoValueList[4].value+"_"+infoValueList[5].value+"_"+infoValueList[6].value+"_"+infoValueList[1].value;
@@ -1081,6 +1081,16 @@ function msgLoad(){
                     console.error(e);
                 });
             }else{
+                for(let i=0;i<tdKey.length;i++){
+                    upData[[key_f[i]]]=infoValueList[i].value;
+                }
+                const monValue = upData["date"].substring(5,7)+"월";
+                const refValue = "DeptName/"+deptName+"/OutCargo/"+monValue+"/"+upData["date"]+"/"+aKeyValue;
+                database_f.ref(refValue).update(upData).then(()=>{
+                    location.reload();
+                }).catch((e)=>{
+                    console.error(e);
+                });
 
             }
         }
