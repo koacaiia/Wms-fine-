@@ -402,9 +402,11 @@ function submitBtn(){
                     selectOb["container20"]="0";
                     selectOb["lclcargo"]="0";
                 }
-                const monValue = selectOb["date"].substring(5,7)+"월";
+                const yearValue = selectOb["date"].substring(0,4);
+                const monValue = selectOb["date"].substring(5,7);
+                const dayValue = selectOb["date"].substring(8,10);
                 const keyPath = selectOb["date"]+"_"+selectOb["bl"]+"_"+selectOb["description"]+"_"+selectOb["count"]+"_"+selectOb["container"];
-                const refValue = "DeptName/"+deptName+"/InCargo/"+monValue+"/"+selectOb["date"]+"/"+keyPath;
+                const refValue = "DeptName/"+deptName+"/InCargo/"+yearValue+"/"+monValue+"/"+dayValue+"/"+selectOb["consignee"]+"/"+keyPath;
                 if(selectOb["incargo"]==""){
                     selectOb["incargo"]="0";
                 };
@@ -1506,6 +1508,7 @@ function msgLoad(){
         console.log(table);
         table.value="";
     }
+    
     function removeTable(){
         const table = document.querySelector("#tbiU");
         table.innerHTML="";
