@@ -110,7 +110,7 @@ function eTable(value){
         const tableE=document.getElementById("tableE");
         tBodyE = document.getElementById("tbiE");
         tBodyE.replaceChildren();
-        tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","인원","비고"];
+        tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","팔레트/수량","비고"];
         for(let rC in value){
         let trE = document.createElement("tr");
         if(value[rC]["Date"] != ""){
