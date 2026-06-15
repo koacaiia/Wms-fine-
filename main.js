@@ -13,7 +13,7 @@ const database_f = firebase.database();
 const messaging = firebase.messaging();
 const storage_f = firebase.storage();
 const deptName = "WareHouseDept2";
-const key_f = ['date','container','spec','consignee','bl', 'description','count', 'incargo','Pqty','remark','keyValue','history','reg', 'working'];
+const key_f = ['date','container','spec','consignee','bl', 'description','count', 'incargo','Pqty','layout','remark','keyValue','history','reg', 'working'];
 const tdList =["date","consigneeName","outwarehouse","totalEa","totalQty","eaQty","pltQty","managementNo","description"];
 let selRow={};
 let initRow={};
@@ -110,7 +110,7 @@ function eTable(value){
         const tableE=document.getElementById("tableE");
         tBodyE = document.getElementById("tbiE");
         tBodyE.replaceChildren();
-        tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","비고"];
+        tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","인원","비고"];
         for(let rC in value){
         let trE = document.createElement("tr");
         if(value[rC]["Date"] != ""){
@@ -288,10 +288,12 @@ function moveTab(n){
     checkIo(selectTab,selectTab.querySelectorAll(".cont")[0].id);
 }
 function checkIo(tab,id){
+    console.log(tab,id);
     if(id =="tab1"){
         tabList[0].classList.remove("is_onI");
         tabList[2].classList.remove("is_onI");
         tab.classList.add("is_onI");
+        
         eTable("i");}
         else if(id =="tab2"){
             tabList[1].classList.remove("is_onI");
@@ -380,7 +382,8 @@ function submitBtn(){
                 for(let tdC=0;tdC<key_f.length;tdC++){
                     const c = tdC+1;
                     try{
-                        selectOb[key_f[tdC]]=trL[trC].cells[c].innerHTML; 
+                        selectOb[key_f[tdC]]=trL[trC].cells[c].innerHTML;
+
                     }catch(e){
                         selectOb[key_f[tdC]]="";
                     }
@@ -414,6 +417,7 @@ function submitBtn(){
                 selectOb["refValue"]=refValue;
                 selRow[trC]=selectOb;
                 }
+                console.log(selRow);
                 conMessage="총 "+trL.length+"건의 입고내역 서버에 등록 하시겠습니까?";
             }
             let sendConfirm = confirm(conMessage);
