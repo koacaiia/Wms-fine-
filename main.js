@@ -76,6 +76,7 @@ function excelConvert(target){
             op={defval:"",range:"A3:X5000",blankrows:false,raw:true};
             sheetName ="Container"
             io="i"
+            console.log(op["range"]);
         }else{
             op={defval:"",range:"A3:K10000",blankrows:false,raw:true};
             sheetName ="출고취합";
