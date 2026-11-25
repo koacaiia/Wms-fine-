@@ -117,7 +117,6 @@ function eTable(value){
         tBodyE.replaceChildren();
         tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","팔레트/수량","비고"];
         for(let rC in value){
-            console.log(value[rC]);
         let trE = document.createElement("tr");
         const rawDate = value[rC]["Date"];
         if(rawDate){
