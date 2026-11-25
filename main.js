@@ -74,7 +74,7 @@ function excelConvert(target){
     let workbook = null;
     reader.onload = function(event){
         if(target.id =="fileIn"){
-            op={defval:"",range:"A3:X3000",blankrows:false,raw:true};
+            op={defval:"",range:"A3:X5000",blankrows:false,raw:true};
             sheetName ="Container"
             io="i"
         }else{
@@ -84,10 +84,15 @@ function excelConvert(target){
         };
         const data = event.target.result;
         workbook = XLSX.read(data,{type:"binary",cellDates: true,dateNF:"yyyy-mm-dd"});
+        const sheet = workbook.Sheets[sheetName];
+        if(!sheet){
+            alert("시트 '"+sheetName+"'을(를) 찾을 수 없습니다. 파일의 시트: "+workbook.SheetNames.join(", "));
+            return;
+        }
     
-    let rowsValue = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],op);
+    let rowsValue = XLSX.utils.sheet_to_json(sheet,op);
     if(rowsValue.length ==0){
-        excelConvert(target);
+        alert("변환할 데이터가 없습니다. (시트 '"+sheetName+"', 3행부터 읽음)");
     }else{
         eTable(rowsValue);
     }
@@ -112,11 +117,14 @@ function eTable(value){
         tBodyE.replaceChildren();
         tdList =["Date","Container","40FT","화 주","BL","품명","#","Grocery","pallet  Qty","팔레트/수량","비고"];
         for(let rC in value){
+            console.log(value[rC]);
         let trE = document.createElement("tr");
-        if(value[rC]["Date"] != ""){
-            value[rC]["Date"] = new Date(value[rC]["Date"].getTime()+offset);
+        const rawDate = value[rC]["Date"];
+        if(rawDate){
+            const d = rawDate instanceof Date ? rawDate : new Date(rawDate);
+            value[rC]["Date"] = isNaN(d) ? "" : new Date(d.getTime()+offset);
         }
-        value[rC]["Date"]=transDate(value[rC]["Date"]);
+        value[rC]["Date"] = value[rC]["Date"] ? transDate(value[rC]["Date"]) : "";
         if(value[rC]["40FT"] ==1){
             value[rC]["40FT"] ="40Ft";
         }else if(value[rC]["20FT"] ==1){
@@ -152,9 +160,10 @@ function eTable(value){
         tBodyE.replaceChildren();
         const tdList=["반출일","화주","입고처","총출고수량","총출고팔렛트수량","품목별출고수량","품목별팔렛트수량","관리번호","Description"];
         for(let rC in value){
-            if(value[rC]["반출일"] != ""){
-            value[rC]["반출일"] = new Date(value[rC]["반출일"].getTime()+offset);
-            value[rC]["반출일"]=transDate(value[rC]["반출일"]);
+            const rawOutDate = value[rC]["반출일"];
+            if(rawOutDate){
+            const od = rawOutDate instanceof Date ? rawOutDate : new Date(rawOutDate);
+            value[rC]["반출일"] = isNaN(od) ? "" : transDate(new Date(od.getTime()+offset));
         if(value[rC]["반출일"] == dateValue){
             let trE = document.createElement("tr");
             let tdH = document.createElement("td");
