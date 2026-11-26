@@ -9,6 +9,11 @@ const firebaseConfig = {
     measurementId: "G-SWBR4359JQ"
 };
 firebase.initializeApp(firebaseConfig);
+firebase.appCheck().activate(new firebase.appCheck.ReCaptchaEnterpriseProvider("6LeewTIuAAAAAJ5mLaHGzGicmQ1hJSYppoKbjsyL"), true);
+const authReady = firebase.auth().signInAnonymously().catch((e)=>{
+    console.error(e);
+    alert("익명 로그인 실패: "+e.code);
+});
 const database_f = firebase.database();
 const messaging = firebase.messaging();
 const storage_f = firebase.storage();
@@ -1418,7 +1423,8 @@ function msgLoad(){
     //     }
     // }
     
-    function fileUp(){
+    async function fileUp(){
+        await authReady;
         const inputList = document.querySelectorAll(".infoInput");
         const tabInDiv = document.getElementById("tabO").display;
         // if(tabInDiv!="grid"){
@@ -1441,27 +1447,23 @@ function msgLoad(){
         const workObj={"consignee":inputList[3].value,"msg":inputList[3].value+"_"+inputList[1].value+"_사진업로드","inOutCargo":ioValue,"date":inputList[0].value,"keyValue":inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value,"nickName":"web","time":timeValue};
         const upRef ="images/"+deptName+"/"+inputList[0].value+"/"+ioValue+"/"+inputList[0].value+"_"+inputList[4].value+"_"+inputList[6].value+"_"+inputList[1].value;
         console.log(workMsgRef,workObj,upRef);
-        database_f.ref(workMsgRef).update(workObj).then(()=>{
-            console.log("Successfully uploaded");
-        }).catch((e)=>{
-            console.error(e);
-        });
         const workingProcess={"working":"컨테이너 진입"};
-        database_f.ref(refValue).update(workingProcess).then(()=>{
-            console.log("Successfully uploaded");
-        }).catch((e)=>{
-            console.error(e);
-        });
+        const tasks = [
+            database_f.ref(workMsgRef).update(workObj),
+            database_f.ref(refValue).update(workingProcess)
+        ];
         for(let i=0;i<upfileList.length;i++){
             const file = upfileList[i];
             const ref = storage_f.ref(upRef+"/"+file.name);
-            ref.put(file).then(()=>{
-                console.log(file+"Successfully uploaded");
-            }).catch((e)=>{
-                alert(e);
-            });
+            tasks.push(ref.put(file));
         }
-        location.reload();
+        Promise.all(tasks).then(()=>{
+            console.log("Successfully uploaded");
+            location.reload();
+        }).catch((e)=>{
+            console.error(e);
+            alert("업로드 실패: "+(e.code||"")+" "+(e.message||e));
+        });
     }
     function loadMobile(){
         location.href="https://koacaiia.github.io/WmsMobile/";
